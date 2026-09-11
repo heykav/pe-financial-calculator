@@ -26,7 +26,8 @@ headline returns.
 
 ## The product
 
-Rivet is a browser-native underwriting workspace. A user enters a small set of
+Rivet is a strictly web-based underwriting workspace. A user opens the app in
+an ordinary browser and enters a small set of
 deal facts and receives:
 
 1. A transparent LBO-style return model.
@@ -37,7 +38,8 @@ deal facts and receives:
 6. A local-first data boundary for early-stage, fictional, or authorized work.
 
 The product is deliberately inspectable: the current version is plain HTML,
-CSS, and JavaScript with no runtime dependency or hidden API.
+CSS, and JavaScript with no runtime dependency, native wrapper, install flow,
+or hidden API. The browser tab is the product runtime.
 
 ## Initial wedge
 
@@ -71,7 +73,7 @@ collaboration, source-linked diligence, and production-grade modeling later.
 - Base, downside, and upside case switching.
 - Local exports for memo text and sensitivity CSV.
 - Beginner guidance, model-status diagnostics, settings, keyboard guide, and
-  responsive desktop/mobile behavior.
+  responsive browser-viewport behavior.
 - Privacy, security, and model-limitation documentation.
 
 ## What is intentionally not claimed

@@ -2,14 +2,16 @@
 
 **Last updated: 2026-09-12**
 
-This notice describes the data boundary of the Rivet Private Markets Calculator.
+This notice describes the data boundary of the Rivet browser web app.
 It is written for the current static GitHub Pages deployment and is not legal
 advice or a representation that every deployment, browser, hosting provider, or
 jurisdictional obligation is satisfied.
 
 ## Short version
 
-Rivet does not ask for an account, use advertising cookies, run analytics,
+Rivet is strictly a browser web app. It does not ship as a native desktop or
+mobile application, browser extension, or installable client. Rivet does not
+ask for an account, use advertising cookies, run analytics,
 fingerprint visitors, sell personal information, or send the assumptions typed
 into the calculator to a Rivet application server. Calculations and exports are
 performed in the browser.
@@ -21,7 +23,8 @@ processing.
 
 ## Data processed by the application
 
-The application processes the following locally in the current browser tab:
+The application processes the following locally in the current browser tab,
+which is the only product runtime:
 
 - Deal assumptions entered into form controls.
 - Base, Downside, and Upside case values held in JavaScript memory.

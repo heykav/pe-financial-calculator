@@ -1,6 +1,8 @@
 # Security, privacy, and information-source boundaries
 
-Rivet is a static browser application for illustrative finance analysis. It is
+Rivet is a strictly web-only static browser application for illustrative
+finance analysis. The browser tab is the complete runtime; there is no native
+desktop/mobile wrapper, extension, executable, or install service. It is
 not a security product, an OSINT platform, or an ISO-certified information
 system. This document describes the protections that are appropriate for the
 current architecture and the boundaries contributors must preserve.

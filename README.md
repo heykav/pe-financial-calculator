@@ -1,6 +1,6 @@
 # Rivet — Underwriting Workspace
 
-**A browser-native underwriting workspace that turns deal assumptions into an explainable investment view.**
+**A strictly browser-based underwriting web app that turns deal assumptions into an explainable investment view.**
 
 [![Live demo](https://img.shields.io/badge/Live%20demo-Rivet%20Calculator-c9a24a?style=flat-square)](https://heykav.github.io/pe-financial-calculator/)
 [![No build step](https://img.shields.io/badge/Build%20step-none-18181b?style=flat-square)](#run-locally)
@@ -213,7 +213,7 @@ For a quick static check:
 git diff --check
 ```
 
-The browser preview is the source of truth for interaction testing. Keep the console free of errors and verify desktop, tablet, and narrow responsive layouts when changing UI code.
+The browser preview is the source of truth for interaction testing. Keep the console free of errors and verify wide, medium, and narrow browser viewport layouts when changing UI code.
 
 ## Project structure
 
