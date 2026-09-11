@@ -248,6 +248,9 @@ body{background:
 .page-head{padding-top:34px}
 .page-head h1{font-size:clamp(30px,3vw,40px);line-height:1.05}
 .page-head p{max-width:52ch;line-height:1.55}
+.proof-line{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;color:var(--faint);font:9px var(--mono);letter-spacing:.02em}
+.proof-line span{display:inline-flex;align-items:center;gap:6px}
+.proof-line i{width:5px;height:5px;border-radius:50%;background:var(--positive);box-shadow:0 0 0 3px rgba(53,183,121,.12)}
 .page-head:after{width:240px;border-color:var(--accent);opacity:.8}
 .orientation-note{box-shadow:0 10px 24px rgba(0,0,0,.14)}
 .ticker-strip{box-shadow:0 8px 22px rgba(0,0,0,.18)}
@@ -279,6 +282,7 @@ body{background:
   .topbar{position:relative}
   .page-head{padding-top:26px}
   .page-head:after{width:150px}
+  .proof-line{gap:9px 12px;line-height:1.4}
   .ticker-strip>div{min-height:58px}
   .returns-panel .returns-hero strong{font-size:36px}
 }
