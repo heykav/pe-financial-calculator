@@ -1,31 +1,198 @@
-# Northstar — Private Markets Calculator
+# KAVY Private Markets Calculator
 
-Northstar is a fast, dependency-free underwriting cockpit for investment bankers,
-private equity professionals, operators, and finance students. It turns entry
-assumptions, operating cases, leverage, exit assumptions, and sensitivities into
-an explainable sponsor returns view in the browser.
+**A browser-based finance calculator for private equity underwriting, investment banking analysis, LBO returns, DCF valuation, deal comps, and scenario sensitivity.**
 
-## Included
+[![Live demo](https://img.shields.io/badge/Live%20demo-KAVY%20Calculator-c9a24a?style=flat-square)](https://heykav.github.io/pe-financial-calculator/)
+[![No build step](https://img.shields.io/badge/Build%20step-none-18181b?style=flat-square)](#run-locally)
+[![License](https://img.shields.io/badge/License-see%20repository-18181b?style=flat-square)](https://github.com/heykav/pe-financial-calculator)
 
-- Dynamic entry valuation, leverage, equity check, exit value, MOIC, and IRR.
-- Operating-case forecast inputs with live recalculation.
-- Value creation bridge and exit multiple readout.
-- IRR sensitivity grid for exit multiple × EBITDA CAGR.
-- IC readiness checklist, memo export, CSV sensitivity download, and VCD-style
-  dense information design adapted for deal work.
-- No backend, no tracking, and no deal data leaving the browser.
+KAVY is an independent, dependency-free private markets calculator designed to make a first-pass underwriting model understandable in a browser. Enter a purchase price, EBITDA, borrowing level, interest rate, ownership period, and operating forecast; the application calculates an explainable sponsor-return view and shows the assumptions that drive it.
+
+> **Important:** KAVY is an educational and illustrative analysis tool, not investment advice, a valuation opinion, a regulated financial product, or a substitute for audited financial statements, quality-of-earnings work, lender diligence, legal review, tax advice, or an investment committee process.
+
+## Table of contents
+
+- [What the calculator does](#what-the-calculator-does)
+- [Who it is for](#who-it-is-for)
+- [How to use it](#how-to-use-it)
+- [Model outputs](#model-outputs)
+- [Workspaces](#workspaces)
+- [Model assumptions and limitations](#model-assumptions-and-limitations)
+- [Privacy and data handling](#privacy-and-data-handling)
+- [Run locally](#run-locally)
+- [Project structure](#project-structure)
+- [Contributing](#contributing)
+- [Independent project notice](#independent-project-notice)
+
+## What the calculator does
+
+KAVY is a practical **finance calculator** and underwriting workspace for:
+
+- **Leveraged buyout (LBO) analysis:** sources and uses, debt sizing, sponsor equity, debt paydown, exit equity, MOIC, and IRR.
+- **Private equity returns analysis:** a clear separation between purchase price, operating performance, leverage, exit multiple, and value creation.
+- **Investment banking case work:** a compact deal cockpit for interview preparation, first-pass transaction analysis, and investment-committee discussion.
+- **DCF reference analysis:** an illustrative discounted cash flow bridge with present value of forecast cash flows, terminal value, WACC, and terminal growth.
+- **Deal comps:** a small illustrative comparable-company table for valuation sense-checking.
+- **Sensitivity analysis:** an IRR response surface across exit multiples and EBITDA growth assumptions.
+- **Scenario analysis:** a deterministic return envelope that communicates lower, expected, and higher outcomes.
+- **Diligence tracking:** an IC-prep checklist that distinguishes model outputs from facts that still need verification.
+
+The app is intentionally browser-only. There is no login, backend, analytics pipeline, or database. Assumptions are held in the page and can be changed without sending deal information to a server.
+
+## Who it is for
+
+KAVY is useful for:
+
+- Private equity associates, analysts, and operating partners learning LBO mechanics.
+- Investment bankers preparing a transaction case, pitch, or interview exercise.
+- Corporate development and finance teams reviewing acquisition scenarios.
+- Hedge fund managers and public-markets investors who want a quick leverage and exit-sensitivity view.
+- Finance students learning the relationship between EBITDA growth, debt paydown, exit multiples, MOIC, and IRR.
+- Founders and operators who need a plain-English explanation of how capital structure affects equity value.
+
+The interface is also suitable for independent interview and case-study preparation involving investment banks, private equity firms, hedge funds, and financial institutions. It does **not** represent or reproduce the proprietary methods, data, branding, or internal tools of any employer, bank, fund, or data provider.
+
+## How to use it
+
+1. Open the [live KAVY calculator](https://heykav.github.io/pe-financial-calculator/).
+2. In **Describe the deal**, enter:
+   - Purchase price / enterprise value in USD millions.
+   - Current annual EBITDA in USD millions.
+   - Debt / EBITDA borrowing level.
+   - Annual interest rate.
+   - Modeled ownership period from one to five years.
+3. Select **Base case**, **Downside**, or **Upside**.
+4. Enter the five-year revenue-growth and EBITDA-margin forecast.
+5. Review the return output, equity bridge, debt schedule, and sensitivity grid.
+6. Mark diligence items as complete only when the underlying fact has actually been verified.
+7. Use **Recalculate model** for an explicit checkpoint, **Export memo** for a text summary, or **Download table** for the sensitivity CSV.
+
+### A useful first exercise
+
+Try a hypothetical company with a `$600mm` purchase price, `$80mm` of EBITDA, `4.0x` debt / EBITDA, `7.5%` interest, and a five-year hold. Then compare the Base, Downside, and Upside cases. Change only one assumption at a time so the return bridge remains interpretable.
+
+## Model outputs
+
+### Entry valuation
+
+`Entry multiple = Purchase price / EBITDA`
+
+This is a simple entry enterprise-value-to-EBITDA multiple. It is not a substitute for a full capitalization table or normalized EBITDA analysis.
+
+### Debt and sponsor equity
+
+`Entry debt = EBITDA × Debt / EBITDA`
+
+`Sponsor equity = Purchase price − Entry debt`
+
+The calculator applies a sanity check that debt must remain below 90% of purchase price. This is a guardrail for the illustrative model, not a lending commitment or credit decision.
+
+### Operating forecast
+
+The cockpit accepts five annual revenue-growth and EBITDA-margin inputs. Forecast EBITDA is derived from the starting EBITDA and the entered growth and margin assumptions. Inputs are bounded to keep the browser model finite and interpretable:
+
+- Revenue growth: `−100%` to `100%`.
+- EBITDA margin: `0%` to `100%`.
+- Hold period: one to five years.
+
+### Exit value and returns
+
+The current illustrative model uses a simple exit-multiple convention and a simplified debt-paydown schedule. It reports:
+
+- Exit enterprise value.
+- Exit debt and exit equity.
+- Gross MOIC before fees, carried interest, taxes, and transaction costs.
+- Annualized IRR derived from the modeled MOIC and hold period.
+- Value creation split into debt paydown, EBITDA growth, and multiple movement.
+
+### Sensitivity and scenarios
+
+The sensitivity grid shows how illustrative IRR changes across exit multiples and EBITDA growth rates. The scenario panel presents a deterministic lower / expected / higher return envelope; it is a communication aid, not a Monte Carlo engine calibrated to historical market data.
+
+## Workspaces
+
+| Workspace | Purpose |
+| --- | --- |
+| Deal cockpit | Plain-English starting point for assumptions and headline returns. |
+| LBO model | Sources and uses, capitalization, debt, sponsor equity, and operating leverage. |
+| DCF analysis | Clearly labeled illustrative DCF reference bridge. |
+| Returns bridge | A visual explanation of what creates the equity return. |
+| Comps library | Four illustrative comparable-company rows for a valuation sense-check. |
+| Sensitivity lab | A compact IRR response surface across exit and growth assumptions. |
+| Assumption sets | Base, Downside, and Upside cases with separate stored inputs. |
+
+## Model assumptions and limitations
+
+KAVY is deliberately transparent about what it does not do. It currently does **not** provide:
+
+- A complete three-statement financial model.
+- A live debt waterfall, mandatory amortization, cash sweep covenant, or financing term sheet.
+- A tax model, working-capital schedule, capex schedule, or purchase-accounting model.
+- A fully linked DCF or market-data-backed comps database.
+- Real-time market data, lender quotes, public filings, or proprietary research.
+- Fund-level waterfall economics, management options, fees, carried interest, or preferred equity.
+- A statistically calibrated Monte Carlo simulation.
+
+Treat the outputs as a structured first-pass conversation starter. Replace illustrative data with diligence-backed forecasts before relying on any result.
+
+## Privacy and data handling
+
+KAVY runs as static HTML, CSS, and JavaScript. It does not require an account and does not transmit entered assumptions to an application server. Do not enter confidential, material non-public, personally identifiable, or restricted client information into a public browser demo.
 
 ## Run locally
 
+The project has no package manager, framework, or build step:
+
 ```sh
+git clone https://github.com/heykav/pe-financial-calculator.git
+cd pe-financial-calculator
 python3 -m http.server 4173
-# open http://localhost:4173
 ```
 
-The app is plain HTML, CSS, and JavaScript so contributors can audit and extend
-the model without a build system. See `.github/CONTRIBUTING.md` for standards.
+Open <http://localhost:4173>.
+
+For a quick static check:
+
+```sh
+git diff --check
+```
+
+The browser preview is the source of truth for interaction testing. Keep the console free of errors and verify desktop, tablet, and narrow responsive layouts when changing UI code.
+
+## Project structure
+
+```text
+.
+├── index.html                 # Application shell, metadata, structured data, and UI
+├── app.js                    # Model calculations, state, routing, and interactions
+├── styles.css                # KAVY design system and responsive layout
+├── DESIGN.md                 # Visual language and component grammar
+├── favicon.svg               # KAVY browser icon
+├── robots.txt                # Crawler guidance
+├── sitemap.xml               # GitHub Pages sitemap
+└── .github/
+    ├── CONTRIBUTING.md       # Contribution workflow
+    ├── ISSUE_TEMPLATE/       # Bug report template
+    └── workflows/pages.yml   # GitHub Pages deployment
+```
 
 ## Contributing
 
-Issues and pull requests are welcome. Keep financial logic deterministic,
-document assumptions, and include a screenshot for meaningful UI changes.
+Bug reports, documentation improvements, accessibility fixes, model-review notes, and focused pull requests are welcome. Before opening a pull request:
+
+1. Explain the user problem and the smallest complete change.
+2. Keep financial formulas explicit and document any new assumption.
+3. Preserve finite outputs for invalid and boundary inputs.
+4. Test case switching, exports, workspace routing, and responsive layout when relevant.
+5. Do not add tracking, credentials, confidential deal data, or unsupported claims.
+6. Include before/after screenshots for meaningful visual changes.
+
+See [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md) for the repository standards.
+
+## Independent project notice
+
+KAVY is an independent open-source-style project maintained by its contributors. References to investment banking, private equity, hedge funds, finance roles, interview preparation, or financial institutions are descriptive search and learning context only. KAVY is not affiliated with, endorsed by, sponsored by, or operated by Verity, Wells Fargo, Blackstone, Standard Chartered, or any other named organization.
+
+## License
+
+See the repository for the applicable license and contribution terms.
