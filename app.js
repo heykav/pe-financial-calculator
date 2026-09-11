@@ -207,8 +207,8 @@ function calculate() {
     ['ebitda', 'Current annual profit must be greater than zero.'],
     ['debtMultiple', 'Borrowing level cannot be negative.'],
     ['interest', 'Annual interest cannot be negative.'],
-    ['hold', 'Years held must be between 1 and 10.']
-  ].find(([id]) => !Number.isFinite(raw[id]) || raw[id] < Number($(id).min || 0) || (id === 'hold' && raw[id] > 10));
+    ['hold', 'Years held must be between 1 and 5 because the forecast currently models five operating years.']
+  ].find(([id]) => !Number.isFinite(raw[id]) || raw[id] < Number($(id).min || 0) || (id === 'hold' && raw[id] > 5));
   const forecastInvalid = [...document.querySelectorAll('.mini-input')].some((input) => {
     const value = Number(input.value);
     const isMargin = input.dataset.key === 'margin';
@@ -230,7 +230,10 @@ function calculate() {
     return;
   }
   inputs.forEach((id) => $(id).removeAttribute('aria-invalid'));
-  if (alert) alert.hidden = true;
+  if (alert) {
+    alert.hidden = true;
+    alert.textContent = '';
+  }
   const ev = raw.ev;
   const ebitda = raw.ebitda;
   const debtMultiple = raw.debtMultiple;
