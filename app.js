@@ -17,32 +17,32 @@ let activeWorkspace = 'Project Atlas';
 const workspaceData = {
   lbo: {
     title: 'LBO model',
-    description: 'Build, audit, and stress the transaction mechanics behind the headline returns.',
+    description: 'See where the purchase money comes from, where it goes, and how much debt remains.',
     html: `<div class="workspace-grid"><div><h3>Sources & uses</h3><p class="workspace-note">Capitalization at close · USD mm</p><div class="model-table"><div><span>Purchase enterprise value</span><b id="wsEv">$425.0</b></div><div><span>Refinance existing debt</span><b id="wsRefi">($0.0)</b></div><div class="subtotal"><span>Total uses</span><b id="wsUses">$425.0</b></div></div></div><div><h3>Capital structure</h3><p class="workspace-note">Debt capacity and sponsor funding</p><div class="model-table"><div><span>Senior secured debt</span><b id="wsDebt">$234.0</b></div><div><span>Sponsor equity</span><b id="wsSponsor">$191.0</b></div><div class="subtotal"><span>Total sources</span><b id="wsSources">$425.0</b></div></div></div></div><div class="workspace-grid lower"><div><h3>Operating leverage</h3><div class="metric-row"><span>Entry debt / EBITDA</span><strong id="wsLev">4.5x</strong></div><div class="metric-row"><span>Exit debt / EBITDA</span><strong id="wsExitLev">0.4x</strong></div></div><div><h3>Debt paydown</h3><div class="metric-row"><span>Cash sweep assumption</span><strong>80.0%</strong></div><div class="metric-row"><span>Interest coverage</span><strong class="positive">3.2x</strong></div></div></div>`
   },
   dcf: {
     title: 'DCF analysis',
-    description: 'Discount unlevered cash flow, triangulate terminal value, and isolate the valuation drivers.',
+    description: 'Estimate what the business may be worth using the cash it could generate in the future.',
     html: `<div class="workspace-grid"><div><h3>Discounted cash flow</h3><p class="workspace-note">Unlevered FCF bridge · USD mm</p><div class="model-table"><div><span>PV of forecast cash flows</span><b>$284.6</b></div><div><span>PV of terminal value</span><b>$361.8</b></div><div class="subtotal"><span>Enterprise value</span><b class="gold">$646.4</b></div></div></div><div><h3>Valuation controls</h3><p class="workspace-note">Key DCF assumptions</p><div class="model-table"><div><span>WACC</span><b>9.5%</b></div><div><span>Terminal growth</span><b>2.5%</b></div><div class="subtotal"><span>Implied upside</span><b class="positive">+52.1%</b></div></div></div></div><div class="formula-box"><span>EV = Σ FCF<sub>t</sub> / (1 + WACC)<sup>t</sup> + TV / (1 + WACC)<sup>n</sup></span><b>Model is internally consistent</b></div>`
   },
   returns: {
     title: 'Returns bridge',
-    description: 'Attribute sponsor returns to EBITDA growth, deleveraging, and multiple movement.',
+    description: 'Understand whether returns come from business growth, paying down debt, or selling at a higher price.',
     html: `<div class="returns-workspace"><div class="return-hero-large"><small>BASE CASE NET IRR</small><strong id="wsIrr">22.4%</strong><span class="positive">Within investment committee hurdle range</span></div><div class="return-drivers"><div><span>EBITDA growth</span><b class="positive">48%</b><i style="width:48%"></i></div><div><span>Debt paydown</span><b class="positive">32%</b><i style="width:32%"></i></div><div><span>Multiple expansion</span><b class="gold">20%</b><i class="gold-bar" style="width:20%"></i></div></div></div><div class="formula-box"><span>MOIC = Exit equity / Entry equity</span><b id="wsMoic">2.7x gross / 22.4% IRR</b></div>`
   },
   comps: {
     title: 'Comps library',
-    description: 'Triangulate market context with a clean, reviewable comparable company set.',
+    description: 'Compare this company with similar businesses to sense-check the purchase price.',
     html: `<div class="comps-toolbar"><input placeholder="⌕  Filter companies" aria-label="Filter companies" /><span class="gold mono">12 ACTIVE COMPS</span></div><div class="comp-table"><div class="comp-head"><span>Company</span><span>EV</span><span>EV / Revenue</span><span>EV / EBITDA</span><span>NTM growth</span></div>${[['Atlas peer A','$1,240','3.1x','11.8x','14.2%'],['Atlas peer B','$860','2.6x','9.4x','11.7%'],['Atlas peer C','$2,410','4.2x','13.1x','18.6%'],['Selected case','$425','2.1x','8.2x','12.0%']].map((r,i)=>`<div class="comp-row ${i===3?'selected-row':''}"><span>${r[0]}</span><b>${r[1]}</b><b>${r[2]}</b><b>${r[3]}</b><b class="${i===3?'gold':''}">${r[4]}</b></div>`).join('')}</div>`
   },
   sensitivity: {
     title: 'Sensitivity lab',
-    description: 'Interrogate the return surface across exit valuation, growth, leverage, and hold period.',
+    description: 'Try better and worse outcomes to see which assumptions matter most.',
     html: `<div class="sensitivity-header"><h3>IRR response surface</h3><span class="workspace-note">Exit multiple × EBITDA CAGR</span></div><div class="large-surface">${[...Array(35)].map((_,i)=>`<b class="surface-cell s${(i%7)+1}">${(13 + (i%7)*2 + Math.floor(i/7)*1.4).toFixed(1)}%</b>`).join('')}</div><div class="legend"><span>Lower return</span><i></i><span>Higher return</span></div>`
   },
   assumptions: {
     title: 'Assumption sets',
-    description: 'Version, compare, and lock the operating cases that feed every KAVY view.',
+    description: 'Save and compare the Base, Downside, and Upside stories that drive the model.',
     html: `<div class="assumption-list"><div class="assumption-row active"><span class="status-dot"></span><div><strong>Base case / Atlas v2.4</strong><small>Updated today · owner: K. Anubhav</small></div><b>ACTIVE</b></div><div class="assumption-row"><span class="status-dot muted-dot"></span><div><strong>Downside / Atlas v2.4D</strong><small>Revenue haircut · margin compression · 5yr hold</small></div><b>READY</b></div><div class="assumption-row"><span class="status-dot muted-dot"></span><div><strong>Upside / Atlas v2.4U</strong><small>Pricing expansion · accelerated deleveraging</small></div><b>READY</b></div></div><button class="button primary" id="newCaseBtn">＋ Create assumption set</button>`
   }
 };

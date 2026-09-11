@@ -60,6 +60,9 @@ button,input{font-family:inherit}
 .page-head h1,.workspace-hero h1{font-size:30px;letter-spacing:-.04em;font-weight:600}
 .page-head p,.workspace-hero p{color:var(--muted)}
 .market-tape{border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--muted);padding:9px 13px;margin-bottom:14px;font:10px var(--mono)}
+.orientation-note{display:flex;align-items:center;gap:10px;margin:-8px 0 14px;padding:10px 13px;border:1px solid #5b461e;border-radius:6px;background:var(--accent-soft);color:var(--muted);font-size:12px}
+.orientation-note strong{color:#f4e1b1}
+.orientation-note span{line-height:1.45}
 .market-tape b{color:var(--text)}
 .market-tape .gold{color:var(--accent)}
 .ticker-strip{border:1px solid var(--line);border-radius:6px;background:var(--surface);min-height:62px;margin-bottom:16px}
