@@ -10,6 +10,10 @@ KAVY is an independent, dependency-free private markets calculator designed to m
 
 Every specialist workspace includes a plain-English “start here” explanation, so a first-time user can understand what to look at before touching the technical outputs.
 
+![KA mark used by KAVY](favicon.jpeg)
+
+*KAVY’s KA mark and browser identity.*
+
 > **Important:** KAVY is an educational and illustrative analysis tool, not investment advice, a valuation opinion, a regulated financial product, or a substitute for audited financial statements, quality-of-earnings work, lender diligence, legal review, tax advice, or an investment committee process.
 
 ## Table of contents
@@ -68,6 +72,30 @@ The interface is also suitable for independent interview and case-study preparat
 5. Review the return output, equity bridge, debt schedule, and sensitivity grid.
 6. Mark diligence items as complete only when the underlying fact has actually been verified.
 7. Use **Recalculate model** for an explicit checkpoint, **Export memo** for a text summary, or **Download table** for the sensitivity CSV.
+
+### The screen, in plain English
+
+![KAVY workflow](https://raw.githubusercontent.com/heykav/pe-financial-calculator/main/favicon.jpeg)
+
+The application is organized from left to right:
+
+1. **Deal cockpit:** enter the facts you know.
+2. **Potential return:** see gross MOIC and IRR.
+3. **Return drivers:** understand whether growth, debt paydown, or the exit multiple did the work.
+4. **What-if analysis:** test different outcomes.
+5. **Diligence checklist:** separate model assumptions from verified facts.
+6. **Outcome range:** review the modeled debt path and return envelope.
+
+The sidebar opens the deeper LBO, DCF, returns, comps, sensitivity, and assumption workspaces. Settings, Model status, and Keyboard guide are available at the bottom of the sidebar.
+
+### Keyboard guide
+
+- `⌘ / Ctrl + 1`: Deal cockpit
+- `⌘ / Ctrl + 2`: LBO model
+- `⌘ / Ctrl + 3`: DCF analysis
+- `⌘ / Ctrl + 4`: Returns bridge
+- `⌘ K`: Open the keyboard guide
+- `Esc`: Close an open utility panel
 
 ### A useful first exercise
 

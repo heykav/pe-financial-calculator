@@ -66,9 +66,9 @@
         <button class="nav-item" data-view="assumptions"><span>◌</span> Assumption sets</button>
       </nav>
       <div class="sidebar-bottom">
-        <div class="data-health"><span class="pulse"></span><div><small>MODEL STATUS</small><strong>Local model ready</strong></div></div>
-        <button class="nav-item"><span>⚙</span> Settings</button>
-        <button class="nav-item"><span>?</span> Keyboard guide</button>
+        <button class="data-health" id="modelStatusButton" type="button"><span class="pulse"></span><div><small>MODEL STATUS</small><strong>Local model ready</strong></div></button>
+        <button class="nav-item" id="settingsButton" type="button"><span>⚙</span> Settings</button>
+        <button class="nav-item" id="keyboardButton" type="button"><span>?</span> Keyboard guide</button>
         <div class="profile"><div class="avatar">KA</div><div><strong>Krishna Anubhav</strong><small>Analyst · New York</small></div><span>•••</span></div>
       </div>
     </aside>
@@ -153,6 +153,15 @@
       <footer><span>KAVY Private Markets OS · Confidential working model</span><span>USD unless otherwise noted · <a href="https://github.com/heykav/pe-financial-calculator/commits/main">Changelog</a> · <a href="https://github.com/heykav/pe-financial-calculator/blob/main/PRIVACY.md" target="_blank" rel="noreferrer">Privacy</a> · <a href="https://github.com/heykav/pe-financial-calculator" target="_blank" rel="noreferrer">Contribute on GitHub ↗</a></span></footer>
       </div>
     </main>
+  </div>
+  <div class="utility-modal" id="utilityModal" hidden role="dialog" aria-modal="true" aria-labelledby="utilityTitle">
+    <div class="utility-card">
+      <button class="utility-close" id="utilityClose" type="button" aria-label="Close dialog">×</button>
+      <span class="eyebrow">KAVY:// UTILITY PANEL</span>
+      <h2 id="utilityTitle">Keyboard guide</h2>
+      <p id="utilityDescription">Use these shortcuts to move around the model faster.</p>
+      <div id="utilityContent"></div>
+    </div>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite">Model recalculated <span>✓</span></div>
   <script src="app.js?v=beginner-ux-1"></script>

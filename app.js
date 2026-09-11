@@ -146,6 +146,24 @@ document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.addEven
 }));
 
 function wireUiActions() {
+  const utilityModal = $('utilityModal');
+  const openUtility = (title, description, content) => {
+    $('utilityTitle').textContent = title;
+    $('utilityDescription').textContent = description;
+    $('utilityContent').innerHTML = content;
+    utilityModal.hidden = false;
+    $('utilityClose').focus();
+  };
+  const closeUtility = () => { utilityModal.hidden = true; };
+  $('utilityClose')?.addEventListener('click', closeUtility);
+  utilityModal?.addEventListener('click', (event) => { if (event.target === utilityModal) closeUtility(); });
+  $('keyboardButton')?.addEventListener('click', () => openUtility('Keyboard guide', 'Use these shortcuts to move around the model faster.', '<div class="shortcut-list"><div><kbd>⌘ / Ctrl + 1</kbd><span>Deal cockpit</span></div><div><kbd>⌘ / Ctrl + 2</kbd><span>LBO model</span></div><div><kbd>⌘ / Ctrl + 3</kbd><span>DCF analysis</span></div><div><kbd>⌘ / Ctrl + 4</kbd><span>Returns bridge</span></div><div><kbd>⌘ K</kbd><span>Open this guide</span></div><div><kbd>Esc</kbd><span>Close any open panel</span></div></div>'));
+  $('settingsButton')?.addEventListener('click', () => openUtility('Settings', 'Small preferences that make the model easier to work with.', '<div class="settings-list"><label><span><strong>Reduced motion</strong><small>Use fewer interface transitions.</small></span><input id="reducedMotionToggle" type="checkbox"></label><label><span><strong>Show teaching notes</strong><small>Keep the plain-English guidance visible.</small></span><input id="teachingNotesToggle" type="checkbox" checked></label></div>'));
+  $('modelStatusButton')?.addEventListener('click', () => openUtility('Model status', 'A quick health check for the active case.', `<div class="status-summary"><div><span>Active case</span><strong>${escapeHtml(caseLabels[activeCase].name)}</strong></div><div><span>Model state</span><strong>${$('modelStatus').textContent}</strong></div><div><span>Data source</span><strong>Local browser inputs</strong></div><p>No live market data or external data feed is connected. Treat outputs as illustrative until assumptions are verified.</p></div>`));
+  utilityModal?.addEventListener('change', (event) => {
+    if (event.target.id === 'reducedMotionToggle') document.documentElement.classList.toggle('reduced-motion', event.target.checked);
+    if (event.target.id === 'teachingNotesToggle') document.body.classList.toggle('hide-teaching-notes', !event.target.checked);
+  });
   const workspaceSwitcher = $('workspaceSwitcher');
   const workspaceMenu = $('workspaceMenu');
   const workspaceList = $('workspaceList');
@@ -204,7 +222,7 @@ function wireUiActions() {
   }));
   document.querySelector('.segmented .add-case')?.addEventListener('click', () => showToast('Open Assumption sets to create a named case'));
   document.querySelector('.full-link')?.addEventListener('click', () => showToast('IC prep is a checklist prompt — complete the open items above'));
-  document.querySelector('.command-trigger')?.addEventListener('click', () => showToast('Shortcuts: ⌘1 cockpit · ⌘2 LBO · ⌘3 DCF · ⌘4 returns'));
+  document.querySelector('.command-trigger')?.addEventListener('click', () => $('keyboardButton')?.click());
   document.querySelector('[aria-label="Notifications"]')?.addEventListener('click', () => showToast('No new notifications'));
   document.querySelector('[aria-label="Search"]')?.addEventListener('click', () => showToast('Search is not connected yet — use the workspace navigation'));
   document.querySelectorAll('.sidebar-bottom .nav-item').forEach((button) => button.addEventListener('click', () => showToast(button.textContent.includes('Settings') ? 'Settings panel ready' : '⌘1–⌘4 switch workspaces')));
@@ -266,6 +284,15 @@ document.addEventListener('click', (event) => {
   }
 });
 document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    $('utilityModal').hidden = true;
+    return;
+  }
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault();
+    $('keyboardButton')?.click();
+    return;
+  }
   if (!(event.metaKey || event.ctrlKey)) return;
   const routes = { '1': 'cockpit', '2': 'lbo', '3': 'dcf', '4': 'returns' };
   const view = routes[event.key];
