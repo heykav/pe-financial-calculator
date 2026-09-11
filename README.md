@@ -45,6 +45,15 @@ Its wedge is making the first decision legible, repeatable, and easier to
 explain. Read [`YC.md`](YC.md) for the problem, initial user, expansion path,
 roadmap, and product principles.
 
+## Web-only product boundary
+
+Rivet is strictly a browser web app. Open it at the hosted URL or serve the
+static files locally; no native desktop or mobile wrapper, executable,
+browser extension, account, backend, or installation step is part of the
+product. The browser tab is the runtime and the source of truth for model
+state. Responsive styling supports smaller browser windows, but does not
+turn Rivet into a native application.
+
 ## What the calculator does
 
 Rivet is a practical **finance calculator** and underwriting workspace for:
@@ -58,7 +67,7 @@ Rivet is a practical **finance calculator** and underwriting workspace for:
 - **Scenario analysis:** a deterministic return envelope that communicates lower, expected, and higher outcomes.
 - **Diligence tracking:** an IC-prep checklist that distinguishes model outputs from facts that still need verification.
 
-The app is intentionally browser-only. There is no login, backend, analytics pipeline, or database. Assumptions are held in the page and can be changed without sending deal information to a server.
+The app is intentionally browser-only. There is no login, backend, analytics pipeline, native wrapper, or database. Assumptions are held in the page and can be changed without sending deal information to a server.
 
 ## Who it is for
 
