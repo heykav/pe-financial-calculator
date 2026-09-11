@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0c1118" />
+  <meta name="description" content="Northstar is a free private equity and investment banking calculator for LBO underwriting, sponsor returns, DCF analysis, deal comps, and IRR sensitivity." />
+  <meta name="keywords" content="private equity calculator, LBO model, investment banking calculator, IRR, MOIC, DCF valuation, deal analysis, leveraged buyout" />
+  <meta name="author" content="Northstar contributors" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://heykav.github.io/pe-financial-calculator/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://heykav.github.io/pe-financial-calculator/" />
+  <meta property="og:title" content="Northstar — Private Markets Calculator" />
+  <meta property="og:description" content="A quant-grade workspace for LBO underwriting, sponsor returns, DCF analysis, and deal sensitivity." />
+  <meta property="og:site_name" content="Northstar Private Markets OS" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Northstar — Private Markets Calculator" />
+  <meta name="twitter:description" content="Underwrite deals with a faster, clearer private markets calculator." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Northstar Private Markets Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Web","url":"https://heykav.github.io/pe-financial-calculator/","description":"A free private equity and investment banking calculator for LBO underwriting, sponsor returns, DCF analysis, and IRR sensitivity.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["LBO underwriting","IRR and MOIC calculation","DCF analysis","Deal sensitivity matrix","Sponsor returns bridge"]}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">N</div>
+        <div><strong>NORTHSTAR</strong><span>PRIVATE MARKETS OS</span></div>
+      </div>
+      <div class="workspace-switcher">
+        <span class="status-dot"></span>
+        <div><small>ACTIVE WORKSPACE</small><strong>Project Atlas</strong></div>
+        <span class="chevron">⌄</span>
+      </div>
+      <nav aria-label="Primary">
+        <p class="nav-label">UNDERWRITE</p>
+        <button class="nav-item active"><span>◫</span> Deal cockpit <kbd>⌘1</kbd></button>
+        <button class="nav-item"><span>⌁</span> LBO model <kbd>⌘2</kbd></button>
+        <button class="nav-item"><span>◒</span> DCF analysis <kbd>⌘3</kbd></button>
+        <button class="nav-item"><span>◈</span> Returns bridge <kbd>⌘4</kbd></button>
+        <p class="nav-label">REFERENCE</p>
+        <button class="nav-item"><span>▦</span> Comps library <span class="nav-badge">12</span></button>
+        <button class="nav-item"><span>↗</span> Sensitivity lab</button>
+        <button class="nav-item"><span>◌</span> Assumption sets</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="data-health"><span class="pulse"></span><div><small>DATA ROOM</small><strong>All systems nominal</strong></div></div>
+        <button class="nav-item"><span>⚙</span> Settings</button>
+        <button class="nav-item"><span>?</span> Keyboard guide</button>
+        <div class="profile"><div class="avatar">KA</div><div><strong>Krishna Anubhav</strong><small>Analyst · New York</small></div><span>•••</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>DEAL ROOM</span><b>/</b><strong>PROJECT ATLAS</strong><span class="live-chip">● LIVE MODEL</span></div>
+        <div class="top-actions"><span class="save-state">Saved just now</span><button class="icon-button" aria-label="Notifications">♧<i></i></button><button class="icon-button" aria-label="Search">⌕</button><button class="button ghost" id="exportBtn">Export memo <span>↗</span></button></div>
+      </header>
+
+      <section class="page-head">
+        <div><div class="eyebrow">INVESTMENT COMMITTEE // PRELIMINARY</div><h1>Deal cockpit <span>↗</span></h1><p>One surface for entry, leverage, operating case, and sponsor returns.</p></div>
+        <div class="head-actions"><button class="button ghost" id="resetBtn">Reset case</button><button class="button primary" id="runBtn"><span class="run-icon">▶</span> Run underwriting</button></div>
+      </section>
+
+      <section class="ticker-strip">
+        <div><small>MODEL STATUS</small><strong><span class="status-dot"></span> CASE IS CLEAN</strong></div>
+        <div><small>LAST RUN</small><strong id="lastRun">Today · 09:42:18 ET</strong></div>
+        <div><small>MODEL VERSION</small><strong>Atlas v2.4 <span class="version-tag">BASE</span></strong></div>
+        <div><small>CONFIDENCE</small><strong class="positive">84.6% <span class="trend">↑ 2.1%</span></strong></div>
+        <div class="ticker-spark"><span>BASE</span><svg viewBox="0 0 140 34" preserveAspectRatio="none"><path d="M0 26 L14 24 L28 27 L42 19 L56 21 L70 15 L84 16 L98 8 L112 12 L126 4 L140 6" /></svg></div>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="panel assumptions-panel">
+          <div class="panel-heading"><div><span class="panel-index">01</span><h2>Transaction assumptions</h2><p>Toggle the inputs that move the deal.</p></div><button class="more-button">•••</button></div>
+          <div class="segmented"><button class="selected">Base case</button><button>Downside</button><button>Upside</button><button class="add-case">＋</button></div>
+          <div class="form-grid">
+            <label class="field"><span>Enterprise value <em>USD mm</em></span><div class="input-wrap"><span>$</span><input id="ev" type="number" value="425" step="5" /></div></label>
+            <label class="field"><span>Entry EBITDA <em>FY2025E</em></span><div class="input-wrap"><span>$</span><input id="ebitda" type="number" value="52" step="1" /></div></label>
+            <label class="field"><span>Entry multiple <em>calculated</em></span><div class="calculated" id="entryMultiple">8.2x <span>↗</span></div></label>
+            <label class="field"><span>Debt / EBITDA <em>turns</em></span><div class="input-wrap"><input id="debtMultiple" type="number" value="4.5" step="0.25" /><span>x</span></div></label>
+            <label class="field"><span>Interest rate <em>cash interest</em></span><div class="input-wrap"><input id="interest" type="number" value="8.25" step="0.25" /><span>%</span></div></label>
+            <label class="field"><span>Hold period <em>years</em></span><div class="input-wrap"><input id="hold" type="number" value="5" min="1" max="10" step="1" /><span>yrs</span></div></label>
+          </div>
+          <div class="divider"></div>
+          <div class="section-subhead"><strong>Operating case</strong><span>Forecast period · FY2026E—FY2030E</span></div>
+          <div class="forecast-table">
+            <div class="table-row table-head"><span>Fiscal year</span><span>FY26E</span><span>FY27E</span><span>FY28E</span><span>FY29E</span><span>FY30E</span></div>
+            <div class="table-row"><span>Revenue growth</span><input class="mini-input" data-key="growth" value="12.0" /><input class="mini-input" data-key="growth" value="11.0" /><input class="mini-input" data-key="growth" value="10.0" /><input class="mini-input" data-key="growth" value="9.0" /><input class="mini-input" data-key="growth" value="8.0" /></div>
+            <div class="table-row"><span>EBITDA margin</span><input class="mini-input" data-key="margin" value="21.0" /><input class="mini-input" data-key="margin" value="22.0" /><input class="mini-input" data-key="margin" value="23.0" /><input class="mini-input" data-key="margin" value="24.0" /><input class="mini-input" data-key="margin" value="25.0" /></div>
+          </div>
+        </section>
+
+        <section class="panel returns-panel">
+          <div class="panel-heading"><div><span class="panel-index">02</span><h2>Sponsor returns</h2><p>Gross returns before management fees.</p></div><button class="more-button">•••</button></div>
+          <div class="returns-hero"><div><small>NET MOIC</small><strong id="moic">2.7x</strong><span class="positive">↑ 0.3x vs. downside</span></div><div class="radial" id="radial"><div><strong id="irr">22.4%</strong><small>IRR</small></div></div></div>
+          <div class="return-stats"><div><small>ENTRY EQUITY</small><strong id="entryEquity">$191.3</strong><span>USD mm</span></div><div><small>EXIT EQUITY</small><strong id="exitEquity">$516.6</strong><span>USD mm</span></div><div><small>VALUE CREATION</small><strong class="positive" id="valueCreation">+$325.3</strong><span>USD mm</span></div></div>
+          <div class="waterfall"><div class="waterfall-head"><strong>Equity bridge</strong><span>USD mm</span></div><div class="bridge-bars"><div><span>Entry</span><i style="height:44%"></i><b>$191</b></div><div><span>Debt paydown</span><i class="cyan" style="height:24%"></i><b>$105</b></div><div><span>EBITDA growth</span><i class="mint" style="height:58%"></i><b>$247</b></div><div><span>Multiple</span><i class="amber" style="height:30%"></i><b>$126</b></div><div><span>Exit</span><i class="white" style="height:73%"></i><b>$517</b></div></div></div>
+        </section>
+      </div>
+
+      <section class="panel chart-panel">
+        <div class="panel-heading chart-heading"><div><span class="panel-index">03</span><h2>Value creation map</h2><p>Decompose sponsor returns across the hold period.</p></div><div class="chart-controls"><button class="chart-filter active">Equity value</button><button class="chart-filter">Debt paydown</button><button class="chart-filter">EBITDA</button><button class="more-button">•••</button></div></div>
+        <div class="chart-layout"><div class="chart-y"><span>$600</span><span>$450</span><span>$300</span><span>$150</span><span>$0</span></div><div class="line-chart"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 800 250" preserveAspectRatio="none"><defs><linearGradient id="area" x1="0" x1="0" x2="0" y2="1"><stop offset="0" stop-color="#79d7c2" stop-opacity=".28"/><stop offset="1" stop-color="#79d7c2" stop-opacity="0"/></linearGradient></defs><path class="area-fill" d="M0,210 C100,195 120,180 200,172 S300,145 400,128 S500,100 600,65 S710,50 800,24 L800,250 L0,250 Z"/><path class="chart-line" d="M0,210 C100,195 120,180 200,172 S300,145 400,128 S500,100 600,65 S710,50 800,24"/><circle cx="800" cy="24" r="5"/><circle cx="600" cy="65" r="4"/><circle cx="400" cy="128" r="4"/></svg><div class="chart-x"><span>Entry</span><span>FY26E</span><span>FY27E</span><span>FY28E</span><span>FY29E</span><span>FY30E</span><span>Exit</span></div></div><div class="chart-callout"><small>EXIT EV / EBITDA</small><strong id="exitMultiple">9.7x</strong><span class="positive">+1.5x expansion</span><hr/><small>DEBT PAYDOWN</small><strong>1.9x → 0.8x</strong><span>of EBITDA</span></div></div>
+      </section>
+
+      <div class="bottom-grid">
+        <section class="panel sensitivity-panel"><div class="panel-heading"><div><span class="panel-index">04</span><h2>IRR sensitivity</h2><p>Exit multiple × EBITDA CAGR</p></div><button class="button mini" id="downloadBtn">Download CSV ↧</button></div><div class="heatmap"><div class="heat-label"></div><span>0%</span><span>5%</span><span>10%</span><span>15%</span><span>20%</span><span>25%</span><span>30%</span><div class="row-label">7.0x</div><b class="heat h1">13.2%</b><b class="heat h2">16.8%</b><b class="heat h3">20.0%</b><b class="heat h4">23.0%</b><b class="heat h5">25.9%</b><b class="heat h6">28.4%</b><b class="heat h7">30.7%</b><div class="row-label">8.0x</div><b class="heat h2">16.1%</b><b class="heat h3">19.4%</b><b class="heat h4">22.4%</b><b class="heat h5">25.2%</b><b class="heat h6">27.8%</b><b class="heat h7">30.1%</b><b class="heat h7">32.2%</b><div class="row-label">9.0x</div><b class="heat h3">18.6%</b><b class="heat h4">21.6%</b><b class="heat h5 current">24.4%</b><b class="heat h6">27.0%</b><b class="heat h7">29.4%</b><b class="heat h7">31.6%</b><b class="heat h7">33.6%</b><div class="row-label">10.0x</div><b class="heat h4">20.8%</b><b class="heat h5">23.5%</b><b class="heat h6">26.0%</b><b class="heat h7">28.3%</b><b class="heat h7">30.5%</b><b class="heat h7">32.5%</b><b class="heat h7">34.3%</b></div></section>
+        <section class="panel checklist-panel"><div class="panel-heading"><div><span class="panel-index">05</span><h2>IC readiness</h2><p>Preliminary diligence checklist</p></div><span class="readiness">72% ready</span></div><div class="checklist"><label><input type="checkbox" checked /> <span>Entry valuation triangulated</span><em>Done</em></label><label><input type="checkbox" checked /> <span>Debt capacity sized</span><em>Done</em></label><label><input type="checkbox" checked /> <span>Management case loaded</span><em>Done</em></label><label><input type="checkbox" /> <span>Quality of earnings review</span><em class="pending">Open</em></label><label><input type="checkbox" /> <span>Exit comps refreshed</span><em class="pending">Open</em></label></div><button class="full-link">Open IC prep →</button></section>
+      </div>
+      <footer><span>Northstar Private Markets OS · Confidential working model</span><span>USD unless otherwise noted · <a href="#">Changelog</a> · <a href="#">Contribute on GitHub ↗</a></span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast">Model recalculated <span>✓</span></div>
+  <script src="app.js"></script>
+</body>
+</html>

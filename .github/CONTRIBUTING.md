@@ -1,0 +1,19 @@
+# Contributing to Northstar
+
+Northstar is intentionally dependency-light: the calculator is plain HTML, CSS,
+and JavaScript so the math is inspectable and the app can be hosted anywhere.
+
+## Development
+
+1. Fork the repository and create a focused branch.
+2. Make changes in `index.html`, `styles.css`, or `app.js`.
+3. Run the app with any static server, for example `python3 -m http.server 4173`.
+4. Check keyboard focus, mobile layout, calculation edge cases, and browser console errors.
+5. Open a pull request with a concise explanation of the model logic or UX change.
+
+## Standards
+
+- Keep all financial calculations deterministic and explainable.
+- Prefer accessible labels, semantic HTML, and progressive enhancement.
+- Do not add tracking or send deal data to a server.
+- Include a before/after screenshot for material visual changes.
