@@ -123,6 +123,7 @@ function calculate() {
   const ev = Number($('ev').value) || 0;
   const ebitda = Number($('ebitda').value) || 1;
   const debtMultiple = Number($('debtMultiple').value) || 0;
+  const interest = Number($('interest').value) || 0;
   const hold = Number($('hold').value) || 1;
   const entryMultiple = ev / ebitda;
   const entryDebt = ebitda * debtMultiple;
@@ -134,7 +135,8 @@ function calculate() {
   const exitEbitda = revenue * ((marginInputs[hold - 1] || marginInputs.at(-1) || 25) / 100);
   const exitMultiple = entryMultiple + 1.5;
   const exitEv = exitEbitda * exitMultiple;
-  const debtPaydown = entryDebt * Math.min(.82, .18 + hold * .12);
+  const interestDrag = Math.max(0, interest - 8.25) * .02;
+  const debtPaydown = entryDebt * Math.min(.82, Math.max(.05, .18 + hold * .12 - interestDrag));
   const exitEquity = exitEv - entryDebt + debtPaydown;
   const moic = exitEquity / Math.max(entryEquity, 1);
   const irr = (Math.pow(moic, 1 / hold) - 1) * 100;
