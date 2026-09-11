@@ -32,6 +32,31 @@ function calculate() {
   $('moic').textContent = `${moic.toFixed(1)}x`;
   $('irr').textContent = `${irr.toFixed(1)}%`;
   $('exitMultiple').textContent = `${exitMultiple.toFixed(1)}x`;
+  const bridge = {
+    entry: entryEquity,
+    debt: debtPaydown,
+    ebitda: Math.max(0, exitEbitda * entryMultiple - ev),
+    multiple: Math.max(0, exitEv - exitEbitda * entryMultiple),
+    exit: exitEquity
+  };
+  const bridgeMax = Math.max(bridge.exit, bridge.entry, 1);
+  [['Entry', bridge.entry], ['Debt', bridge.debt], ['Ebitda', bridge.ebitda], ['Multiple', bridge.multiple], ['Exit', bridge.exit]].forEach(([name, value]) => {
+    const key = String(name);
+    const bar = $(`bar${key}`);
+    const label = $(`bridge${key}`);
+    if (bar) bar.style.height = `${Math.max(8, (value / bridgeMax) * 100)}%`;
+    if (label) label.textContent = money(value);
+  });
+  let openingDebt = entryDebt;
+  for (let year = 0; year < 5; year += 1) {
+    const sweep = Math.min(openingDebt, entryDebt * (0.12 + (year + 1) * 0.04) * (0.8 + (marginInputs[year] || 20) / 100));
+    const closingDebt = Math.max(0, openingDebt - sweep);
+    $(`debtOpen${year}`).textContent = money(openingDebt);
+    $(`debtSweep${year}`).textContent = `(${money(sweep)})`;
+    $(`debtClose${year}`).textContent = money(closingDebt);
+    $(`debtLev${year}`).textContent = `${(closingDebt / Math.max(exitEbitda * ((year + 1) / 5), 1)).toFixed(1)}x`;
+    openingDebt = closingDebt;
+  }
   $('radial').style.background = `conic-gradient(var(--mint) 0 ${Math.min(irr * 3.2, 96)}%, #253541 ${Math.min(irr * 3.2, 96)}% 100%)`;
   $('lastRun').textContent = `Today · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'})} ET`;
 }
