@@ -1,11 +1,11 @@
-# KAVY interface direction
+# Rivet interface direction
 
-KAVY is an operate-mode underwriting workspace. The interface should make the model legible at a glance, keep every assumption close to its output, and let an analyst move between specialist workspaces without losing context.
+Rivet is an operate-mode underwriting workspace. The interface should make the model legible at a glance, keep every assumption close to its output, and let an analyst move between specialist workspaces without losing context.
 
 ## Visual language
 
 - **Foundation:** shadcn-inspired dark zinc surfaces (`#09090b`, `#101012`, `#18181b`) with 1px neutral borders and restrained 6–8px radii.
-- **Accent:** KAVY gold is reserved for primary actions, selected states, calculated outputs, and brand identity. Green communicates analytical health only.
+- **Accent:** Rivet gold is reserved for primary actions, selected states, calculated outputs, and brand identity. Green communicates analytical health only.
 - **Typography:** IBM Plex Sans for interface copy; DM Mono for measurements, percentages, multiples, and model telemetry.
 - **Composition:** persistent compact navigation, compact header, clear action row, and data-dense panels with generous separation. Avoid decorative terminal framing and gratuitous labels.
 - **States:** visible focus rings, quiet hover surfaces, clear selected controls, and explicit loading/complete feedback for scenario runs.

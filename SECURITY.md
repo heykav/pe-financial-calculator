@@ -1,13 +1,13 @@
 # Security, privacy, and information-source boundaries
 
-KAVY is a static browser application for illustrative finance analysis. It is
+Rivet is a static browser application for illustrative finance analysis. It is
 not a security product, an OSINT platform, or an ISO-certified information
 system. This document describes the protections that are appropriate for the
 current architecture and the boundaries contributors must preserve.
 
 ## OSINT boundary
 
-KAVY does **not** scrape websites, collect public-record data, enrich people or
+Rivet does **not** scrape websites, collect public-record data, enrich people or
 companies, call data brokers, fingerprint visitors, or transmit entered deal
 assumptions to an OSINT service. The “comps” and DCF views contain illustrative
 reference values, not live intelligence.
@@ -44,14 +44,14 @@ practices; they are not a certification or conformity claim.
 
 GDPR/CCPA-oriented privacy details are documented in [`PRIVACY.md`](PRIVACY.md).
 
-| Control area | KAVY practice |
+| Control area | Rivet practice |
 | --- | --- |
 | Asset and scope management | Static files, calculation logic, deployment workflow, and public demo are treated as the system boundary. |
 | Data classification | The README and UI warn users not to enter confidential, personal, or material non-public information. |
 | Access control | GitHub repository permissions and protected deployment settings should be limited to maintainers. |
 | Change management | Focused pull requests, deterministic formulas, reviewable diffs, and deployment from `main`. |
 | Secure development | Input bounds, output finiteness, escaping of user-controlled labels, browser console checks, and `git diff --check`. |
-| Supplier and dependency risk | No runtime package dependencies; Google Fonts is the only external presentation dependency. |
+| Supplier and dependency risk | No runtime package dependencies or third-party runtime presentation dependencies. |
 | Incident response | Report suspected vulnerabilities privately to the repository maintainer rather than publishing exploit details in an issue. |
 | Continuity and recovery | The project is versioned in Git and can be served as static files from a clean checkout. |
 | Evidence and review | Model assumptions, limitations, UI checks, and meaningful changes are documented in the repository. |

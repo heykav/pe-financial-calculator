@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!--
   THESIS: A calm underwriting workspace where the model, not decoration, owns the hierarchy.
-  OWN-WORLD: Shadcn-inspired zinc surfaces, hairline borders, compact controls, and KAVY gold as a single semantic accent.
+  OWN-WORLD: Shadcn-inspired zinc surfaces, hairline borders, compact controls, and Rivet gold as a single semantic accent.
   STORY: Start with the deal, adjust assumptions, read returns, then move through specialist workspaces without losing context.
   FIRST VIEWPORT: Persistent navigation at left; a compact header and action row; the assumptions and sponsor returns panels lead the first read.
   FORM: Operate-mode dashboard, replacing the dense terminal treatment with a composed application shell.
@@ -14,26 +14,26 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
-  <meta name="description" content="KAVY is a free browser-based private equity and investment banking finance calculator for LBO underwriting, sponsor returns, DCF valuation, deal comps, MOIC, IRR, and sensitivity analysis." />
+  <meta name="description" content="Rivet is a free browser-based private equity and investment banking finance calculator for LBO underwriting, sponsor returns, DCF valuation, deal comps, MOIC, IRR, and sensitivity analysis." />
   <meta name="keywords" content="private equity calculator, LBO calculator, leveraged buyout model, investment banking finance calculator, sponsor returns, MOIC calculator, IRR calculator, DCF valuation, deal comps, hedge fund analysis" />
-  <meta name="author" content="KAVY contributors" />
+  <meta name="author" content="Rivet contributors" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <link rel="canonical" href="https://heykav.github.io/pe-financial-calculator/" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://heykav.github.io/pe-financial-calculator/" />
-  <meta property="og:title" content="KAVY — Private Equity & Investment Banking Calculator" />
+  <meta property="og:title" content="Rivet — Private Equity & Investment Banking Calculator" />
   <meta property="og:description" content="A browser-based finance calculator for LBO underwriting, sponsor returns, DCF valuation, deal comps, MOIC, IRR, and sensitivity analysis." />
-  <meta property="og:site_name" content="KAVY Private Markets OS" />
+  <meta property="og:site_name" content="Rivet Private Markets OS" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="KAVY — Private Equity & Investment Banking Calculator" />
+  <meta name="twitter:title" content="Rivet — Private Equity & Investment Banking Calculator" />
   <meta name="twitter:description" content="Underwrite hypothetical deals with a clear browser-based LBO, returns, DCF, and sensitivity calculator." />
-  <title>KAVY — Private Equity &amp; Investment Banking Calculator</title>
+  <title>Rivet — Private Equity &amp; Investment Banking Calculator</title>
   <link rel="icon" href="favicon.jpeg" type="image/jpeg" />
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"KAVY Private Markets Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Web","url":"https://heykav.github.io/pe-financial-calculator/","description":"A free private equity and investment banking calculator for LBO underwriting, sponsor returns, DCF analysis, and IRR sensitivity.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["LBO underwriting","IRR and MOIC calculation","DCF analysis","Deal sensitivity matrix","Sponsor returns bridge"]}
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Rivet Private Markets Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Web","url":"https://heykav.github.io/pe-financial-calculator/","description":"A free private equity and investment banking calculator for LBO underwriting, sponsor returns, DCF analysis, and IRR sensitivity.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["LBO underwriting","IRR and MOIC calculation","DCF analysis","Deal sensitivity matrix","Sponsor returns bridge"]}
   </script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is KAVY?","acceptedAnswer":{"@type":"Answer","text":"KAVY is a free browser-based finance calculator for illustrative private equity underwriting, LBO returns, DCF reference analysis, deal comps, and IRR sensitivity."}},{"@type":"Question","name":"Is KAVY investment advice?","acceptedAnswer":{"@type":"Answer","text":"No. KAVY is an educational and illustrative analysis tool and does not replace financial, legal, tax, accounting, lender, or investment committee diligence."}},{"@type":"Question","name":"Does KAVY send deal data to a server?","acceptedAnswer":{"@type":"Answer","text":"KAVY is a static browser application. It does not require an account or transmit entered assumptions to an application server."}}]}
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Rivet?","acceptedAnswer":{"@type":"Answer","text":"Rivet is a free browser-based finance calculator for illustrative private equity underwriting, LBO returns, DCF reference analysis, deal comps, and IRR sensitivity."}},{"@type":"Question","name":"Is Rivet investment advice?","acceptedAnswer":{"@type":"Answer","text":"No. Rivet is an educational and illustrative analysis tool and does not replace financial, legal, tax, accounting, lender, or investment committee diligence."}},{"@type":"Question","name":"Does Rivet send deal data to a server?","acceptedAnswer":{"@type":"Answer","text":"Rivet is a static browser application. It does not require an account or transmit entered assumptions to an application server."}}]}
   </script>
   <link rel="stylesheet" href="styles.css?v=602aed7" />
 </head>
@@ -42,7 +42,7 @@
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-mark"><img src="favicon.jpeg" alt="KA" /></div>
-        <div><strong>KAVY</strong><span>PRIVATE MARKETS OS</span></div>
+        <div><strong>Rivet</strong><span>UNDERWRITING WORKSPACE</span></div>
       </div>
       <button class="workspace-switcher" id="workspaceSwitcher" aria-expanded="false" aria-controls="workspaceMenu">
         <span class="status-dot"></span>
@@ -76,19 +76,19 @@
     <main class="main-content">
       <div class="workspace-view" id="secondaryWorkspace" hidden>
         <section class="panel workspace-hero">
-          <div><div class="eyebrow">KAVY:// WORKSPACE ROUTER</div><h1 id="workspaceTitle">LBO model</h1><p id="workspaceDescription">Build, audit, and stress the transaction mechanics behind the headline returns.</p></div>
-          <div class="workspace-meta"><span class="compute-state"><i></i> LIVE CALCULATION GRAPH</span><span class="gold mono">PROJECT ATLAS / RUN 042</span></div>
+          <div><div class="eyebrow">Rivet:// WORKSPACE ROUTER</div><h1 id="workspaceTitle">LBO model</h1><p id="workspaceDescription">Build, audit, and stress the transaction mechanics behind the headline returns.</p></div>
+          <div class="workspace-meta"><span class="compute-state"><i></i> LIVE MODEL VIEW</span><span class="gold mono">PROJECT ATLAS / LOCAL</span></div>
         </section>
         <section class="panel workspace-content" id="workspaceContent"></section>
       </div>
       <div id="cockpitWorkspace">
       <header class="topbar">
-        <div class="breadcrumb"><span class="terminal-prefix">KAVY://</span><span>DEAL ROOM</span><b>/</b><strong>PROJECT ATLAS</strong><span class="live-chip">● LIVE MODEL</span></div>
+        <div class="breadcrumb"><span class="terminal-prefix">Rivet://</span><span>DEAL ROOM</span><b>/</b><strong>PROJECT ATLAS</strong><span class="live-chip">● LIVE MODEL</span></div>
         <div class="top-actions"><span class="save-state"><i class="save-light"></i> Saved just now</span><button class="command-trigger" aria-label="Show keyboard shortcuts">⌘ K <span>Shortcuts</span></button><button class="icon-button" aria-label="Notifications">♧<i></i></button><button class="icon-button" aria-label="Search">⌕</button><button class="button ghost" id="exportBtn">Export memo <span>↗</span></button></div>
       </header>
 
       <section class="page-head">
-        <div><div class="eyebrow">START HERE · PROJECT ATLAS</div><h1>Deal cockpit <span>↗</span></h1><p>Enter a few deal facts, then follow the model from purchase price to investor return.</p></div>
+        <div><div class="eyebrow">START HERE · PROJECT ATLAS</div><h1>Deal cockpit <span>↗</span></h1><p>Turn a few deal facts into a clear, explainable underwriting view.</p></div>
         <div class="head-actions"><button class="button ghost" id="resetBtn">Restore base case</button><button class="button primary" id="runBtn"><span class="run-icon">↻</span> Recalculate model</button></div>
       </section>
 
@@ -98,7 +98,7 @@
       <section class="ticker-strip">
         <div><small>MODEL STATUS</small><strong><span class="status-dot"></span><span id="modelStatus">CASE IS CLEAN</span></strong></div>
         <div><small>LAST RUN</small><strong id="lastRun">Today · 09:42:18 ET</strong></div>
-        <div><small>MODEL VERSION</small><strong>Atlas v2.4 <span class="version-tag">BASE</span></strong></div>
+        <div><small>MODEL STATUS</small><strong>Illustrative <span class="version-tag">LOCAL</span></strong></div>
         <div><small>ACTIVE CASE</small><strong id="activeCaseStatus">BASE CASE</strong></div>
         <div class="ticker-spark"><span>BASE</span><svg viewBox="0 0 140 34" preserveAspectRatio="none"><path d="M0 26 L14 24 L28 27 L42 19 L56 21 L70 15 L84 16 L98 8 L112 12 L126 4 L140 6" /></svg></div>
       </section>
@@ -150,14 +150,14 @@
         </div>
         <div class="console-log"><span>› atlas.run --iterations=10000 --seed=42 --distribution=lognormal</span><span id="scenarioStatus">ready · 0.00s</span></div>
       </section>
-      <footer><span>KAVY Private Markets OS · Confidential working model</span><span>USD unless otherwise noted · <a href="https://github.com/heykav/pe-financial-calculator/commits/main">Changelog</a> · <a href="https://github.com/heykav/pe-financial-calculator/blob/main/PRIVACY.md" target="_blank" rel="noreferrer">Privacy</a> · <a href="https://github.com/heykav/pe-financial-calculator" target="_blank" rel="noreferrer">Contribute on GitHub ↗</a></span></footer>
+      <footer><span>Rivet Underwriting Workspace · Confidential working model</span><span>USD unless otherwise noted · <a href="https://github.com/heykav/pe-financial-calculator/commits/main">Changelog</a> · <a href="https://github.com/heykav/pe-financial-calculator/blob/main/PRIVACY.md" target="_blank" rel="noreferrer">Privacy</a> · <a href="https://github.com/heykav/pe-financial-calculator" target="_blank" rel="noreferrer">Contribute on GitHub ↗</a></span></footer>
       </div>
     </main>
   </div>
   <div class="utility-modal" id="utilityModal" hidden role="dialog" aria-modal="true" aria-labelledby="utilityTitle">
     <div class="utility-card">
       <button class="utility-close" id="utilityClose" type="button" aria-label="Close dialog">×</button>
-      <span class="eyebrow">KAVY:// UTILITY PANEL</span>
+      <span class="eyebrow">Rivet:// UTILITY PANEL</span>
       <h2 id="utilityTitle">Keyboard guide</h2>
       <p id="utilityDescription">Use these shortcuts to move around the model faster.</p>
       <div id="utilityContent"></div>

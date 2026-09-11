@@ -147,19 +147,25 @@ document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.addEven
 
 function wireUiActions() {
   const utilityModal = $('utilityModal');
-  const openUtility = (title, description, content) => {
+  let utilityTrigger = null;
+  const openUtility = (title, description, content, trigger = null) => {
+    utilityTrigger = trigger || document.activeElement;
     $('utilityTitle').textContent = title;
     $('utilityDescription').textContent = description;
     $('utilityContent').innerHTML = content;
     utilityModal.hidden = false;
     $('utilityClose').focus();
   };
-  const closeUtility = () => { utilityModal.hidden = true; };
+  const closeUtility = () => {
+    utilityModal.hidden = true;
+    utilityTrigger?.focus();
+    utilityTrigger = null;
+  };
   $('utilityClose')?.addEventListener('click', closeUtility);
   utilityModal?.addEventListener('click', (event) => { if (event.target === utilityModal) closeUtility(); });
-  $('keyboardButton')?.addEventListener('click', () => openUtility('Keyboard guide', 'Use these shortcuts to move around the model faster.', '<div class="shortcut-list"><div><kbd>⌘ / Ctrl + 1</kbd><span>Deal cockpit</span></div><div><kbd>⌘ / Ctrl + 2</kbd><span>LBO model</span></div><div><kbd>⌘ / Ctrl + 3</kbd><span>DCF analysis</span></div><div><kbd>⌘ / Ctrl + 4</kbd><span>Returns bridge</span></div><div><kbd>⌘ K</kbd><span>Open this guide</span></div><div><kbd>Esc</kbd><span>Close any open panel</span></div></div>'));
-  $('settingsButton')?.addEventListener('click', () => openUtility('Settings', 'Small preferences that make the model easier to work with.', '<div class="settings-list"><label><span><strong>Reduced motion</strong><small>Use fewer interface transitions.</small></span><input id="reducedMotionToggle" type="checkbox"></label><label><span><strong>Show teaching notes</strong><small>Keep the plain-English guidance visible.</small></span><input id="teachingNotesToggle" type="checkbox" checked></label></div>'));
-  $('modelStatusButton')?.addEventListener('click', () => openUtility('Model status', 'A quick health check for the active case.', `<div class="status-summary"><div><span>Active case</span><strong>${escapeHtml(caseLabels[activeCase].name)}</strong></div><div><span>Model state</span><strong>${$('modelStatus').textContent}</strong></div><div><span>Data source</span><strong>Local browser inputs</strong></div><p>No live market data or external data feed is connected. Treat outputs as illustrative until assumptions are verified.</p></div>`));
+  $('keyboardButton')?.addEventListener('click', (event) => openUtility('Keyboard guide', 'Use these shortcuts to move around the model faster.', '<div class="shortcut-list"><div><kbd>⌘ / Ctrl + 1</kbd><span>Deal cockpit</span></div><div><kbd>⌘ / Ctrl + 2</kbd><span>LBO model</span></div><div><kbd>⌘ / Ctrl + 3</kbd><span>DCF analysis</span></div><div><kbd>⌘ / Ctrl + 4</kbd><span>Returns bridge</span></div><div><kbd>⌘ K</kbd><span>Open this guide</span></div><div><kbd>Esc</kbd><span>Close any open panel</span></div></div>', event.currentTarget));
+  $('settingsButton')?.addEventListener('click', (event) => openUtility('Settings', 'Small preferences that make the model easier to work with.', '<div class="settings-list"><label><span><strong>Reduced motion</strong><small>Use fewer interface transitions.</small></span><input id="reducedMotionToggle" type="checkbox"></label><label><span><strong>Show teaching notes</strong><small>Keep the plain-English guidance visible.</small></span><input id="teachingNotesToggle" type="checkbox" checked></label></div>', event.currentTarget));
+  $('modelStatusButton')?.addEventListener('click', (event) => openUtility('Model status', 'A quick health check for the active case.', `<div class="status-summary"><div><span>Active case</span><strong>${escapeHtml(caseLabels[activeCase].name)}</strong></div><div><span>Model state</span><strong>${$('modelStatus').textContent}</strong></div><div><span>Data source</span><strong>Local browser inputs</strong></div><p>No live market data or external data feed is connected. Treat outputs as illustrative until assumptions are verified.</p></div>`, event.currentTarget));
   utilityModal?.addEventListener('change', (event) => {
     if (event.target.id === 'reducedMotionToggle') document.documentElement.classList.toggle('reduced-motion', event.target.checked);
     if (event.target.id === 'teachingNotesToggle') document.body.classList.toggle('hide-teaching-notes', !event.target.checked);
@@ -284,8 +290,25 @@ document.addEventListener('click', (event) => {
   }
 });
 document.addEventListener('keydown', (event) => {
+  const modal = $('utilityModal');
+  if (!modal.hidden && event.key === 'Tab') {
+    const focusable = [...modal.querySelectorAll('button, input, [href], [tabindex]:not([tabindex="-1"])')].filter((element) => !element.disabled);
+    const first = focusable[0];
+    const last = focusable.at(-1);
+    if (!first || !last) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+    return;
+  }
   if (event.key === 'Escape') {
-    $('utilityModal').hidden = true;
+    if (!modal.hidden) {
+      modal.querySelector('#utilityClose')?.click();
+    }
     return;
   }
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -424,7 +447,7 @@ $('resetBtn').addEventListener('click', () => {
   showToast('Base case restored — model recalculated');
 });
 $('exportBtn').addEventListener('click', () => {
-  const memo = `NORTHSTAR / PROJECT ATLAS\n\nEntry EV: ${$('ev').value}mm\nEntry EBITDA: ${$('ebitda').value}mm\nMOIC: ${$('moic').textContent}\nIRR: ${$('irr').textContent}\n`;
+  const memo = `RIVET / PROJECT ATLAS\n\nEntry EV: ${$('ev').value}mm\nEntry EBITDA: ${$('ebitda').value}mm\nMOIC: ${$('moic').textContent}\nIRR: ${$('irr').textContent}\n`;
   const blob = new Blob([memo], {type: 'text/plain'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);

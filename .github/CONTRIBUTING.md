@@ -1,6 +1,6 @@
-# Contributing to Northstar
+# Contributing to Rivet
 
-KAVY is intentionally dependency-light: the calculator is plain HTML, CSS,
+Rivet is intentionally dependency-light: the calculator is plain HTML, CSS,
 and JavaScript so the math is inspectable and the app can be hosted anywhere.
 
 ## Development

@@ -1,22 +1,22 @@
-# KAVY privacy notice
+# Rivet privacy notice
 
 **Last updated: 2026-09-12**
 
-This notice describes the data boundary of the KAVY Private Markets Calculator.
+This notice describes the data boundary of the Rivet Private Markets Calculator.
 It is written for the current static GitHub Pages deployment and is not legal
 advice or a representation that every deployment, browser, hosting provider, or
 jurisdictional obligation is satisfied.
 
 ## Short version
 
-KAVY does not ask for an account, use advertising cookies, run analytics,
+Rivet does not ask for an account, use advertising cookies, run analytics,
 fingerprint visitors, sell personal information, or send the assumptions typed
-into the calculator to a KAVY application server. Calculations and exports are
+into the calculator to a Rivet application server. Calculations and exports are
 performed in the browser.
 
 The public demo is hosted by GitHub Pages. GitHub may process technical request
 data, security logs, or network metadata under its own terms and privacy
-documentation. KAVY cannot control or make promises about GitHub’s independent
+documentation. Rivet cannot control or make promises about GitHub’s independent
 processing.
 
 ## Data processed by the application
@@ -49,7 +49,7 @@ such as GitHub for GitHub Pages infrastructure.
 
 ## CCPA/CPRA-oriented rights
 
-KAVY does not intentionally sell or share personal information for cross-context
+Rivet does not intentionally sell or share personal information for cross-context
 behavioral advertising and does not operate a “do not sell or share” profile.
 The app does not intentionally collect categories of personal information from
 calculator inputs. California residents may still have rights against the

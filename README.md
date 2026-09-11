@@ -1,24 +1,25 @@
-# KAVY Private Markets Calculator
+# Rivet — Underwriting Workspace
 
-**A browser-based finance calculator for private equity underwriting, investment banking analysis, LBO returns, DCF valuation, deal comps, and scenario sensitivity.**
+**A browser-native underwriting workspace that turns deal assumptions into an explainable investment view.**
 
-[![Live demo](https://img.shields.io/badge/Live%20demo-KAVY%20Calculator-c9a24a?style=flat-square)](https://heykav.github.io/pe-financial-calculator/)
+[![Live demo](https://img.shields.io/badge/Live%20demo-Rivet%20Calculator-c9a24a?style=flat-square)](https://heykav.github.io/pe-financial-calculator/)
 [![No build step](https://img.shields.io/badge/Build%20step-none-18181b?style=flat-square)](#run-locally)
 [![License](https://img.shields.io/badge/License-see%20repository-18181b?style=flat-square)](https://github.com/heykav/pe-financial-calculator)
 
-KAVY is an independent, dependency-free private markets calculator designed to make a first-pass underwriting model understandable in a browser. Enter a purchase price, EBITDA, borrowing level, interest rate, ownership period, and operating forecast; the application calculates an explainable sponsor-return view and shows the assumptions that drive it.
+Rivet is an independent, dependency-free underwriting workspace designed for the first 15 minutes of a deal review. Enter a purchase price, EBITDA, borrowing level, interest rate, ownership period, and operating forecast; Rivet calculates an explainable sponsor-return view and shows what actually drives it.
 
 Every specialist workspace includes a plain-English “start here” explanation, so a first-time user can understand what to look at before touching the technical outputs.
 
-![KA mark used by KAVY](favicon.jpeg)
+![KA mark used by Rivet](favicon.jpeg)
 
-*KAVY’s KA mark and browser identity.*
+*Rivet’s KA mark and browser identity.*
 
-> **Important:** KAVY is an educational and illustrative analysis tool, not investment advice, a valuation opinion, a regulated financial product, or a substitute for audited financial statements, quality-of-earnings work, lender diligence, legal review, tax advice, or an investment committee process.
+> **Important:** Rivet is an educational and illustrative analysis tool, not investment advice, a valuation opinion, a regulated financial product, or a substitute for audited financial statements, quality-of-earnings work, lender diligence, legal review, tax advice, or an investment committee process.
 
 ## Table of contents
 
 - [What the calculator does](#what-the-calculator-does)
+- [Why Rivet exists](#why-rivet-exists)
 - [Who it is for](#who-it-is-for)
 - [How to use it](#how-to-use-it)
 - [Model outputs](#model-outputs)
@@ -28,11 +29,25 @@ Every specialist workspace includes a plain-English “start here” explanation
 - [Run locally](#run-locally)
 - [Project structure](#project-structure)
 - [Contributing](#contributing)
+- [YC application brief](#yc-application-brief)
 - [Independent project notice](#independent-project-notice)
+
+## Why Rivet exists
+
+Underwriting is still split between intimidating spreadsheets, expensive
+institutional systems, and one-off memo work. Rivet gives a founder, finance
+lead, analyst, or independent sponsor a fast first pass that connects:
+
+**assumptions → operating case → capital structure → returns → what to verify**
+
+The product is not pretending to replace diligence or an investment committee.
+Its wedge is making the first decision legible, repeatable, and easier to
+explain. Read [`YC.md`](YC.md) for the problem, initial user, expansion path,
+roadmap, and product principles.
 
 ## What the calculator does
 
-KAVY is a practical **finance calculator** and underwriting workspace for:
+Rivet is a practical **finance calculator** and underwriting workspace for:
 
 - **Leveraged buyout (LBO) analysis:** sources and uses, debt sizing, sponsor equity, debt paydown, exit equity, MOIC, and IRR.
 - **Private equity returns analysis:** a clear separation between purchase price, operating performance, leverage, exit multiple, and value creation.
@@ -47,7 +62,7 @@ The app is intentionally browser-only. There is no login, backend, analytics pip
 
 ## Who it is for
 
-KAVY is useful for:
+Rivet is useful for:
 
 - Private equity associates, analysts, and operating partners learning LBO mechanics.
 - Investment bankers preparing a transaction case, pitch, or interview exercise.
@@ -60,7 +75,7 @@ The interface is also suitable for independent interview and case-study preparat
 
 ## How to use it
 
-1. Open the [live KAVY calculator](https://heykav.github.io/pe-financial-calculator/).
+1. Open the [live Rivet calculator](https://heykav.github.io/pe-financial-calculator/).
 2. In **Describe the deal**, enter:
    - Purchase price / enterprise value in USD millions.
    - Current annual EBITDA in USD millions.
@@ -75,7 +90,7 @@ The interface is also suitable for independent interview and case-study preparat
 
 ### The screen, in plain English
 
-![KAVY workflow](https://raw.githubusercontent.com/heykav/pe-financial-calculator/main/favicon.jpeg)
+![Rivet workflow](https://raw.githubusercontent.com/heykav/pe-financial-calculator/main/favicon.jpeg)
 
 The application is organized from left to right:
 
@@ -153,7 +168,7 @@ The sensitivity grid shows how illustrative IRR changes across exit multiples an
 
 ## Model assumptions and limitations
 
-KAVY is deliberately transparent about what it does not do. It currently does **not** provide:
+Rivet is deliberately transparent about what it does not do. It currently does **not** provide:
 
 - A complete three-statement financial model.
 - A live debt waterfall, mandatory amortization, cash sweep covenant, or financing term sheet.
@@ -167,7 +182,7 @@ Treat the outputs as a structured first-pass conversation starter. Replace illus
 
 ## Privacy and data handling
 
-KAVY runs as static HTML, CSS, and JavaScript. It does not require an account and does not transmit entered assumptions to an application server. Do not enter confidential, material non-public, personally identifiable, or restricted client information into a public browser demo.
+Rivet runs as static HTML, CSS, and JavaScript. It does not require an account and does not transmit entered assumptions to an application server. Do not enter confidential, material non-public, personally identifiable, or restricted client information into a public browser demo.
 
 Read [`PRIVACY.md`](PRIVACY.md) for the deployment data boundary and GDPR/CCPA-oriented privacy controls. Read [`SECURITY.md`](SECURITY.md) for security reporting and OSINT boundaries.
 
@@ -197,11 +212,12 @@ The browser preview is the source of truth for interaction testing. Keep the con
 .
 ├── index.html                 # Application shell, metadata, structured data, and UI
 ├── app.js                    # Model calculations, state, routing, and interactions
-├── styles.css                # KAVY design system and responsive layout
+├── styles.css                # Rivet design system and responsive layout
 ├── DESIGN.md                 # Visual language and component grammar
 ├── PRIVACY.md                # GDPR/CCPA-oriented privacy notice
 ├── SECURITY.md               # Privacy, OSINT boundaries, and security controls
-├── favicon.svg               # KAVY browser icon
+├── favicon.jpeg              # Rivet browser icon and KA mark
+├── YC.md                     # Product brief and YC-style company narrative
 ├── robots.txt                # Crawler guidance
 ├── sitemap.xml               # GitHub Pages sitemap
 └── .github/
@@ -225,9 +241,16 @@ See [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md) for the repository stan
 See [`SECURITY.md`](SECURITY.md) for the privacy boundary, vulnerability
 reporting guidance, and ISO/IEC 27001-aligned controls.
 
+## YC application brief
+
+[`YC.md`](YC.md) is the concise company narrative for this repository. It
+covers the problem, initial wedge, why Rivet can become a company, what is
+already live, what is deliberately not claimed, and the near-term roadmap.
+It should be updated whenever the product direction or target user changes.
+
 ## Independent project notice
 
-KAVY is an independent open-source-style project maintained by its contributors. References to investment banking, private equity, hedge funds, finance roles, interview preparation, or financial institutions are descriptive search and learning context only. KAVY is not affiliated with, endorsed by, sponsored by, or operated by Verity, Wells Fargo, Blackstone, Standard Chartered, or any other named organization.
+Rivet is an independent open-source-style project maintained by its contributors. References to investment banking, private equity, hedge funds, finance roles, interview preparation, or financial institutions are descriptive search and learning context only. Rivet is not affiliated with, endorsed by, sponsored by, or operated by Verity, Wells Fargo, Blackstone, Standard Chartered, or any other named organization.
 
 ## License
 
