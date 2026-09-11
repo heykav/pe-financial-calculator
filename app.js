@@ -209,12 +209,22 @@ function calculate() {
     ['interest', 'Annual interest cannot be negative.'],
     ['hold', 'Years held must be between 1 and 10.']
   ].find(([id]) => !Number.isFinite(raw[id]) || raw[id] < Number($(id).min || 0) || (id === 'hold' && raw[id] > 10));
+  const forecastInvalid = [...document.querySelectorAll('.mini-input')].some((input) => {
+    const value = Number(input.value);
+    const isMargin = input.dataset.key === 'margin';
+    return !Number.isFinite(value) || (isMargin ? value < 0 || value > 100 : value < -100 || value > 100);
+  });
+  const debtTooHigh = Number.isFinite(raw.ev) && Number.isFinite(raw.ebitda) && Number.isFinite(raw.debtMultiple)
+    && raw.ebitda * raw.debtMultiple > raw.ev * 0.9;
+  const validationError = invalid?.[1]
+    || (forecastInvalid ? 'Forecast inputs must stay within a sensible range.' : '')
+    || (debtTooHigh ? 'Borrowing is too high: debt should stay below 90% of the purchase price.' : '');
   const alert = $('modelAlert');
-  if (invalid) {
-    $(invalid[0]).setAttribute('aria-invalid', 'true');
+  if (validationError) {
+    if (invalid) $(invalid[0]).setAttribute('aria-invalid', 'true');
     if (alert) {
       alert.hidden = false;
-      alert.textContent = invalid[1];
+      alert.textContent = validationError;
     }
     ['entryMultiple', 'entryEquity', 'exitEquity', 'valueCreation', 'moic', 'irr', 'exitMultiple'].forEach((id) => { if ($(id)) $(id).textContent = '—'; });
     return;
