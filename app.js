@@ -313,7 +313,7 @@ function selectCase(key) {
   document.querySelectorAll('[data-key="margin"]').forEach((el, i) => { el.value = selected.margin[i]; });
   const context = $('caseContext');
   if (context) context.innerHTML = `<strong>${caseLabels[key].name}</strong><span>${caseLabels[key].description}</span>`;
-  $('activeCaseStatus').textContent = `📌 ${caseLabels[key].name.toUpperCase()}`;
+  $('activeCaseStatus').textContent = caseLabels[key].name.toUpperCase();
   calculate();
 }
 
@@ -401,7 +401,7 @@ function calculate() {
       alert.textContent = validationError;
     }
     ['entryMultiple', 'entryEquity', 'exitEquity', 'valueCreation', 'moic', 'irr', 'exitMultiple'].forEach((id) => { if ($(id)) $(id).textContent = '—'; });
-    if ($('modelStatus')) $('modelStatus').textContent = '⚠️ NEEDS ATTENTION';
+    if ($('modelStatus')) $('modelStatus').textContent = 'NEEDS ATTENTION';
     return;
   }
   inputs.forEach((id) => $(id).removeAttribute('aria-invalid'));
@@ -409,7 +409,7 @@ function calculate() {
     alert.hidden = true;
     alert.textContent = '';
   }
-  if ($('modelStatus')) $('modelStatus').textContent = '✅ INPUT CHECKS PASS';
+  if ($('modelStatus')) $('modelStatus').textContent = 'INPUT CHECKS PASS';
   const ev = raw.ev;
   const ebitda = raw.ebitda;
   const debtMultiple = raw.debtMultiple;

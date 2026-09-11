@@ -218,10 +218,6 @@ footer a{color:var(--muted)}
 .status-summary p{padding-top:2px}
 .attribution{padding:13px 8px 2px;color:var(--faint);font-size:9px;line-height:1.55;letter-spacing:.01em}
 .attribution span{color:var(--accent);font-size:11px}
-.heading-emoji{font-size:.85em;margin-left:4px;filter:saturate(.82)}
-.emoji{font-size:1.15em;margin-right:2px}
-.orientation-note strong{display:flex;align-items:center;gap:4px}
-.nav-item>span:first-child{font-size:14px}
 .ticker-strip .status-dot{flex:0 0 auto}
 @media(max-width:720px){
   .sidebar{position:sticky;top:0;height:100vh}

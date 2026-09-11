@@ -8,7 +8,7 @@
 
 Rivet is an independent, dependency-free underwriting web app for the first 15 minutes of a deal review. Enter the entry price, earnings base, financing, hold period, and operating forecast; Rivet turns those inputs into a transparent sponsor-return view and shows what actually drives the outcome.
 
-Every specialist workspace includes a plain-English “start here” explanation, so a first-time user can understand the decision before touching the technical outputs. The interface uses restrained visual cues—📊 for analysis, 🧪 for stress testing, ✅ for diligence—to make a dense model easier to scan without disguising uncertainty.
+Every specialist workspace includes a plain-English “start here” explanation, so a first-time user can understand the decision before touching the technical outputs. The visual system is intentionally restrained: hierarchy, spacing, and semantic color do the navigation work so the interface remains credible in an analyst or investment-committee setting.
 
 ![KA mark used by Rivet](favicon.jpeg)
 
