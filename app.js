@@ -485,7 +485,7 @@ function showToast(message) {
 
 inputs.forEach((id) => $(id).addEventListener('input', calculate));
 document.querySelectorAll('.mini-input').forEach((input) => input.addEventListener('input', calculate));
-$('runBtn').addEventListener('click', () => { calculate(); showToast('Model recalculated'); });
+$('runBtn').addEventListener('click', () => { calculate(); showToast('Underwriting run complete'); });
 $('resetBtn').addEventListener('click', () => {
   selectCase('base');
   document.querySelectorAll('.segmented button').forEach((item) => item.classList.toggle('selected', item.dataset.case === 'base'));

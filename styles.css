@@ -275,6 +275,7 @@ body{background:
 .quant-console{background:#0e1012}
 .console-log{background:#0b0c0e;padding:12px 10px;border-radius:5px}
 .button.primary{box-shadow:0 6px 18px rgba(214,168,75,.16)}
+.icon-button,.more-button{min-width:44px;min-height:44px;display:inline-grid;place-items:center}
 .button.primary:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(214,168,75,.22)}
 .nav-item.active{box-shadow:inset 2px 0 var(--accent),0 4px 12px rgba(0,0,0,.14)}
 .profile{background:linear-gradient(to bottom,transparent,rgba(255,255,255,.018))}

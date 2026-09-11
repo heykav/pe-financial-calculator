@@ -95,7 +95,7 @@
         <div class="head-actions"><button class="button ghost" id="resetBtn">Restore base case</button><button class="button primary" id="runBtn"><span class="run-icon">↻</span> Run underwriting</button></div>
       </section>
 
-      <section class="orientation-note"><strong>New to private equity?</strong><span>Start with the six deal facts. Results update as you type; use Recalculate model when you want a clean checkpoint.</span></section>
+      <section class="orientation-note"><strong>New to private equity?</strong><span>Start with the six deal facts. Results update as you type; use Run underwriting when you want a clean checkpoint.</span></section>
       <div class="market-tape"><span class="tape-label">MODEL TAPE</span><span>ENTRY <b id="tapeEntry">8.2x</b></span><span>LEVERAGE <b id="tapeLeverage">4.5x</b></span><span>IRR <b class="gold" id="tapeIrr">22.4%</b></span><span>MOIC <b class="gold" id="tapeMoic">2.7x</b></span><span>EXIT <b id="tapeExit">9.7x</b></span><span class="tape-clock">LIVE MODEL</span></div>
 
       <section class="ticker-strip">
@@ -124,8 +124,8 @@
           <div class="section-subhead"><strong>How the business may grow</strong><span>Forecast · FY2026E to FY2030E</span></div>
           <div class="forecast-table">
             <div class="table-row table-head"><span>Fiscal year</span><span>FY26E</span><span>FY27E</span><span>FY28E</span><span>FY29E</span><span>FY30E</span></div>
-            <div class="table-row"><span>Revenue growth</span><input class="mini-input" data-key="growth" type="number" min="-100" max="100" value="12.0" /><input class="mini-input" data-key="growth" type="number" min="-100" max="100" value="11.0" /><input class="mini-input" data-key="growth" type="number" min="-100" max="100" value="10.0" /><input class="mini-input" data-key="growth" type="number" min="-100" max="100" value="9.0" /><input class="mini-input" data-key="growth" type="number" min="-100" max="100" value="8.0" /></div>
-            <div class="table-row"><span>EBITDA margin</span><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="21.0" /><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="22.0" /><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="23.0" /><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="24.0" /><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="25.0" /></div>
+            <div class="table-row"><span>Revenue growth</span><input class="mini-input" aria-label="Revenue growth FY26E" data-key="growth" type="number" min="-100" max="100" value="12.0" /><input class="mini-input" aria-label="Revenue growth FY27E" data-key="growth" type="number" min="-100" max="100" value="11.0" /><input class="mini-input" aria-label="Revenue growth FY28E" data-key="growth" type="number" min="-100" max="100" value="10.0" /><input class="mini-input" aria-label="Revenue growth FY29E" data-key="growth" type="number" min="-100" max="100" value="9.0" /><input class="mini-input" aria-label="Revenue growth FY30E" data-key="growth" type="number" min="-100" max="100" value="8.0" /></div>
+            <div class="table-row"><span>EBITDA margin</span><input class="mini-input" aria-label="EBITDA margin FY26E" data-key="margin" type="number" min="0" max="100" value="21.0" /><input class="mini-input" aria-label="EBITDA margin FY27E" data-key="margin" type="number" min="0" max="100" value="22.0" /><input class="mini-input" aria-label="EBITDA margin FY28E" data-key="margin" type="number" min="0" max="100" value="23.0" /><input class="mini-input" aria-label="EBITDA margin FY29E" data-key="margin" type="number" min="0" max="100" value="24.0" /><input class="mini-input" aria-label="EBITDA margin FY30E" data-key="margin" type="number" min="0" max="100" value="25.0" /></div>
           </div>
         </section>
         <section class="panel returns-panel">
@@ -167,6 +167,6 @@
     </div>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite">Model recalculated <span>✓</span></div>
-  <script src="app.js?v=professional-20260912"></script>
+  <script src="app.js?v=audit-20260912"></script>
 </body>
 </html>
