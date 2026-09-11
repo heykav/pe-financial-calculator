@@ -101,11 +101,9 @@ The interface is also suitable for independent interview and case-study preparat
 4. Enter the five-year revenue-growth and EBITDA-margin forecast.
 5. Review the return output, equity bridge, debt schedule, and sensitivity grid.
 6. Mark diligence items as complete only when the underlying fact has actually been verified.
-7. Use **Recalculate model** for an explicit checkpoint, **Export memo** for a text summary, or **Download table** for the sensitivity CSV.
+7. Use **Run underwriting** for an explicit checkpoint, **Export memo** for a text summary, or **Download table** for the sensitivity CSV.
 
 ### The screen, in plain English
-
-![Rivet workflow](https://raw.githubusercontent.com/heykav/pe-financial-calculator/main/favicon.jpeg)
 
 The application is organized from left to right:
 
