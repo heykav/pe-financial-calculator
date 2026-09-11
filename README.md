@@ -6,9 +6,9 @@
 [![No build step](https://img.shields.io/badge/Build%20step-none-18181b?style=flat-square)](#run-locally)
 [![License](https://img.shields.io/badge/License-see%20repository-18181b?style=flat-square)](https://github.com/heykav/pe-financial-calculator)
 
-Rivet is an independent, dependency-free underwriting workspace designed for the first 15 minutes of a deal review. Enter a purchase price, EBITDA, borrowing level, interest rate, ownership period, and operating forecast; Rivet calculates an explainable sponsor-return view and shows what actually drives it.
+Rivet is an independent, dependency-free underwriting web app for the first 15 minutes of a deal review. Enter the entry price, earnings base, financing, hold period, and operating forecast; Rivet turns those inputs into a transparent sponsor-return view and shows what actually drives the outcome.
 
-Every specialist workspace includes a plain-English “start here” explanation, so a first-time user can understand what to look at before touching the technical outputs.
+Every specialist workspace includes a plain-English “start here” explanation, so a first-time user can understand the decision before touching the technical outputs. The interface uses restrained visual cues—📊 for analysis, 🧪 for stress testing, ✅ for diligence—to make a dense model easier to scan without disguising uncertainty.
 
 ![KA mark used by Rivet](favicon.jpeg)
 
