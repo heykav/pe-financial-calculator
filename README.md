@@ -2,9 +2,13 @@
 
 **A strictly browser-based underwriting web app that turns deal assumptions into an explainable investment view.**
 
-[![Live demo](https://img.shields.io/badge/Live%20demo-Rivet%20Calculator-c9a24a?style=flat-square)](https://heykav.github.io/pe-financial-calculator/)
-[![No build step](https://img.shields.io/badge/Build%20step-none-18181b?style=flat-square)](#run-locally)
-[![License](https://img.shields.io/badge/License-see%20repository-18181b?style=flat-square)](https://github.com/heykav/pe-financial-calculator)
+<p>
+  <a href="https://heykav.github.io/pe-financial-calculator/"><img src="https://img.shields.io/badge/Open%20web%20app-Rivet%20Calculator-c9a24a?style=for-the-badge&labelColor=18181b" alt="Open the live Rivet web app"></a>
+  &nbsp;&nbsp;
+  <a href="#run-locally"><img src="https://img.shields.io/badge/Run%20locally-No%20build%20step-18181b?style=for-the-badge&labelColor=27272a" alt="Run Rivet locally with no build step"></a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/heykav/pe-financial-calculator"><img src="https://img.shields.io/badge/License-View%20repository-18181b?style=for-the-badge&labelColor=27272a" alt="View the repository license"></a>
+</p>
 
 Rivet is an independent, dependency-free underwriting web app for the first 15 minutes of a deal review. Enter the entry price, earnings base, financing, hold period, and operating forecast; Rivet turns those inputs into a transparent sponsor-return view and shows what actually drives the outcome.
 
