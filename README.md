@@ -8,6 +8,8 @@
   <a href="#run-locally"><img src="https://img.shields.io/badge/Run%20locally-No%20build%20step-18181b?style=for-the-badge&labelColor=27272a" alt="Run Rivet locally with no build step"></a>
   &nbsp;&nbsp;
   <a href="https://github.com/heykav/pe-financial-calculator"><img src="https://img.shields.io/badge/License-View%20repository-18181b?style=for-the-badge&labelColor=27272a" alt="View the repository license"></a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/heykav/pe-financial-calculator/blob/main/.github/CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contribute-Join%20the%20build-18181b?style=for-the-badge&labelColor=27272a" alt="Read how to contribute to Rivet"></a>
 </p>
 
 Rivet is an independent, dependency-free underwriting web app for the first 15 minutes of a deal review. Enter the entry price, earnings base, financing, hold period, and operating forecast; Rivet turns those inputs into a transparent sponsor-return view and shows what actually drives the outcome.
@@ -241,7 +243,11 @@ The browser preview is the source of truth for interaction testing. Keep the con
 
 ## Contributing
 
-Bug reports, documentation improvements, accessibility fixes, model-review notes, and focused pull requests are welcome. Before opening a pull request:
+**Help us make underwriting clearer.** Rivet is open to thoughtful contributions from analysts, operators, designers, engineers, and anyone who cares about transparent financial tools. Bug reports, documentation improvements, accessibility fixes, model-review notes, and focused pull requests are welcome.
+
+The best place to start is the [contribution guide](.github/CONTRIBUTING.md). You can also [open an issue](https://github.com/heykav/pe-financial-calculator/issues/new/choose) to report a bug, suggest an improvement, or start a discussion before writing code.
+
+Before opening a pull request:
 
 1. Explain the user problem and the smallest complete change.
 2. Keep financial formulas explicit and document any new assumption.
