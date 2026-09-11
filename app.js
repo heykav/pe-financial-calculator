@@ -70,7 +70,7 @@ function openWorkspace(view) {
       row.hidden = !row.textContent.toLowerCase().includes(query);
     });
   });
-  $('workspaceContent').querySelector('#newCaseBtn')?.addEventListener('click', () => showToast('New case template created'));
+  $('workspaceContent').querySelector('#newCaseBtn')?.addEventListener('click', () => showToast('New case template ready — edit the cockpit assumptions to define it'));
   document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.classList.toggle('active', item.dataset.view === view));
 }
 
@@ -100,7 +100,7 @@ function wireUiActions() {
   });
   $('createWorkspaceBtn')?.addEventListener('click', () => {
     const name = $('workspaceName').value.trim() || `Project ${workspaces.length + 1}`;
-    if (workspaces.includes(name)) { showToast('Workspace name already exists'); return; }
+    if (workspaces.includes(name)) { showToast('That workspace already exists — choose a different name'); return; }
     workspaces.push(name);
     activeWorkspace = name;
     $('workspaceSwitcher').querySelector('strong').textContent = name;
@@ -133,17 +133,17 @@ function wireUiActions() {
     document.querySelectorAll('.segmented button[data-case]').forEach((item) => item.setAttribute('aria-selected', String(item === button)));
     showToast(`${button.textContent.trim()} loaded`);
   }));
-  document.querySelectorAll('.more-button').forEach((button) => button.addEventListener('click', () => showToast('More actions available in the command palette')));
+  document.querySelectorAll('.more-button').forEach((button) => button.addEventListener('click', () => showToast('No additional actions for this section yet')));
   document.querySelectorAll('.chart-filter').forEach((button) => button.addEventListener('click', () => {
     document.querySelectorAll('.chart-filter').forEach((item) => item.classList.remove('active'));
     button.classList.add('active');
     showToast(`${button.textContent} view selected`);
   }));
-  document.querySelector('.segmented .add-case')?.addEventListener('click', () => showToast('Use Assumption sets to create a named case'));
-  document.querySelector('.full-link')?.addEventListener('click', () => showToast('IC prep checklist opened'));
-  document.querySelector('.command-trigger')?.addEventListener('click', () => showToast('Command palette: ⌘1 cockpit · ⌘2 LBO · ⌘3 DCF · ⌘4 returns'));
+  document.querySelector('.segmented .add-case')?.addEventListener('click', () => showToast('Open Assumption sets to create a named case'));
+  document.querySelector('.full-link')?.addEventListener('click', () => showToast('IC prep is a checklist prompt — complete the open items above'));
+  document.querySelector('.command-trigger')?.addEventListener('click', () => showToast('Shortcuts: ⌘1 cockpit · ⌘2 LBO · ⌘3 DCF · ⌘4 returns'));
   document.querySelector('[aria-label="Notifications"]')?.addEventListener('click', () => showToast('No new notifications'));
-  document.querySelector('[aria-label="Search"]')?.addEventListener('click', () => showToast('Search is ready — try the command palette'));
+  document.querySelector('[aria-label="Search"]')?.addEventListener('click', () => showToast('Search is not connected yet — use the workspace navigation'));
   document.querySelectorAll('.sidebar-bottom .nav-item').forEach((button) => button.addEventListener('click', () => showToast(button.textContent.includes('Settings') ? 'Settings panel ready' : '⌘1–⌘4 switch workspaces')));
   document.querySelectorAll('.checklist input').forEach((input) => input.addEventListener('change', updateReadiness));
 }
@@ -197,9 +197,9 @@ document.addEventListener('click', (event) => {
   } else if (target.matches('.segmented .add-case')) {
     showToast('Use Assumption sets to create a named case');
   } else if (target.matches('.more-button')) {
-    showToast('More actions available in the command palette');
+    showToast('No additional actions for this section yet');
   } else if (target.matches('.full-link')) {
-    showToast('IC prep checklist opened');
+    showToast('IC prep is a checklist prompt — complete the open items above');
   }
 });
 document.addEventListener('keydown', (event) => {
@@ -321,10 +321,11 @@ inputs.forEach((id) => $(id).addEventListener('input', calculate));
 document.querySelectorAll('.mini-input').forEach((input) => input.addEventListener('input', calculate));
 $('runBtn').addEventListener('click', () => { calculate(); showToast('Model recalculated'); });
 $('resetBtn').addEventListener('click', () => {
-  inputs.forEach((id) => { $(id).value = state.defaultValues[id]; });
-  calculate();
+  selectCase('base');
+  document.querySelectorAll('.segmented button').forEach((item) => item.classList.toggle('selected', item.dataset.case === 'base'));
+  document.querySelectorAll('.segmented button[data-case]').forEach((item) => item.setAttribute('aria-selected', String(item.dataset.case === 'base')));
   updateReadiness();
-  showToast('Base case restored');
+  showToast('Base case restored — model recalculated');
 });
 $('exportBtn').addEventListener('click', () => {
   const memo = `NORTHSTAR / PROJECT ATLAS\n\nEntry EV: ${$('ev').value}mm\nEntry EBITDA: ${$('ebitda').value}mm\nMOIC: ${$('moic').textContent}\nIRR: ${$('irr').textContent}\n`;

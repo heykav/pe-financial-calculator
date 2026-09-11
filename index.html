@@ -49,7 +49,7 @@
       <div class="workspace-menu" id="workspaceMenu" hidden>
         <div class="workspace-menu-heading"><span>WORKSPACES</span><button id="newWorkspaceBtn" type="button">＋ New</button></div>
         <div id="workspaceList"></div>
-        <label class="workspace-create" id="workspaceCreate" hidden><span>Name</span><input id="workspaceName" type="text" placeholder="Project name" maxlength="32" /><button id="createWorkspaceBtn" type="button">Create workspace</button></label>
+        <label class="workspace-create" id="workspaceCreate" hidden><span>Name</span><input id="workspaceName" type="text" placeholder="e.g. Project Atlas" maxlength="32" /><button id="createWorkspaceBtn" type="button">Create workspace</button></label>
       </div>
       <nav aria-label="Primary">
         <p class="nav-label">UNDERWRITE</p>
@@ -58,12 +58,12 @@
         <button class="nav-item" data-view="dcf"><span>◒</span> DCF analysis <kbd>⌘3</kbd></button>
         <button class="nav-item" data-view="returns"><span>◈</span> Returns bridge <kbd>⌘4</kbd></button>
         <p class="nav-label">REFERENCE</p>
-        <button class="nav-item" data-view="comps"><span>▦</span> Comps library <span class="nav-badge">12</span></button>
+        <button class="nav-item" data-view="comps"><span>▦</span> Comps library <span class="nav-badge">4</span></button>
         <button class="nav-item" data-view="sensitivity"><span>↗</span> Sensitivity lab</button>
         <button class="nav-item" data-view="assumptions"><span>◌</span> Assumption sets</button>
       </nav>
       <div class="sidebar-bottom">
-        <div class="data-health"><span class="pulse"></span><div><small>DATA ROOM</small><strong>All systems nominal</strong></div></div>
+        <div class="data-health"><span class="pulse"></span><div><small>MODEL STATUS</small><strong>Local model ready</strong></div></div>
         <button class="nav-item"><span>⚙</span> Settings</button>
         <button class="nav-item"><span>?</span> Keyboard guide</button>
         <div class="profile"><div class="avatar">KA</div><div><strong>Krishna Anubhav</strong><small>Analyst · New York</small></div><span>•••</span></div>
@@ -81,15 +81,15 @@
       <div id="cockpitWorkspace">
       <header class="topbar">
         <div class="breadcrumb"><span class="terminal-prefix">KAVY://</span><span>DEAL ROOM</span><b>/</b><strong>PROJECT ATLAS</strong><span class="live-chip">● LIVE MODEL</span></div>
-        <div class="top-actions"><span class="save-state"><i class="save-light"></i> Saved just now</span><button class="command-trigger" aria-label="Open command palette">⌘ K <span>Command</span></button><button class="icon-button" aria-label="Notifications">♧<i></i></button><button class="icon-button" aria-label="Search">⌕</button><button class="button ghost" id="exportBtn">Export memo <span>↗</span></button></div>
+        <div class="top-actions"><span class="save-state"><i class="save-light"></i> Saved just now</span><button class="command-trigger" aria-label="Show keyboard shortcuts">⌘ K <span>Shortcuts</span></button><button class="icon-button" aria-label="Notifications">♧<i></i></button><button class="icon-button" aria-label="Search">⌕</button><button class="button ghost" id="exportBtn">Export memo <span>↗</span></button></div>
       </header>
 
       <section class="page-head">
         <div><div class="eyebrow">START HERE · PROJECT ATLAS</div><h1>Deal cockpit <span>↗</span></h1><p>Enter a few deal facts, then follow the model from purchase price to investor return.</p></div>
-        <div class="head-actions"><button class="button ghost" id="resetBtn">Reset case</button><button class="button primary" id="runBtn"><span class="run-icon">▶</span> Run underwriting</button></div>
+        <div class="head-actions"><button class="button ghost" id="resetBtn">Restore base case</button><button class="button primary" id="runBtn"><span class="run-icon">↻</span> Recalculate model</button></div>
       </section>
 
-      <section class="orientation-note"><strong>New to private equity?</strong><span>Work left to right: describe the deal, see how it is funded, review the return, then test what could go wrong.</span></section>
+      <section class="orientation-note"><strong>New to private equity?</strong><span>Start with the six deal facts. Results update as you type; use Recalculate model when you want a clean checkpoint.</span></section>
       <div class="market-tape"><span class="tape-label">MODEL TAPE</span><span>ENTRY <b id="tapeEntry">8.2x</b></span><span>LEVERAGE <b id="tapeLeverage">4.5x</b></span><span>IRR <b class="gold" id="tapeIrr">22.4%</b></span><span>MOIC <b class="gold" id="tapeMoic">2.7x</b></span><span>EXIT <b id="tapeExit">9.7x</b></span><span class="tape-clock">LIVE MODEL</span></div>
 
       <section class="ticker-strip">
@@ -100,6 +100,7 @@
         <div class="ticker-spark"><span>BASE</span><svg viewBox="0 0 140 34" preserveAspectRatio="none"><path d="M0 26 L14 24 L28 27 L42 19 L56 21 L70 15 L84 16 L98 8 L112 12 L126 4 L140 6" /></svg></div>
       </section>
 
+      <div class="model-alert" id="modelAlert" role="status" hidden></div>
       <div class="dashboard-grid">
         <section class="panel assumptions-panel">
           <div class="panel-heading"><div><span class="panel-index">01</span><h2>1. Describe the deal</h2><p>Tell us what the company costs, earns, and how long you plan to own it.</p></div><button class="more-button" aria-label="More deal setup actions">•••</button></div>
@@ -121,8 +122,6 @@
             <div class="table-row"><span>EBITDA margin</span><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="21.0" /><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="22.0" /><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="23.0" /><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="24.0" /><input class="mini-input" data-key="margin" type="number" min="0" max="100" value="25.0" /></div>
           </div>
         </section>
-        <div class="model-alert" id="modelAlert" role="status" hidden></div>
-
         <section class="panel returns-panel">
           <div class="panel-heading"><div><span class="panel-index">02</span><h2>2. See the potential return</h2><p>What the investor could make if this plan plays out.</p></div><button class="more-button" aria-label="More return actions">•••</button></div>
           <div class="returns-hero"><div><small>GROSS MOIC · BEFORE FEES</small><strong id="moic">2.7x</strong><span class="positive">Model output · not a guarantee</span></div><div class="radial" id="radial"><div><strong id="irr">22.4%</strong><small>IRR</small></div></div></div>
@@ -152,7 +151,7 @@
       </div>
     </main>
   </div>
-  <div class="toast" id="toast">Model recalculated <span>✓</span></div>
+  <div class="toast" id="toast" role="status" aria-live="polite">Model recalculated <span>✓</span></div>
   <script src="app.js"></script>
 </body>
 </html>
