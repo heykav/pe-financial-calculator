@@ -23,7 +23,7 @@ const workspaceData = {
   dcf: {
     title: 'DCF analysis',
     description: 'Estimate what the business may be worth using the cash it could generate in the future.',
-    html: `<div class="workspace-grid"><div><h3>Discounted cash flow</h3><p class="workspace-note">Unlevered FCF bridge · USD mm</p><div class="model-table"><div><span>PV of forecast cash flows</span><b>$284.6</b></div><div><span>PV of terminal value</span><b>$361.8</b></div><div class="subtotal"><span>Enterprise value</span><b class="gold">$646.4</b></div></div></div><div><h3>Valuation controls</h3><p class="workspace-note">Key DCF assumptions</p><div class="model-table"><div><span>WACC</span><b>9.5%</b></div><div><span>Terminal growth</span><b>2.5%</b></div><div class="subtotal"><span>Implied upside</span><b class="positive">+52.1%</b></div></div></div></div><div class="formula-box"><span>EV = Σ FCF<sub>t</sub> / (1 + WACC)<sup>t</sup> + TV / (1 + WACC)<sup>n</sup></span><b>Model is internally consistent</b></div>`
+    html: `<div class="workspace-grid"><div><h3>Illustrative discounted cash flow</h3><p class="workspace-note">Reference bridge · USD mm · replace with diligence-backed forecast</p><div class="model-table"><div><span>PV of forecast cash flows</span><b>$284.6</b></div><div><span>PV of terminal value</span><b>$361.8</b></div><div class="subtotal"><span>Illustrative enterprise value</span><b class="gold">$646.4</b></div></div></div><div><h3>Valuation assumptions</h3><p class="workspace-note">Reference inputs, not live cockpit outputs</p><div class="model-table"><div><span>WACC</span><b>9.5%</b></div><div><span>Terminal growth</span><b>2.5%</b></div><div class="subtotal"><span>Illustrative upside</span><b class="positive">+52.1%</b></div></div></div></div><div class="formula-box"><span>EV = Σ FCF<sub>t</sub> / (1 + WACC)<sup>t</sup> + TV / (1 + WACC)<sup>n</sup></span><b>Reference view · not investment advice</b></div>`
   },
   returns: {
     title: 'Returns bridge',
@@ -33,7 +33,7 @@ const workspaceData = {
   comps: {
     title: 'Comps library',
     description: 'Compare this company with similar businesses to sense-check the purchase price.',
-    html: `<div class="comps-toolbar"><input placeholder="⌕  Filter companies" aria-label="Filter companies" /><span class="gold mono">12 ACTIVE COMPS</span></div><div class="comp-table"><div class="comp-head"><span>Company</span><span>EV</span><span>EV / Revenue</span><span>EV / EBITDA</span><span>NTM growth</span></div>${[['Atlas peer A','$1,240','3.1x','11.8x','14.2%'],['Atlas peer B','$860','2.6x','9.4x','11.7%'],['Atlas peer C','$2,410','4.2x','13.1x','18.6%'],['Selected case','$425','2.1x','8.2x','12.0%']].map((r,i)=>`<div class="comp-row ${i===3?'selected-row':''}"><span>${r[0]}</span><b>${r[1]}</b><b>${r[2]}</b><b>${r[3]}</b><b class="${i===3?'gold':''}">${r[4]}</b></div>`).join('')}</div>`
+    html: `<div class="comps-toolbar"><input placeholder="⌕  Filter companies" aria-label="Filter companies" /><span class="gold mono">4 ILLUSTRATIVE COMPS SHOWN</span></div><div class="comp-table"><div class="comp-head"><span>Company</span><span>EV</span><span>EV / Revenue</span><span>EV / EBITDA</span><span>NTM growth</span></div>${[['Atlas peer A','$1,240','3.1x','11.8x','14.2%'],['Atlas peer B','$860','2.6x','9.4x','11.7%'],['Atlas peer C','$2,410','4.2x','13.1x','18.6%'],['Selected case','$425','2.1x','8.2x','12.0%']].map((r,i)=>`<div class="comp-row ${i===3?'selected-row':''}"><span>${r[0]}</span><b>${r[1]}</b><b>${r[2]}</b><b>${r[3]}</b><b class="${i===3?'gold':''}">${r[4]}</b></div>`).join('')}</div>`
   },
   sensitivity: {
     title: 'Sensitivity lab',
@@ -145,6 +145,21 @@ function wireUiActions() {
   document.querySelector('[aria-label="Notifications"]')?.addEventListener('click', () => showToast('No new notifications'));
   document.querySelector('[aria-label="Search"]')?.addEventListener('click', () => showToast('Search is ready — try the command palette'));
   document.querySelectorAll('.sidebar-bottom .nav-item').forEach((button) => button.addEventListener('click', () => showToast(button.textContent.includes('Settings') ? 'Settings panel ready' : '⌘1–⌘4 switch workspaces')));
+  document.querySelectorAll('.checklist input').forEach((input) => input.addEventListener('change', updateReadiness));
+}
+
+function updateReadiness() {
+  const checks = [...document.querySelectorAll('.checklist input')];
+  const complete = checks.filter((input) => input.checked).length;
+  $('readiness').textContent = `${Math.round((complete / Math.max(checks.length, 1)) * 100)}% complete`;
+  document.querySelectorAll('.checklist label').forEach((label) => {
+    const input = label.querySelector('input');
+    const status = label.querySelector('em');
+    if (status) {
+      status.textContent = input.checked ? 'Done' : 'Open';
+      status.classList.toggle('pending', !input.checked);
+    }
+  });
 }
 
 function saveCase(key = activeCase) {
@@ -166,6 +181,7 @@ function selectCase(key) {
   document.querySelectorAll('[data-key="margin"]').forEach((el, i) => { el.value = selected.margin[i]; });
   const context = $('caseContext');
   if (context) context.innerHTML = `<strong>${caseLabels[key].name}</strong><span>${caseLabels[key].description}</span>`;
+  $('activeCaseStatus').textContent = caseLabels[key].name.toUpperCase();
   calculate();
 }
 
@@ -227,6 +243,7 @@ function calculate() {
       alert.textContent = validationError;
     }
     ['entryMultiple', 'entryEquity', 'exitEquity', 'valueCreation', 'moic', 'irr', 'exitMultiple'].forEach((id) => { if ($(id)) $(id).textContent = '—'; });
+    if ($('modelStatus')) $('modelStatus').textContent = 'NEEDS ATTENTION';
     return;
   }
   inputs.forEach((id) => $(id).removeAttribute('aria-invalid'));
@@ -234,6 +251,7 @@ function calculate() {
     alert.hidden = true;
     alert.textContent = '';
   }
+  if ($('modelStatus')) $('modelStatus').textContent = 'CASE IS CLEAN';
   const ev = raw.ev;
   const ebitda = raw.ebitda;
   const debtMultiple = raw.debtMultiple;
@@ -261,6 +279,7 @@ function calculate() {
   $('moic').textContent = `${moic.toFixed(1)}x`;
   $('irr').textContent = `${irr.toFixed(1)}%`;
   $('exitMultiple').textContent = `${exitMultiple.toFixed(1)}x`;
+  [['tapeEntry', `${entryMultiple.toFixed(1)}x`], ['tapeLeverage', `${debtMultiple.toFixed(1)}x`], ['tapeIrr', `${irr.toFixed(1)}%`], ['tapeMoic', `${moic.toFixed(1)}x`], ['tapeExit', `${exitMultiple.toFixed(1)}x`]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
   const bridge = {
     entry: entryEquity,
     debt: debtPaydown,
@@ -304,6 +323,7 @@ $('runBtn').addEventListener('click', () => { calculate(); showToast('Model reca
 $('resetBtn').addEventListener('click', () => {
   inputs.forEach((id) => { $(id).value = state.defaultValues[id]; });
   calculate();
+  updateReadiness();
   showToast('Base case restored');
 });
 $('exportBtn').addEventListener('click', () => {
