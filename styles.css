@@ -204,6 +204,9 @@ footer a{color:var(--muted)}
 .status-summary strong{font:12px var(--mono);color:var(--accent)}.status-summary p{margin:14px 0 0;color:var(--muted);font-size:11px;line-height:1.5}
 .hide-teaching-notes .workspace-help,.hide-teaching-notes .orientation-note{display:none}
 .reduced-motion *, .reduced-motion *::before, .reduced-motion *::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}
+.comp-row[hidden]{display:none}
+.sensitivity-note{margin:-7px 0 14px;color:var(--faint);font:9px var(--mono);letter-spacing:.02em}
+.comp-row[hidden]{display:none!important}
 @media(max-width:720px){
   .nav-item,.workspace-switcher,.data-health,.command-trigger,.button,.chart-filter,.more-button,.full-link{min-height:44px}
   .input-wrap,.calculated{min-height:42px;height:42px}
