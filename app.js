@@ -1,4 +1,7 @@
 const $ = (id) => document.getElementById(id);
+const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+}[character]));
 const inputs = ['ev','ebitda','debtMultiple','interest','hold'];
 const state = { defaultValues: Object.fromEntries(inputs.map((id) => [id, $(id).value])) };
 const caseLabels = {
@@ -87,7 +90,7 @@ function wireUiActions() {
   const workspaceMenu = $('workspaceMenu');
   const workspaceList = $('workspaceList');
   const renderWorkspaces = () => {
-    workspaceList.innerHTML = workspaces.map((name) => `<button type="button" class="workspace-option ${name === activeWorkspace ? 'active' : ''}" data-workspace="${name}"><span class="status-dot"></span><span>${name}</span>${name === activeWorkspace ? '<b>✓</b>' : ''}</button>`).join('');
+    workspaceList.innerHTML = workspaces.map((name) => `<button type="button" class="workspace-option ${name === activeWorkspace ? 'active' : ''}" data-workspace="${escapeHtml(name)}"><span class="status-dot"></span><span>${escapeHtml(name)}</span>${name === activeWorkspace ? '<b>✓</b>' : ''}</button>`).join('');
   };
   renderWorkspaces();
   workspaceSwitcher?.addEventListener('click', () => {

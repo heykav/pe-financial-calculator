@@ -11,6 +11,9 @@
   FORM: Operate-mode dashboard, replacing the dense terminal treatment with a composed application shell.
   -->
   <meta name="theme-color" content="#09090b" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; upgrade-insecure-requests" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
   <meta name="description" content="KAVY is a free browser-based private equity and investment banking finance calculator for LBO underwriting, sponsor returns, DCF valuation, deal comps, MOIC, IRR, and sensitivity analysis." />
   <meta name="keywords" content="private equity calculator, LBO calculator, leveraged buyout model, investment banking finance calculator, sponsor returns, MOIC calculator, IRR calculator, DCF valuation, deal comps, hedge fund analysis" />
   <meta name="author" content="KAVY contributors" />
@@ -32,9 +35,6 @@
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is KAVY?","acceptedAnswer":{"@type":"Answer","text":"KAVY is a free browser-based finance calculator for illustrative private equity underwriting, LBO returns, DCF reference analysis, deal comps, and IRR sensitivity."}},{"@type":"Question","name":"Is KAVY investment advice?","acceptedAnswer":{"@type":"Answer","text":"No. KAVY is an educational and illustrative analysis tool and does not replace financial, legal, tax, accounting, lender, or investment committee diligence."}},{"@type":"Question","name":"Does KAVY send deal data to a server?","acceptedAnswer":{"@type":"Answer","text":"KAVY is a static browser application. It does not require an account or transmit entered assumptions to an application server."}}]}
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -150,7 +150,7 @@
         </div>
         <div class="console-log"><span>› atlas.run --iterations=10000 --seed=42 --distribution=lognormal</span><span id="scenarioStatus">ready · 0.00s</span></div>
       </section>
-      <footer><span>KAVY Private Markets OS · Confidential working model</span><span>USD unless otherwise noted · <a href="https://github.com/heykav/pe-financial-calculator/commits/main">Changelog</a> · <a href="https://github.com/heykav/pe-financial-calculator" target="_blank" rel="noreferrer">Contribute on GitHub ↗</a></span></footer>
+      <footer><span>KAVY Private Markets OS · Confidential working model</span><span>USD unless otherwise noted · <a href="https://github.com/heykav/pe-financial-calculator/commits/main">Changelog</a> · <a href="https://github.com/heykav/pe-financial-calculator/blob/main/PRIVACY.md" target="_blank" rel="noreferrer">Privacy</a> · <a href="https://github.com/heykav/pe-financial-calculator" target="_blank" rel="noreferrer">Contribute on GitHub ↗</a></span></footer>
       </div>
     </main>
   </div>

@@ -139,6 +139,8 @@ Treat the outputs as a structured first-pass conversation starter. Replace illus
 
 KAVY runs as static HTML, CSS, and JavaScript. It does not require an account and does not transmit entered assumptions to an application server. Do not enter confidential, material non-public, personally identifiable, or restricted client information into a public browser demo.
 
+Read [`PRIVACY.md`](PRIVACY.md) for the deployment data boundary and GDPR/CCPA-oriented privacy controls. Read [`SECURITY.md`](SECURITY.md) for security reporting and OSINT boundaries.
+
 ## Run locally
 
 The project has no package manager, framework, or build step:
@@ -167,6 +169,8 @@ The browser preview is the source of truth for interaction testing. Keep the con
 ├── app.js                    # Model calculations, state, routing, and interactions
 ├── styles.css                # KAVY design system and responsive layout
 ├── DESIGN.md                 # Visual language and component grammar
+├── PRIVACY.md                # GDPR/CCPA-oriented privacy notice
+├── SECURITY.md               # Privacy, OSINT boundaries, and security controls
 ├── favicon.svg               # KAVY browser icon
 ├── robots.txt                # Crawler guidance
 ├── sitemap.xml               # GitHub Pages sitemap
@@ -188,6 +192,8 @@ Bug reports, documentation improvements, accessibility fixes, model-review notes
 6. Include before/after screenshots for meaningful visual changes.
 
 See [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md) for the repository standards.
+See [`SECURITY.md`](SECURITY.md) for the privacy boundary, vulnerability
+reporting guidance, and ISO/IEC 27001-aligned controls.
 
 ## Independent project notice
 

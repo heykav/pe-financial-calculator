@@ -1,6 +1,6 @@
 # Contributing to Northstar
 
-Northstar is intentionally dependency-light: the calculator is plain HTML, CSS,
+KAVY is intentionally dependency-light: the calculator is plain HTML, CSS,
 and JavaScript so the math is inspectable and the app can be hosted anywhere.
 
 ## Development
@@ -16,4 +16,8 @@ and JavaScript so the math is inspectable and the app can be hosted anywhere.
 - Keep all financial calculations deterministic and explainable.
 - Prefer accessible labels, semantic HTML, and progressive enhancement.
 - Do not add tracking or send deal data to a server.
+- Preserve the Content Security Policy and escape any user-controlled content
+  before rendering it into HTML.
+- Treat `SECURITY.md` as the source of truth for vulnerability reporting and
+  OSINT/privacy boundaries.
 - Include a before/after screenshot for material visual changes.
