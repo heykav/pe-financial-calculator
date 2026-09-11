@@ -35,7 +35,7 @@
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Rivet?","acceptedAnswer":{"@type":"Answer","text":"Rivet is a free browser-based finance calculator for illustrative private equity underwriting, LBO returns, DCF reference analysis, deal comps, and IRR sensitivity."}},{"@type":"Question","name":"Is Rivet investment advice?","acceptedAnswer":{"@type":"Answer","text":"No. Rivet is an educational and illustrative analysis tool and does not replace financial, legal, tax, accounting, lender, or investment committee diligence."}},{"@type":"Question","name":"Does Rivet send deal data to a server?","acceptedAnswer":{"@type":"Answer","text":"Rivet is a static browser application. It does not require an account or transmit entered assumptions to an application server."}}]}
   </script>
-  <link rel="stylesheet" href="styles.css?v=416bf51" />
+  <link rel="stylesheet" href="styles.css?v=9802298-ui" />
 </head>
 <body>
   <div class="app-shell">
@@ -66,7 +66,7 @@
         <button class="nav-item" data-view="assumptions"><span>◌</span> Assumption sets</button>
       </nav>
       <div class="sidebar-bottom">
-        <button class="data-health" id="modelStatusButton" type="button"><span class="pulse"></span><div><small>MODEL STATUS</small><strong>Local model ready</strong></div></button>
+        <button class="data-health" id="modelStatusButton" type="button"><span class="pulse"></span><div><small>MODEL STATUS</small><strong>Input checks pass</strong></div></button>
         <button class="nav-item" id="settingsButton" type="button"><span>⚙</span> Settings</button>
         <button class="nav-item" id="keyboardButton" type="button"><span>?</span> Keyboard guide</button>
         <div class="profile"><div class="avatar">KA</div><div><strong>Krishna Anubhav</strong><small>Analyst · New York</small></div><span>•••</span></div>
@@ -98,7 +98,7 @@
       <section class="ticker-strip">
         <div><small>MODEL STATUS</small><strong><span class="status-dot"></span><span id="modelStatus">INPUT CHECKS PASS</span></strong></div>
         <div><small>LAST RUN</small><strong id="lastRun">Today · 09:42:18 ET</strong></div>
-        <div><small>MODEL STATUS</small><strong>Illustrative <span class="version-tag">LOCAL</span></strong></div>
+        <div><small>MODEL TYPE</small><strong>Illustrative <span class="version-tag">LOCAL</span></strong></div>
         <div><small>ACTIVE CASE</small><strong id="activeCaseStatus">BASE CASE</strong></div>
         <div class="ticker-spark"><span>BASE</span><svg viewBox="0 0 140 34" preserveAspectRatio="none"><path d="M0 26 L14 24 L28 27 L42 19 L56 21 L70 15 L84 16 L98 8 L112 12 L126 4 L140 6" /></svg></div>
       </section>
@@ -164,6 +164,6 @@
     </div>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite">Model recalculated <span>✓</span></div>
-  <script src="app.js?v=416bf51"></script>
+  <script src="app.js?v=9802298-ui"></script>
 </body>
 </html>

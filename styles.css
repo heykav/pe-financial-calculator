@@ -187,7 +187,7 @@ footer a{color:var(--muted)}
   .page-head h1{line-height:1.05}
   .head-actions .button{min-height:44px}
   .workspace-actions{display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px}
-  .workspace-help{display:grid;gap:4px;margin-bottom:20px;padding:13px 15px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;background:var(--surface-2)}
+  .workspace-help{display:grid;gap:4px;margin-bottom:20px;padding:13px 15px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2)}
   .workspace-help strong{font-size:12px;color:var(--text)}
   .workspace-help span{color:var(--muted);font-size:11px;line-height:1.55}
 .data-health{width:100%;text-align:left;background:transparent;color:inherit;font:inherit;cursor:pointer}
@@ -207,7 +207,18 @@ footer a{color:var(--muted)}
 .comp-row[hidden]{display:none}
 .sensitivity-note{margin:-7px 0 14px;color:var(--faint);font:9px var(--mono);letter-spacing:.02em}
 .comp-row[hidden]{display:none!important}
+.sidebar{position:sticky;top:0;height:100vh;align-self:flex-start;overflow-y:auto;overscroll-behavior:contain}
+.sidebar-bottom{position:sticky;bottom:0;margin-top:auto;padding-top:12px;background:#0d0d0f}
+.data-health{border-radius:6px;transition:background .15s ease,border-color .15s ease}
+.data-health:hover{background:var(--surface-2);border-color:var(--line-strong)}
+.status-summary-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 0 14px;border-bottom:1px solid var(--line)}
+.status-summary-head small{color:var(--faint);font:9px var(--mono);letter-spacing:.08em}
+.status-pill{display:inline-flex;align-items:center;gap:7px;border:1px solid #286447;border-radius:999px;padding:5px 8px;color:#b9e8c9;font:10px var(--mono)}
+.status-pill i{width:6px;height:6px;border-radius:50%;background:var(--positive)}
+.status-summary p{padding-top:2px}
 @media(max-width:720px){
+  .sidebar{position:sticky;top:0;height:100vh}
+  .sidebar-bottom{padding-top:8px}
   .nav-item,.workspace-switcher,.data-health,.command-trigger,.button,.chart-filter,.more-button,.full-link{min-height:44px}
   .input-wrap,.calculated{min-height:42px;height:42px}
   .bridge-bars{gap:5px;min-width:0}
