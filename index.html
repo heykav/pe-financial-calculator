@@ -41,10 +41,15 @@
         <div class="brand-mark">K</div>
         <div><strong>KAVY</strong><span>PRIVATE MARKETS OS</span></div>
       </div>
-      <div class="workspace-switcher">
+      <button class="workspace-switcher" id="workspaceSwitcher" aria-expanded="false" aria-controls="workspaceMenu">
         <span class="status-dot"></span>
         <div><small>ACTIVE WORKSPACE</small><strong>Project Atlas</strong></div>
         <span class="chevron">⌄</span>
+      </button>
+      <div class="workspace-menu" id="workspaceMenu" hidden>
+        <div class="workspace-menu-heading"><span>WORKSPACES</span><button id="newWorkspaceBtn" type="button">＋ New</button></div>
+        <div id="workspaceList"></div>
+        <label class="workspace-create" id="workspaceCreate" hidden><span>Name</span><input id="workspaceName" type="text" placeholder="Project name" maxlength="32" /><button id="createWorkspaceBtn" type="button">Create workspace</button></label>
       </div>
       <nav aria-label="Primary">
         <p class="nav-label">UNDERWRITE</p>
@@ -97,7 +102,8 @@
       <div class="dashboard-grid">
         <section class="panel assumptions-panel">
           <div class="panel-heading"><div><span class="panel-index">01</span><h2>Transaction assumptions</h2><p>Toggle the inputs that move the deal.</p></div><button class="more-button">•••</button></div>
-          <div class="segmented"><button class="selected">Base case</button><button>Downside</button><button>Upside</button><button class="add-case">＋</button></div>
+          <div class="segmented" role="tablist" aria-label="Underwriting cases"><button class="selected" data-case="base" role="tab" aria-selected="true">Base case</button><button data-case="downside" role="tab" aria-selected="false">Downside</button><button data-case="upside" role="tab" aria-selected="false">Upside</button><button class="add-case" type="button" aria-label="Create case">＋</button></div>
+          <div class="case-context" id="caseContext"><strong>Base case</strong><span>Management plan · current underwriting view</span></div>
           <div class="form-grid">
             <label class="field"><span>Enterprise value <em>USD mm</em></span><div class="input-wrap"><span>$</span><input id="ev" type="number" value="425" step="5" /></div></label>
             <label class="field"><span>Entry EBITDA <em>FY2025E</em></span><div class="input-wrap"><span>$</span><input id="ebitda" type="number" value="52" step="1" /></div></label>

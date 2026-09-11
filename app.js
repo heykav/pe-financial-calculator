@@ -1,6 +1,19 @@
 const $ = (id) => document.getElementById(id);
 const inputs = ['ev','ebitda','debtMultiple','interest','hold'];
 const state = { defaultValues: Object.fromEntries(inputs.map((id) => [id, $(id).value])) };
+const caseLabels = {
+  base: { name: 'Base case', description: 'Management plan · current underwriting view' },
+  downside: { name: 'Downside', description: 'Revenue haircut · margin compression · conservative deleveraging' },
+  upside: { name: 'Upside', description: 'Pricing expansion · accelerated growth and paydown' }
+};
+const caseState = {
+  base: { ev: '425', ebitda: '52', debtMultiple: '4.5', interest: '8.25', hold: '5', growth: ['12.0', '11.0', '10.0', '9.0', '8.0'], margin: ['21.0', '22.0', '23.0', '24.0', '25.0'] },
+  downside: { ev: '400', ebitda: '49', debtMultiple: '4.0', interest: '9.25', hold: '5', growth: ['7.0', '6.0', '5.0', '4.0', '3.0'], margin: ['19.0', '19.5', '20.0', '20.5', '21.0'] },
+  upside: { ev: '450', ebitda: '55', debtMultiple: '5.0', interest: '7.50', hold: '4', growth: ['16.0', '15.0', '14.0', '13.0', '12.0'], margin: ['22.0', '23.5', '25.0', '26.0', '27.0'] }
+};
+let activeCase = 'base';
+const workspaces = ['Project Atlas'];
+let activeWorkspace = 'Project Atlas';
 const workspaceData = {
   lbo: {
     title: 'LBO model',
@@ -70,9 +83,47 @@ document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.addEven
 }));
 
 function wireUiActions() {
+  const workspaceSwitcher = $('workspaceSwitcher');
+  const workspaceMenu = $('workspaceMenu');
+  const workspaceList = $('workspaceList');
+  const renderWorkspaces = () => {
+    workspaceList.innerHTML = workspaces.map((name) => `<button type="button" class="workspace-option ${name === activeWorkspace ? 'active' : ''}" data-workspace="${name}"><span class="status-dot"></span><span>${name}</span>${name === activeWorkspace ? '<b>✓</b>' : ''}</button>`).join('');
+  };
+  renderWorkspaces();
+  workspaceSwitcher?.addEventListener('click', () => {
+    workspaceMenu.hidden = !workspaceMenu.hidden;
+    workspaceSwitcher.setAttribute('aria-expanded', String(!workspaceMenu.hidden));
+  });
+  $('newWorkspaceBtn')?.addEventListener('click', () => {
+    $('workspaceCreate').hidden = false;
+    $('workspaceName').focus();
+  });
+  $('createWorkspaceBtn')?.addEventListener('click', () => {
+    const name = $('workspaceName').value.trim() || `Project ${workspaces.length + 1}`;
+    if (workspaces.includes(name)) { showToast('Workspace name already exists'); return; }
+    workspaces.push(name);
+    activeWorkspace = name;
+    $('workspaceSwitcher').querySelector('strong').textContent = name;
+    $('workspaceName').value = '';
+    $('workspaceCreate').hidden = true;
+    renderWorkspaces();
+    showToast(`${name} workspace created`);
+  });
+  workspaceList?.addEventListener('click', (event) => {
+    const option = event.target.closest('[data-workspace]');
+    if (!option) return;
+    activeWorkspace = option.dataset.workspace;
+    $('workspaceSwitcher').querySelector('strong').textContent = activeWorkspace;
+    renderWorkspaces();
+    workspaceMenu.hidden = true;
+    workspaceSwitcher.setAttribute('aria-expanded', 'false');
+    showToast(`${activeWorkspace} workspace selected`);
+  });
   document.querySelectorAll('.segmented button:not(.add-case)').forEach((button) => button.addEventListener('click', () => {
+    selectCase(button.dataset.case);
     document.querySelectorAll('.segmented button').forEach((item) => item.classList.remove('selected'));
     button.classList.add('selected');
+    document.querySelectorAll('.segmented button[data-case]').forEach((item) => item.setAttribute('aria-selected', String(item === button)));
     showToast(`${button.textContent.trim()} loaded`);
   }));
   document.querySelectorAll('.more-button').forEach((button) => button.addEventListener('click', () => showToast('More actions available in the command palette')));
@@ -81,7 +132,7 @@ function wireUiActions() {
     button.classList.add('active');
     showToast(`${button.textContent} view selected`);
   }));
-  document.querySelector('.segmented .add-case')?.addEventListener('click', () => showToast('New scenario case created'));
+  document.querySelector('.segmented .add-case')?.addEventListener('click', () => showToast('Use Assumption sets to create a named case'));
   document.querySelector('.full-link')?.addEventListener('click', () => showToast('IC prep checklist opened'));
   document.querySelector('.command-trigger')?.addEventListener('click', () => showToast('Command palette: ⌘1 cockpit · ⌘2 LBO · ⌘3 DCF · ⌘4 returns'));
   document.querySelector('[aria-label="Notifications"]')?.addEventListener('click', () => showToast('No new notifications'));
@@ -89,16 +140,39 @@ function wireUiActions() {
   document.querySelectorAll('.sidebar-bottom .nav-item').forEach((button) => button.addEventListener('click', () => showToast(button.textContent.includes('Settings') ? 'Settings panel ready' : '⌘1–⌘4 switch workspaces')));
 }
 
+function saveCase(key = activeCase) {
+  caseState[key] = {
+    ...caseState[key],
+    ...Object.fromEntries(inputs.map((id) => [id, $(id).value])),
+    growth: [...document.querySelectorAll('[data-key="growth"]')].map((el) => el.value),
+    margin: [...document.querySelectorAll('[data-key="margin"]')].map((el) => el.value)
+  };
+}
+
+function selectCase(key) {
+  if (!caseState[key]) return;
+  saveCase();
+  activeCase = key;
+  const selected = caseState[key];
+  inputs.forEach((id) => { $(id).value = selected[id]; });
+  document.querySelectorAll('[data-key="growth"]').forEach((el, i) => { el.value = selected.growth[i]; });
+  document.querySelectorAll('[data-key="margin"]').forEach((el, i) => { el.value = selected.margin[i]; });
+  const context = $('caseContext');
+  if (context) context.innerHTML = `<strong>${caseLabels[key].name}</strong><span>${caseLabels[key].description}</span>`;
+  calculate();
+}
+
 wireUiActions();
 document.addEventListener('click', (event) => {
   const target = event.target.closest('button');
   if (!target) return;
   if (target.matches('.segmented button:not(.add-case)')) {
+    selectCase(target.dataset.case);
     document.querySelectorAll('.segmented button').forEach((item) => item.classList.remove('selected'));
     target.classList.add('selected');
     showToast(`${target.textContent.trim()} loaded`);
   } else if (target.matches('.segmented .add-case')) {
-    showToast('New scenario case created');
+    showToast('Use Assumption sets to create a named case');
   } else if (target.matches('.more-button')) {
     showToast('More actions available in the command palette');
   } else if (target.matches('.full-link')) {
