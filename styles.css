@@ -186,5 +186,16 @@ footer a{color:var(--muted)}
   .orientation-note span{line-height:1.35}
   .page-head h1{line-height:1.05}
   .head-actions .button{min-height:44px}
+  .workspace-actions{display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px}
+  .inline-field{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;color:var(--muted);font-size:12px}
+  .inline-field input{width:74px;border:1px solid var(--line-strong);border-radius:5px;background:var(--surface-2);color:var(--text);padding:7px;text-align:right}
+  .sanity-card{display:grid;gap:5px;margin-top:18px;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2)}
+  .sanity-card span{color:var(--accent);font-weight:700;font-size:13px}.sanity-card small{color:var(--muted);line-height:1.5}
+  .assumption-row{width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);display:grid;grid-template-columns:8px 1fr auto;gap:10px;text-align:left;padding:14px 8px;cursor:pointer}
+  .assumption-row:hover,.assumption-row.active{background:var(--surface-2)}.assumption-row small{display:block;color:var(--muted);margin-top:3px}
+  .surface-axis{display:grid;grid-template-columns:105px repeat(7,minmax(48px,1fr));gap:4px;color:var(--muted);font-size:10px;text-align:center;padding-bottom:5px}
+  .surface-axis span:first-child{grid-column:1}.surface-row{display:grid;grid-template-columns:105px repeat(7,minmax(48px,1fr));gap:4px;margin-bottom:4px}
+  .surface-axis-label{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px}
+  .surface-cell{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:4px;color:#151719;font-size:11px}
   .market-tape{font-size:8px}
 }

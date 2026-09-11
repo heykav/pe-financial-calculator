@@ -17,44 +17,70 @@ const caseState = {
 let activeCase = 'base';
 const workspaces = ['Project Atlas'];
 let activeWorkspace = 'Project Atlas';
+let currentModel = null;
+const dcfState = { wacc: 9.5, terminalGrowth: 2.5 };
 const workspaceData = {
   lbo: {
     title: 'LBO model',
     description: 'See where the purchase money comes from, where it goes, and how much debt remains.',
-    html: `<div class="workspace-grid"><div><h3>Sources & uses</h3><p class="workspace-note">Capitalization at close · USD mm</p><div class="model-table"><div><span>Purchase enterprise value</span><b id="wsEv">$425.0</b></div><div><span>Refinance existing debt</span><b id="wsRefi">($0.0)</b></div><div class="subtotal"><span>Total uses</span><b id="wsUses">$425.0</b></div></div></div><div><h3>Capital structure</h3><p class="workspace-note">Debt capacity and sponsor funding</p><div class="model-table"><div><span>Senior secured debt</span><b id="wsDebt">$234.0</b></div><div><span>Sponsor equity</span><b id="wsSponsor">$191.0</b></div><div class="subtotal"><span>Total sources</span><b id="wsSources">$425.0</b></div></div></div></div><div class="workspace-grid lower"><div><h3>Operating leverage</h3><div class="metric-row"><span>Entry debt / EBITDA</span><strong id="wsLev">4.5x</strong></div><div class="metric-row"><span>Exit debt / EBITDA</span><strong id="wsExitLev">0.4x</strong></div></div><div><h3>Debt paydown</h3><div class="metric-row"><span>Cash sweep assumption</span><strong>80.0%</strong></div><div class="metric-row"><span>Interest coverage</span><strong class="positive">3.2x</strong></div></div></div>`
+    html: `<div class="workspace-actions"><button class="button mini" id="refreshLbo">↻ Refresh linked case</button><button class="button mini" id="exportLbo">Export LBO CSV ↧</button></div><div class="workspace-grid"><div><h3>Sources & uses</h3><p class="workspace-note">Capitalization at close · USD mm · linked to ${escapeHtml(caseLabels[activeCase].name)}</p><div class="model-table"><div><span>Purchase enterprise value</span><b id="wsEv">—</b></div><div><span>Refinance existing debt</span><b id="wsRefi">$0.0</b></div><div class="subtotal"><span>Total uses</span><b id="wsUses">—</b></div></div></div><div><h3>Capital structure</h3><p class="workspace-note">Debt sizing = EBITDA × debt / EBITDA</p><div class="model-table"><div><span>Senior secured debt</span><b id="wsDebt">—</b></div><div><span>Sponsor equity</span><b id="wsSponsor">—</b></div><div class="subtotal"><span>Total sources</span><b id="wsSources">—</b></div></div></div></div><div class="workspace-grid lower"><div><h3>Operating leverage</h3><div class="metric-row"><span>Entry debt / EBITDA</span><strong id="wsLev">—</strong></div><div class="metric-row"><span>Exit debt / EBITDA</span><strong id="wsExitLev">—</strong></div></div><div><h3>Debt paydown</h3><div class="metric-row"><span>Debt repaid</span><strong id="wsPaydown">—</strong></div><div class="metric-row"><span>Exit debt</span><strong id="wsExitDebt">—</strong></div></div></div>`
   },
   dcf: {
     title: 'DCF analysis',
     description: 'Estimate what the business may be worth using the cash it could generate in the future.',
-    html: `<div class="workspace-grid"><div><h3>Illustrative discounted cash flow</h3><p class="workspace-note">Reference bridge · USD mm · replace with diligence-backed forecast</p><div class="model-table"><div><span>PV of forecast cash flows</span><b>$284.6</b></div><div><span>PV of terminal value</span><b>$361.8</b></div><div class="subtotal"><span>Illustrative enterprise value</span><b class="gold">$646.4</b></div></div></div><div><h3>Valuation assumptions</h3><p class="workspace-note">Reference inputs, not live cockpit outputs</p><div class="model-table"><div><span>WACC</span><b>9.5%</b></div><div><span>Terminal growth</span><b>2.5%</b></div><div class="subtotal"><span>Illustrative upside</span><b class="positive">+52.1%</b></div></div></div></div><div class="formula-box"><span>EV = Σ FCF<sub>t</sub> / (1 + WACC)<sup>t</sup> + TV / (1 + WACC)<sup>n</sup></span><b>Reference view · not investment advice</b></div>`
+    html: `<div class="workspace-grid"><div><h3>Linked DCF</h3><p class="workspace-note">Illustrative · forecast EBITDA linked to active case · USD mm</p><div class="model-table"><div><span>PV of forecast cash flows</span><b id="dcfPv">—</b></div><div><span>PV of terminal value</span><b id="dcfTerminal">—</b></div><div class="subtotal"><span>Enterprise value</span><b class="gold" id="dcfEv">—</b></div></div></div><div><h3>Editable valuation inputs</h3><p class="workspace-note">Not market data; change to test methodology</p><label class="inline-field">WACC <input id="dcfWacc" type="number" min="1" max="30" step=".25" value="9.5">%</label><label class="inline-field">Terminal growth <input id="dcfGrowth" type="number" min="-2" max="8" step=".25" value="2.5">%</label><div class="metric-row"><span>Upside / (downside) vs entry EV</span><strong id="dcfUpside">—</strong></div></div></div><div class="formula-box"><span>EV = Σ FCF<sub>t</sub> / (1 + WACC)<sup>t</sup> + [FCF<sub>n+1</sub> / (WACC − g)] / (1 + WACC)<sup>n</sup></span><b>Illustrative method · no fees, taxes, capex or working capital</b></div>`
   },
   returns: {
     title: 'Returns bridge',
     description: 'Understand whether returns come from business growth, paying down debt, or selling at a higher price.',
-    html: `<div class="returns-workspace"><div class="return-hero-large"><small>BASE CASE NET IRR</small><strong id="wsIrr">22.4%</strong><span class="positive">Within investment committee hurdle range</span></div><div class="return-drivers"><div><span>EBITDA growth</span><b class="positive">48%</b><i style="width:48%"></i></div><div><span>Debt paydown</span><b class="positive">32%</b><i style="width:32%"></i></div><div><span>Multiple expansion</span><b class="gold">20%</b><i class="gold-bar" style="width:20%"></i></div></div></div><div class="formula-box"><span>MOIC = Exit equity / Entry equity</span><b id="wsMoic">2.7x gross / 22.4% IRR</b></div>`
+    html: `<div class="returns-workspace"><div class="return-hero-large"><small>GROSS IRR · BEFORE FEES</small><strong id="wsIrr">—</strong><span class="workspace-note">Linked to active case; not net investor returns</span></div><div class="return-drivers"><div><span>EBITDA growth</span><b class="positive" id="driverEbitda">—</b><i id="driverEbitdaBar"></i></div><div><span>Debt paydown</span><b class="positive" id="driverDebt">—</b><i id="driverDebtBar"></i></div><div><span>Multiple movement</span><b class="gold" id="driverMultiple">—</b><i class="gold-bar" id="driverMultipleBar"></i></div></div><p class="workspace-note">Drivers are shares of modeled equity value creation; they explain the bridge, not a fee-adjusted attribution.</p></div><div class="formula-box"><span>MOIC = Exit equity / Entry equity · IRR = MOIC<sup>1 / hold</sup> − 1</span><b id="wsMoic">—</b></div>`
   },
   comps: {
     title: 'Comps library',
     description: 'Compare this company with similar businesses to sense-check the purchase price.',
-    html: `<div class="comps-toolbar"><input placeholder="⌕  Filter companies" aria-label="Filter companies" /><span class="gold mono">4 ILLUSTRATIVE COMPS SHOWN</span></div><div class="comp-table"><div class="comp-head"><span>Company</span><span>EV</span><span>EV / Revenue</span><span>EV / EBITDA</span><span>NTM growth</span></div>${[['Atlas peer A','$1,240','3.1x','11.8x','14.2%'],['Atlas peer B','$860','2.6x','9.4x','11.7%'],['Atlas peer C','$2,410','4.2x','13.1x','18.6%'],['Selected case','$425','2.1x','8.2x','12.0%']].map((r,i)=>`<div class="comp-row ${i===3?'selected-row':''}"><span>${r[0]}</span><b>${r[1]}</b><b>${r[2]}</b><b>${r[3]}</b><b class="${i===3?'gold':''}">${r[4]}</b></div>`).join('')}</div>`
+    html: `<div class="comps-toolbar"><input id="compsFilter" placeholder="⌕ Filter illustrative companies" aria-label="Filter companies" /><span class="gold mono">ILLUSTRATIVE · NOT MARKET DATA</span></div><div class="comp-table"><div class="comp-head"><span>Company</span><span>EV</span><span>EV / Revenue</span><span>EV / EBITDA</span><span>NTM growth</span></div>${[['Atlas peer A','$1,240','3.1x','11.8x','14.2%'],['Atlas peer B','$860','2.6x','9.4x','11.7%'],['Atlas peer C','$2,410','4.2x','13.1x','18.6%'],['Selected case','$425','2.1x','8.2x','12.0%']].map((r,i)=>`<div class="comp-row ${i===3?'selected-row':''}"><span>${r[0]}</span><b>${r[1]}</b><b>${r[2]}</b><b>${r[3]}</b><b class="${i===3?'gold':''}">${r[4]}</b></div>`).join('')}</div><div class="sanity-card"><strong>Valuation sanity check</strong><span id="compsSanity">—</span><small>Illustrative peer median EV / EBITDA vs active-case entry multiple; not a market conclusion.</small></div>`
   },
   sensitivity: {
     title: 'Sensitivity lab',
     description: 'Try better and worse outcomes to see which assumptions matter most.',
-    html: `<div class="sensitivity-header"><h3>IRR response surface</h3><span class="workspace-note">Exit multiple × EBITDA CAGR</span></div><div class="large-surface">${[...Array(35)].map((_,i)=>`<b class="surface-cell s${(i%7)+1}">${(13 + (i%7)*2 + Math.floor(i/7)*1.4).toFixed(1)}%</b>`).join('')}</div><div class="legend"><span>Lower return</span><i></i><span>Higher return</span></div>`
+    html: `<div class="workspace-actions"><button class="button mini" id="exportSensitivity">Export sensitivity CSV ↧</button></div><div class="sensitivity-header"><h3>Gross IRR response surface</h3><span class="workspace-note">Exit EV / EBITDA × annual EBITDA growth · active ${escapeHtml(caseLabels[activeCase].name)}</span></div><div class="large-surface" id="workspaceSurface"></div><div class="legend"><span>Lower return</span><i></i><span>Higher return</span></div>`
   },
   assumptions: {
     title: 'Assumption sets',
     description: 'Save and compare the Base, Downside, and Upside stories that drive the model.',
-    html: `<div class="assumption-list"><div class="assumption-row active"><span class="status-dot"></span><div><strong>Base case / Atlas v2.4</strong><small>Updated today · owner: K. Anubhav</small></div><b>ACTIVE</b></div><div class="assumption-row"><span class="status-dot muted-dot"></span><div><strong>Downside / Atlas v2.4D</strong><small>Revenue haircut · margin compression · 5yr hold</small></div><b>READY</b></div><div class="assumption-row"><span class="status-dot muted-dot"></span><div><strong>Upside / Atlas v2.4U</strong><small>Pricing expansion · accelerated deleveraging</small></div><b>READY</b></div></div><button class="button primary" id="newCaseBtn">＋ Create assumption set</button>`
+    html: `<div class="assumption-list">${Object.entries(caseLabels).map(([key,label]) => `<button type="button" class="assumption-row ${key===activeCase?'active':''}" data-assumption-case="${key}"><span class="status-dot ${key===activeCase?'':'muted-dot'}"></span><div><strong>${escapeHtml(label.name)} / linked case</strong><small>${escapeHtml(label.description)}</small></div><b>${key===activeCase?'ACTIVE':'LOAD'}</b></button>`).join('')}</div><button class="button primary" id="newCaseBtn">＋ Copy active case</button><p class="workspace-note">Cases are stored locally in this page only. Copy creates a browser-session case; there is no backend persistence.</p>`
   }
 };
 
 function updateWorkspaceMetrics() {
-  const ev = Number($('ev').value) || 0;
-  const ebitda = Number($('ebitda').value) || 1;
-  const debt = ebitda * (Number($('debtMultiple').value) || 0);
-  [['wsEv', money(ev)], ['wsUses', money(ev)], ['wsDebt', money(debt)], ['wsSponsor', money(ev - debt)], ['wsSources', money(ev)], ['wsLev', `${(debt / ebitda).toFixed(1)}x`], ['wsIrr', $('irr')?.textContent || '22.4%'], ['wsMoic', `${$('moic')?.textContent || '2.7x'} gross / ${$('irr')?.textContent || '22.4%'} IRR`]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
+  if (!currentModel) return;
+  const { ev, ebitda, entryDebt, entryEquity, debtPaydown, exitDebt, exitEbitda, exitEv, exitEquity, entryMultiple, exitMultiple, moic, irr } = currentModel;
+  [['wsEv', money(ev)], ['wsUses', money(ev)], ['wsDebt', money(entryDebt)], ['wsSponsor', money(entryEquity)], ['wsSources', money(ev)], ['wsLev', `${(entryDebt / ebitda).toFixed(1)}x`], ['wsExitLev', `${(exitDebt / Math.max(exitEbitda, 1)).toFixed(1)}x`], ['wsPaydown', money(debtPaydown)], ['wsExitDebt', money(exitDebt)], ['wsIrr', `${irr.toFixed(1)}%`], ['wsMoic', `${moic.toFixed(1)}x gross / ${irr.toFixed(1)}% IRR`]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
+  const dcfWacc = Number($('dcfWacc')?.value ?? dcfState.wacc);
+  const dcfGrowth = Number($('dcfGrowth')?.value ?? dcfState.terminalGrowth);
+  if ($('dcfWacc')) dcfState.wacc = Number.isFinite(dcfWacc) ? dcfWacc : dcfState.wacc;
+  if ($('dcfGrowth')) dcfState.terminalGrowth = Number.isFinite(dcfGrowth) ? dcfGrowth : dcfState.terminalGrowth;
+  if ($('dcfEv')) {
+    const forecasts = currentModel.forecastEbitda;
+    const pv = forecasts.reduce((sum, flow, i) => sum + flow * 0.65 / Math.pow(1 + dcfState.wacc / 100, i + 1), 0);
+    const terminalFcf = forecasts.at(-1) * 0.65 * (1 + dcfState.terminalGrowth / 100);
+    const tv = terminalFcf / Math.max(dcfState.wacc / 100 - dcfState.terminalGrowth / 100, 0.01);
+    const pvTerminal = tv / Math.pow(1 + dcfState.wacc / 100, forecasts.length);
+    const dcfEv = pv + pvTerminal;
+    [['dcfPv', money(pv)], ['dcfTerminal', money(pvTerminal)], ['dcfEv', money(dcfEv)], ['dcfUpside', `${((dcfEv / ev - 1) * 100).toFixed(1)}%`]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
+  }
+  if ($('driverEbitda')) {
+    const total = Math.max(exitEquity - entryEquity, 1);
+    const drivers = { ebitda: Math.max(0, exitEbitda * entryMultiple - ev), debt: debtPaydown, multiple: Math.max(0, exitEv - exitEbitda * entryMultiple) };
+    const shares = { ebitda: drivers.ebitda / total * 100, debt: drivers.debt / total * 100, multiple: drivers.multiple / total * 100 };
+    [['driverEbitda', shares.ebitda], ['driverDebt', shares.debt], ['driverMultiple', shares.multiple]].forEach(([id, value]) => { if ($(id)) $(id).textContent = `${value.toFixed(0)}%`; });
+    [['driverEbitdaBar', shares.ebitda], ['driverDebtBar', shares.debt], ['driverMultipleBar', shares.multiple]].forEach(([id, value]) => { if ($(id)) $(id).style.width = `${Math.min(100, value)}%`; });
+  }
+  if ($('compsSanity')) {
+    const median = 11.8;
+    $('compsSanity').textContent = `Active entry ${entryMultiple.toFixed(1)}x vs illustrative median ${median.toFixed(1)}x · ${entryMultiple < median ? 'below' : 'above'} median by ${Math.abs(entryMultiple - median).toFixed(1)}x`;
+  }
+  renderSurface();
 }
 
 function openWorkspace(view) {
@@ -64,7 +90,11 @@ function openWorkspace(view) {
   $('secondaryWorkspace').hidden = false;
   $('workspaceTitle').textContent = data.title;
   $('workspaceDescription').textContent = data.description;
-  $('workspaceContent').innerHTML = data.html;
+  let workspaceHtml = data.html;
+  if (view === 'assumptions') {
+    workspaceHtml = `<div class="assumption-list">${Object.entries(caseLabels).map(([key, label]) => `<button type="button" class="assumption-row ${key === activeCase ? 'active' : ''}" data-assumption-case="${escapeHtml(key)}"><span class="status-dot ${key === activeCase ? '' : 'muted-dot'}"></span><div><strong>${escapeHtml(label.name)} / linked case</strong><small>${escapeHtml(label.description)}</small></div><b>${key === activeCase ? 'ACTIVE' : 'LOAD'}</b></button>`).join('')}</div><button class="button primary" id="newCaseBtn">＋ Copy active case</button><p class="workspace-note">Cases are stored locally in this page only. Copy creates a browser-session case; there is no backend persistence.</p>`;
+  }
+  $('workspaceContent').innerHTML = workspaceHtml;
   updateWorkspaceMetrics();
   const filter = $('workspaceContent').querySelector('.comps-toolbar input');
   filter?.addEventListener('input', () => {
@@ -73,8 +103,38 @@ function openWorkspace(view) {
       row.hidden = !row.textContent.toLowerCase().includes(query);
     });
   });
-  $('workspaceContent').querySelector('#newCaseBtn')?.addEventListener('click', () => showToast('New case template ready — edit the cockpit assumptions to define it'));
+  $('workspaceContent').querySelector('#dcfWacc')?.addEventListener('input', (event) => { dcfState.wacc = Number(event.target.value); updateWorkspaceMetrics(); });
+  $('workspaceContent').querySelector('#dcfGrowth')?.addEventListener('input', (event) => { dcfState.terminalGrowth = Number(event.target.value); updateWorkspaceMetrics(); });
+  $('workspaceContent').querySelectorAll('[data-assumption-case]').forEach((button) => button.addEventListener('click', () => { selectCase(button.dataset.assumptionCase); openWorkspace('assumptions'); }));
+  $('workspaceContent').querySelector('#newCaseBtn')?.addEventListener('click', () => {
+    const copyKey = `copy-${Object.keys(caseState).length + 1}`;
+    caseState[copyKey] = { ...caseState[activeCase], growth: [...caseState[activeCase].growth], margin: [...caseState[activeCase].margin] };
+    caseLabels[copyKey] = { name: `Copy of ${caseLabels[activeCase].name}`, description: 'Local working copy · edit cockpit inputs to diverge' };
+    selectCase(copyKey);
+    openWorkspace('assumptions');
+    showToast(`${caseLabels[copyKey].name} created in this session`);
+  });
+  $('workspaceContent').querySelector('#refreshLbo')?.addEventListener('click', () => { calculate(); showToast('LBO refreshed from active case'); });
+  $('workspaceContent').querySelector('#exportLbo')?.addEventListener('click', () => exportText('lbo-sources-uses.csv', `Line,USD mm\nPurchase enterprise value,${currentModel.ev.toFixed(1)}\nDebt,${currentModel.entryDebt.toFixed(1)}\nSponsor equity,${currentModel.entryEquity.toFixed(1)}\nDebt paydown,${currentModel.debtPaydown.toFixed(1)}\nExit debt,${currentModel.exitDebt.toFixed(1)}`));
+  $('workspaceContent').querySelector('#exportSensitivity')?.addEventListener('click', () => exportText('active-case-sensitivity.csv', surfaceCsv()));
   document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.classList.toggle('active', item.dataset.view === view));
+}
+
+function renderSurface() {
+  const surface = $('workspaceSurface');
+  if (!surface || !currentModel) return;
+  const multiples = [7, 8, 9, 10, 11];
+  const growths = [-5, 0, 5, 10, 15, 20, 25];
+  const values = [];
+  surface.innerHTML = `<div class="surface-axis"><span>Exit EV / EBITDA ↓</span>${growths.map((g) => `<span>${g}% EBITDA growth →</span>`).join('')}</div>${multiples.map((multiple) => `<div class="surface-row"><span class="surface-axis-label">${multiple.toFixed(1)}x</span>${growths.map((growth) => { const ebitda = currentModel.exitEbitda * Math.pow(1 + growth / 100, currentModel.hold) / Math.pow(1 + (currentModel.growthRate || 0) / 100, currentModel.hold); const equity = Math.max(0, ebitda * multiple - currentModel.exitDebt); const irr = (Math.pow(equity / Math.max(currentModel.entryEquity, 1), 1 / currentModel.hold) - 1) * 100; values.push([multiple, growth, irr]); return `<b class="surface-cell s${Math.max(1, Math.min(7, Math.round(irr / 5)))}">${irr.toFixed(1)}%</b>`; }).join('')}</div>`).join('')}`;
+  surface.dataset.csv = ['Exit multiple, ' + growths.join(',')].concat(multiples.map((multiple, row) => `${multiple.toFixed(1)}x,${values.slice(row * growths.length, (row + 1) * growths.length).map((item) => `${item[2].toFixed(1)}%`).join(',')}`)).join('\n');
+}
+
+function surfaceCsv() { return $('workspaceSurface')?.dataset.csv || ''; }
+function exportText(filename, text) {
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([text], { type: filename.endsWith('.csv') ? 'text/csv' : 'text/plain' }));
+  link.download = filename; link.click(); URL.revokeObjectURL(link.href); showToast(`${filename} exported`);
 }
 
 document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.addEventListener('click', () => {
@@ -308,6 +368,12 @@ function calculate() {
     $(`debtLev${year}`).textContent = `${(closingDebt / Math.max(exitEbitda * ((year + 1) / 5), 1)).toFixed(1)}x`;
     openingDebt = closingDebt;
   }
+  const exitDebt = openingDebt;
+  currentModel = {
+    ev, ebitda, entryDebt, entryEquity, debtPaydown, exitDebt, exitEbitda, exitEv, exitEquity,
+    entryMultiple, exitMultiple, moic, irr, hold, growthRate: growthInputs[0] || 0,
+    forecastEbitda: Array.from({ length: hold }, (_, i) => ebitda * Math.pow(1 + (growthInputs[i] || growthInputs.at(-1) || 0) / 100, i + 1))
+  };
   $('radial').style.background = `conic-gradient(var(--mint) 0 ${Math.min(irr * 3.2, 96)}%, #253541 ${Math.min(irr * 3.2, 96)}% 100%)`;
   $('lastRun').textContent = `Today · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'})} ET`;
   updateWorkspaceMetrics();

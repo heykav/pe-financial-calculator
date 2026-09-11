@@ -114,12 +114,12 @@ The sensitivity grid shows how illustrative IRR changes across exit multiples an
 | Workspace | Purpose |
 | --- | --- |
 | Deal cockpit | Plain-English starting point for assumptions and headline returns. |
-| LBO model | Sources and uses, capitalization, debt, sponsor equity, and operating leverage. |
-| DCF analysis | Clearly labeled illustrative DCF reference bridge. |
-| Returns bridge | A visual explanation of what creates the equity return. |
-| Comps library | Four illustrative comparable-company rows for a valuation sense-check. |
-| Sensitivity lab | A compact IRR response surface across exit and growth assumptions. |
-| Assumption sets | Base, Downside, and Upside cases with separate stored inputs. |
+| LBO model | Live-linked sources & uses, sponsor equity, debt paydown, leverage metrics, and CSV export. |
+| DCF analysis | Live-linked illustrative EBITDA forecast, editable WACC/terminal growth, formula bridge, and entry-value comparison. |
+| Returns bridge | Gross/before-fees MOIC and IRR with EBITDA growth, debt paydown, and multiple-movement contributions. |
+| Comps library | Filterable illustrative rows plus a current-entry-multiple versus illustrative-median sanity check (not market data). |
+| Sensitivity lab | Dynamically calculated gross-IRR grid across exit multiple and EBITDA growth, with CSV export. |
+| Assumption sets | Selectable Base, Downside, and Upside cases linked to cockpit inputs; local copy flow without backend persistence. |
 
 ## Model assumptions and limitations
 
@@ -128,7 +128,7 @@ KAVY is deliberately transparent about what it does not do. It currently does **
 - A complete three-statement financial model.
 - A live debt waterfall, mandatory amortization, cash sweep covenant, or financing term sheet.
 - A tax model, working-capital schedule, capex schedule, or purchase-accounting model.
-- A fully linked DCF or market-data-backed comps database.
+- A full three-statement DCF, market-data-backed comps database, or live market feed. The DCF is a simplified illustrative FCF proxy and comps are intentionally illustrative.
 - Real-time market data, lender quotes, public filings, or proprietary research.
 - Fund-level waterfall economics, management options, fees, carried interest, or preferred equity.
 - A statistically calibrated Monte Carlo simulation.
