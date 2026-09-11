@@ -41,14 +41,14 @@
       </div>
       <nav aria-label="Primary">
         <p class="nav-label">UNDERWRITE</p>
-        <button class="nav-item active"><span>◫</span> Deal cockpit <kbd>⌘1</kbd></button>
-        <button class="nav-item"><span>⌁</span> LBO model <kbd>⌘2</kbd></button>
-        <button class="nav-item"><span>◒</span> DCF analysis <kbd>⌘3</kbd></button>
-        <button class="nav-item"><span>◈</span> Returns bridge <kbd>⌘4</kbd></button>
+        <button class="nav-item active" data-view="cockpit"><span>◫</span> Deal cockpit <kbd>⌘1</kbd></button>
+        <button class="nav-item" data-view="lbo"><span>⌁</span> LBO model <kbd>⌘2</kbd></button>
+        <button class="nav-item" data-view="dcf"><span>◒</span> DCF analysis <kbd>⌘3</kbd></button>
+        <button class="nav-item" data-view="returns"><span>◈</span> Returns bridge <kbd>⌘4</kbd></button>
         <p class="nav-label">REFERENCE</p>
-        <button class="nav-item"><span>▦</span> Comps library <span class="nav-badge">12</span></button>
-        <button class="nav-item"><span>↗</span> Sensitivity lab</button>
-        <button class="nav-item"><span>◌</span> Assumption sets</button>
+        <button class="nav-item" data-view="comps"><span>▦</span> Comps library <span class="nav-badge">12</span></button>
+        <button class="nav-item" data-view="sensitivity"><span>↗</span> Sensitivity lab</button>
+        <button class="nav-item" data-view="assumptions"><span>◌</span> Assumption sets</button>
       </nav>
       <div class="sidebar-bottom">
         <div class="data-health"><span class="pulse"></span><div><small>DATA ROOM</small><strong>All systems nominal</strong></div></div>
@@ -59,6 +59,14 @@
     </aside>
 
     <main class="main-content">
+      <div class="workspace-view" id="secondaryWorkspace" hidden>
+        <section class="panel workspace-hero">
+          <div><div class="eyebrow">KAVY:// WORKSPACE ROUTER</div><h1 id="workspaceTitle">LBO model</h1><p id="workspaceDescription">Build, audit, and stress the transaction mechanics behind the headline returns.</p></div>
+          <div class="workspace-meta"><span class="compute-state"><i></i> LIVE CALCULATION GRAPH</span><span class="gold mono">PROJECT ATLAS / RUN 042</span></div>
+        </section>
+        <section class="panel workspace-content" id="workspaceContent"></section>
+      </div>
+      <div id="cockpitWorkspace">
       <header class="topbar">
         <div class="breadcrumb"><span class="terminal-prefix">KAVY://</span><span>DEAL ROOM</span><b>/</b><strong>PROJECT ATLAS</strong><span class="live-chip">● LIVE MODEL</span></div>
         <div class="top-actions"><span class="save-state"><i class="save-light"></i> Saved just now</span><button class="command-trigger" aria-label="Open command palette">⌘ K <span>Command</span></button><button class="icon-button" aria-label="Notifications">♧<i></i></button><button class="icon-button" aria-label="Search">⌕</button><button class="button ghost" id="exportBtn">Export memo <span>↗</span></button></div>
@@ -126,6 +134,7 @@
         <div class="console-log"><span>› atlas.run --iterations=10000 --seed=42 --distribution=lognormal</span><span id="scenarioStatus">ready · 0.00s</span></div>
       </section>
       <footer><span>KAVY Private Markets OS · Confidential working model</span><span>USD unless otherwise noted · <a href="#">Changelog</a> · <a href="#">Contribute on GitHub ↗</a></span></footer>
+      </div>
     </main>
   </div>
   <div class="toast" id="toast">Model recalculated <span>✓</span></div>
