@@ -175,3 +175,15 @@ footer a{color:var(--muted)}
 @media(max-width:720px){.bottom-grid{min-width:0}.bottom-grid .panel{min-width:0;overflow:hidden}.readiness{flex-shrink:0}.panel-heading>div{min-width:0}.panel-heading h2{white-space:nowrap}}
 .radial{overflow:hidden}.radial strong{font-size:clamp(12px,2vw,16px);letter-spacing:-.08em;white-space:nowrap}.radial small{font-size:9px}
 @media(max-width:900px){.main-content{padding-left:20px;padding-right:20px}.top-actions .save-state,.top-actions .icon-button{display:none}.market-tape{gap:12px}.market-tape span:nth-child(3),.market-tape span:nth-child(6){display:none}.dashboard-grid{grid-template-columns:1fr}.returns-panel .returns-hero{max-width:520px}.radial{width:92px;height:92px}.chart-layout{grid-template-columns:34px 1fr}.chart-callout{display:none}.bottom-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){
+  .nav-item{font-size:0;gap:0;white-space:nowrap;overflow:hidden}
+  .nav-item span:first-child{font-size:16px;flex:0 0 15px}
+  .nav-badge{display:none}
+  .panel-heading h2{white-space:normal;line-height:1.25}
+  .orientation-note{display:grid;grid-template-columns:72px 1fr;align-items:start;gap:9px}
+  .orientation-note strong{line-height:1.25}
+  .orientation-note span{line-height:1.35}
+  .page-head h1{line-height:1.05}
+  .head-actions .button{min-height:44px}
+  .market-tape{font-size:8px}
+}
