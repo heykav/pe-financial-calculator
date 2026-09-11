@@ -63,6 +63,8 @@ button,input{font-family:inherit}
 .orientation-note{display:flex;align-items:center;gap:10px;margin:-8px 0 14px;padding:10px 13px;border:1px solid #5b461e;border-radius:6px;background:var(--accent-soft);color:var(--muted);font-size:12px}
 .orientation-note strong{color:#f4e1b1}
 .orientation-note span{line-height:1.45}
+.model-alert{margin:0 0 14px;padding:10px 13px;border:1px solid #7f332f;border-radius:6px;background:#281513;color:#f2b8b1;font-size:12px}
+.input-wrap:has(input[aria-invalid="true"]){border-color:var(--negative);box-shadow:0 0 0 2px #d9534f22}
 .market-tape b{color:var(--text)}
 .market-tape .gold{color:var(--accent)}
 .ticker-strip{border:1px solid var(--line);border-radius:6px;background:var(--surface);min-height:62px;margin-bottom:16px}

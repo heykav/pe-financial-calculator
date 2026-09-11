@@ -107,7 +107,14 @@ function wireUiActions() {
     $('workspaceName').value = '';
     $('workspaceCreate').hidden = true;
     renderWorkspaces();
+    workspaceMenu.hidden = true;
+    workspaceSwitcher.setAttribute('aria-expanded', 'false');
     showToast(`${name} workspace created`);
+  });
+  document.addEventListener('click', (event) => {
+    if (workspaceMenu.hidden || event.target.closest('#workspaceMenu, #workspaceSwitcher')) return;
+    workspaceMenu.hidden = true;
+    workspaceSwitcher.setAttribute('aria-expanded', 'false');
   });
   workspaceList?.addEventListener('click', (event) => {
     const option = event.target.closest('[data-workspace]');
@@ -194,11 +201,31 @@ function money(value) {
 }
 
 function calculate() {
-  const ev = Number($('ev').value) || 0;
-  const ebitda = Number($('ebitda').value) || 1;
-  const debtMultiple = Number($('debtMultiple').value) || 0;
-  const interest = Number($('interest').value) || 0;
-  const hold = Number($('hold').value) || 1;
+  const raw = Object.fromEntries(inputs.map((id) => [id, Number($(id).value)]));
+  const invalid = [
+    ['ev', 'Purchase price must be greater than zero.'],
+    ['ebitda', 'Current annual profit must be greater than zero.'],
+    ['debtMultiple', 'Borrowing level cannot be negative.'],
+    ['interest', 'Annual interest cannot be negative.'],
+    ['hold', 'Years held must be between 1 and 10.']
+  ].find(([id]) => !Number.isFinite(raw[id]) || raw[id] < Number($(id).min || 0) || (id === 'hold' && raw[id] > 10));
+  const alert = $('modelAlert');
+  if (invalid) {
+    $(invalid[0]).setAttribute('aria-invalid', 'true');
+    if (alert) {
+      alert.hidden = false;
+      alert.textContent = invalid[1];
+    }
+    ['entryMultiple', 'entryEquity', 'exitEquity', 'valueCreation', 'moic', 'irr', 'exitMultiple'].forEach((id) => { if ($(id)) $(id).textContent = '—'; });
+    return;
+  }
+  inputs.forEach((id) => $(id).removeAttribute('aria-invalid'));
+  if (alert) alert.hidden = true;
+  const ev = raw.ev;
+  const ebitda = raw.ebitda;
+  const debtMultiple = raw.debtMultiple;
+  const interest = raw.interest;
+  const hold = raw.hold;
   const entryMultiple = ev / ebitda;
   const entryDebt = ebitda * debtMultiple;
   const entryEquity = ev - entryDebt;
@@ -211,7 +238,7 @@ function calculate() {
   const exitEv = exitEbitda * exitMultiple;
   const interestDrag = Math.max(0, interest - 8.25) * .02;
   const debtPaydown = entryDebt * Math.min(.82, Math.max(.05, .18 + hold * .12 - interestDrag));
-  const exitEquity = exitEv - entryDebt + debtPaydown;
+  const exitEquity = Math.max(0, exitEv - entryDebt + debtPaydown);
   const moic = exitEquity / Math.max(entryEquity, 1);
   const irr = (Math.pow(moic, 1 / hold) - 1) * 100;
   $('entryMultiple').innerHTML = `${entryMultiple.toFixed(1)}x <span>↗</span>`;
