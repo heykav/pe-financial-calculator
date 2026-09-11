@@ -8,6 +8,8 @@
 
 KAVY is an independent, dependency-free private markets calculator designed to make a first-pass underwriting model understandable in a browser. Enter a purchase price, EBITDA, borrowing level, interest rate, ownership period, and operating forecast; the application calculates an explainable sponsor-return view and shows the assumptions that drive it.
 
+Every specialist workspace includes a plain-English “start here” explanation, so a first-time user can understand what to look at before touching the technical outputs.
+
 > **Important:** KAVY is an educational and illustrative analysis tool, not investment advice, a valuation opinion, a regulated financial product, or a substitute for audited financial statements, quality-of-earnings work, lender diligence, legal review, tax advice, or an investment committee process.
 
 ## Table of contents

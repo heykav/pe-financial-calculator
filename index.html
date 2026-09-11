@@ -112,9 +112,9 @@
           <div class="form-grid">
             <label class="field"><span>Purchase price <em>enterprise value · USD mm</em></span><div class="input-wrap"><span>$</span><input id="ev" type="number" value="425" min="1" step="5" /></div></label>
             <label class="field"><span>Current annual profit <em>EBITDA · USD mm</em></span><div class="input-wrap"><span>$</span><input id="ebitda" type="number" value="52" min="1" step="1" /></div></label>
-            <label class="field"><span>Price / profit <em>calculated valuation</em></span><div class="calculated" id="entryMultiple">8.2x <span>↗</span></div></label>
-            <label class="field"><span>Borrowing level <em>debt ÷ EBITDA</em></span><div class="input-wrap"><input id="debtMultiple" type="number" value="4.5" min="0" step="0.25" /><span>x</span></div></label>
-            <label class="field"><span>Annual interest <em>cost of borrowing</em></span><div class="input-wrap"><input id="interest" type="number" value="8.25" min="0" step="0.25" /><span>%</span></div></label>
+            <label class="field"><span>Price / profit <em>how expensive the deal is</em></span><div class="calculated" id="entryMultiple">8.2x <span>↗</span></div></label>
+            <label class="field"><span>Borrowing level <em>loan size ÷ annual profit</em></span><div class="input-wrap"><input id="debtMultiple" type="number" value="4.5" min="0" step="0.25" /><span>x</span></div></label>
+            <label class="field"><span>Annual interest <em>yearly cost of the loan</em></span><div class="input-wrap"><input id="interest" type="number" value="8.25" min="0" step="0.25" /><span>%</span></div></label>
             <label class="field"><span>Years held <em>modeled ownership · 1–5 yrs</em></span><div class="input-wrap"><input id="hold" type="number" value="5" min="1" max="5" step="1" /><span>yrs</span></div></label>
           </div>
           <div class="divider"></div>
@@ -155,6 +155,6 @@
     </main>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite">Model recalculated <span>✓</span></div>
-  <script src="app.js"></script>
+  <script src="app.js?v=beginner-ux-1"></script>
 </body>
 </html>
