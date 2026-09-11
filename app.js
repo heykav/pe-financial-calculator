@@ -50,6 +50,14 @@ function openWorkspace(view) {
   $('workspaceDescription').textContent = data.description;
   $('workspaceContent').innerHTML = data.html;
   updateWorkspaceMetrics();
+  const filter = $('workspaceContent').querySelector('.comps-toolbar input');
+  filter?.addEventListener('input', () => {
+    const query = filter.value.toLowerCase();
+    $('workspaceContent').querySelectorAll('.comp-row').forEach((row) => {
+      row.hidden = !row.textContent.toLowerCase().includes(query);
+    });
+  });
+  $('workspaceContent').querySelector('#newCaseBtn')?.addEventListener('click', () => showToast('New case template created'));
   document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.classList.toggle('active', item.dataset.view === view));
 }
 
@@ -60,6 +68,43 @@ document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.addEven
     document.querySelectorAll('.nav-item[data-view]').forEach((nav) => nav.classList.toggle('active', nav === item));
   } else openWorkspace(item.dataset.view);
 }));
+
+function wireUiActions() {
+  document.querySelectorAll('.segmented button:not(.add-case)').forEach((button) => button.addEventListener('click', () => {
+    document.querySelectorAll('.segmented button').forEach((item) => item.classList.remove('selected'));
+    button.classList.add('selected');
+    showToast(`${button.textContent.trim()} loaded`);
+  }));
+  document.querySelectorAll('.more-button').forEach((button) => button.addEventListener('click', () => showToast('More actions available in the command palette')));
+  document.querySelectorAll('.chart-filter').forEach((button) => button.addEventListener('click', () => {
+    document.querySelectorAll('.chart-filter').forEach((item) => item.classList.remove('active'));
+    button.classList.add('active');
+    showToast(`${button.textContent} view selected`);
+  }));
+  document.querySelector('.segmented .add-case')?.addEventListener('click', () => showToast('New scenario case created'));
+  document.querySelector('.full-link')?.addEventListener('click', () => showToast('IC prep checklist opened'));
+  document.querySelector('.command-trigger')?.addEventListener('click', () => showToast('Command palette: ⌘1 cockpit · ⌘2 LBO · ⌘3 DCF · ⌘4 returns'));
+  document.querySelector('[aria-label="Notifications"]')?.addEventListener('click', () => showToast('No new notifications'));
+  document.querySelector('[aria-label="Search"]')?.addEventListener('click', () => showToast('Search is ready — try the command palette'));
+  document.querySelectorAll('.sidebar-bottom .nav-item').forEach((button) => button.addEventListener('click', () => showToast(button.textContent.includes('Settings') ? 'Settings panel ready' : '⌘1–⌘4 switch workspaces')));
+}
+
+wireUiActions();
+document.addEventListener('click', (event) => {
+  const target = event.target.closest('button');
+  if (!target) return;
+  if (target.matches('.segmented button:not(.add-case)')) {
+    document.querySelectorAll('.segmented button').forEach((item) => item.classList.remove('selected'));
+    target.classList.add('selected');
+    showToast(`${target.textContent.trim()} loaded`);
+  } else if (target.matches('.segmented .add-case')) {
+    showToast('New scenario case created');
+  } else if (target.matches('.more-button')) {
+    showToast('More actions available in the command palette');
+  } else if (target.matches('.full-link')) {
+    showToast('IC prep checklist opened');
+  }
+});
 document.addEventListener('keydown', (event) => {
   if (!(event.metaKey || event.ctrlKey)) return;
   const routes = { '1': 'cockpit', '2': 'lbo', '3': 'dcf', '4': 'returns' };
@@ -178,9 +223,4 @@ $('scenarioBtn').addEventListener('click', () => {
     showToast('Scenario envelope refreshed');
   }, 650);
 });
-document.querySelectorAll('.chart-filter').forEach((button) => button.addEventListener('click', () => {
-  document.querySelectorAll('.chart-filter').forEach((item) => item.classList.remove('active'));
-  button.classList.add('active');
-  showToast(`${button.textContent} view selected`);
-}));
 calculate();
