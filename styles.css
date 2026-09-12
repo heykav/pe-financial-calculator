@@ -318,3 +318,15 @@ body{background:
   .surface-cell{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:4px;color:#151719;font-size:11px}
   .market-tape{font-size:8px}
 }
+
+/* Phone-width topbar fix: at <=480px the breadcrumb + shortcuts trigger +
+   export button no longer fit one unwrapping flex row and were clipping
+   off the right edge. Drop the shortcuts hint (discoverable via the search
+   icon's tooltip anyway) and let the row wrap instead of overflowing. */
+@media(max-width:560px){
+  .topbar{flex-wrap:wrap;height:auto;padding:10px 0;gap:8px 0}
+  .breadcrumb{font-size:9px;gap:6px}
+  .command-trigger{display:none}
+  .top-actions{gap:8px;flex:1 0 100%;justify-content:flex-end}
+  .button.ghost{padding:8px 10px;font-size:10px}
+}

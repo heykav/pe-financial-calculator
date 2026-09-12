@@ -12,15 +12,15 @@
   <a href="https://github.com/heykav/pe-financial-calculator/blob/main/.github/CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contribute-Join%20the%20build-18181b?style=for-the-badge&labelColor=27272a" alt="Read how to contribute to Rivet"></a>
 </p>
 
-Rivet is an independent, dependency-free underwriting web app for the first 15 minutes of a deal review. Enter the entry price, earnings base, financing, hold period, and operating forecast; Rivet turns those inputs into a transparent sponsor-return view and shows what actually drives the outcome.
+I got tired of rebuilding the same six-input LBO in a fresh spreadsheet every time someone said "just give me a rough sense of the deal," so I built the rough sense as a web page instead. Type in the purchase price, EBITDA, leverage, and a five-year forecast; Rivet gives you MOIC, IRR, and — more usefully — *why*: how much of the return is the business actually growing versus you just paying down debt versus the exit multiple being kind to you.
 
-Every specialist workspace includes a plain-English “start here” explanation, so a first-time user can understand the decision before touching the technical outputs. The visual system is intentionally restrained: hierarchy, spacing, and semantic color do the navigation work so the interface remains credible in an analyst or investment-committee setting.
+Every workspace opens with a plain-English "start here" line before the numbers, on the theory that the fastest way to lose someone in finance software is to show them a DCF before you've told them what a DCF is for.
 
 ![KA mark used by Rivet](favicon.jpeg)
 
-*Rivet’s KA mark and browser identity.*
+*Rivet's KA mark and browser identity.*
 
-> **Important:** Rivet is an educational and illustrative analysis tool, not investment advice, a valuation opinion, a regulated financial product, or a substitute for audited financial statements, quality-of-earnings work, lender diligence, legal review, tax advice, or an investment committee process.
+> Rivet is illustrative. It is not investment advice, a valuation opinion, or a stand-in for real diligence — treat every output as a first-pass conversation starter, not a number you'd underwrite on.
 
 ## Table of contents
 
@@ -40,16 +40,21 @@ Every specialist workspace includes a plain-English “start here” explanation
 
 ## Why Rivet exists
 
-Underwriting is still split between intimidating spreadsheets, expensive
-institutional systems, and one-off memo work. Rivet gives a founder, finance
-lead, analyst, or independent sponsor a fast first pass that connects:
+The first pass at any deal is always the same fight: an Excel file that's
+either a hand-me-down from someone who left the firm, or a blank sheet you
+have to wire up yourself — debt schedule, IRR formula, sensitivity table,
+the works — before you can even ask "is this worth a second look?"
+
+Rivet is that first pass, pre-wired:
 
 **assumptions → operating case → capital structure → returns → what to verify**
 
-The product is not pretending to replace diligence or an investment committee.
-Its wedge is making the first decision legible, repeatable, and easier to
-explain. Read [`YC.md`](YC.md) for the problem, initial user, expansion path,
-roadmap, and product principles.
+It doesn't pretend to replace real diligence or an investment committee —
+see [`YC.md`](YC.md) for the fuller, more self-critical version of that
+argument. Its actual job is smaller and more honest: get you from "I have
+six numbers" to "here's what those six numbers imply" in under a minute,
+so the fifteen-minute conversation about whether to keep going can happen
+on solid ground.
 
 ## Web-only product boundary
 
@@ -77,14 +82,12 @@ The app is intentionally browser-only. There is no login, backend, analytics pip
 
 ## Who it is for
 
-Rivet is useful for:
-
-- Private equity associates, analysts, and operating partners learning LBO mechanics.
-- Investment bankers preparing a transaction case, pitch, or interview exercise.
-- Corporate development and finance teams reviewing acquisition scenarios.
-- Hedge fund managers and public-markets investors who want a quick leverage and exit-sensitivity view.
-- Finance students learning the relationship between EBITDA growth, debt paydown, exit multiples, MOIC, and IRR.
-- Founders and operators who need a plain-English explanation of how capital structure affects equity value.
+Mainly: PE associates and IB analysts who need a first-pass number before a
+real model exists, and students/operators who've never built an LBO and
+would like to understand what one actually does before Excel hides the
+mechanics behind fifty interlinked tabs. If you already have a live
+three-statement model for this deal, you don't need Rivet — you need to
+open that model.
 
 The interface is also suitable for independent interview and case-study preparation involving investment banks, private equity firms, hedge funds, and financial institutions. It does **not** represent or reproduce the proprietary methods, data, branding, or internal tools of any employer, bank, fund, or data provider.
 
@@ -162,6 +165,14 @@ The current illustrative model uses a simple exit-multiple convention and a simp
 - Gross MOIC before fees, carried interest, taxes, and transaction costs.
 - Annualized IRR derived from the modeled MOIC and hold period.
 - Value creation split into debt paydown, EBITDA growth, and multiple movement.
+
+IRR here is `MOIC^(1/hold) − 1`, not Newton's method on a cash-flow
+series. That's deliberate, not a shortcut: a single entry check and a
+single exit check has one lump-sum return, and a lump-sum return has a
+closed-form root — there's nothing to iterate toward. The moment Rivet
+grows interim dividends or a multi-tranche capital structure, this
+formula stops being correct and needs to become an actual IRR solver.
+Today it doesn't, so it isn't one.
 
 ### Sensitivity and scenarios
 
@@ -241,9 +252,11 @@ The browser preview is the source of truth for interaction testing. Keep the con
 
 ## Contributing
 
-**Help us make underwriting clearer.** Rivet is open to thoughtful contributions from analysts, operators, designers, engineers, and anyone who cares about transparent financial tools. Bug reports, documentation improvements, accessibility fixes, model-review notes, and focused pull requests are welcome.
-
-The best place to start is the [contribution guide](.github/CONTRIBUTING.md). You can also [open an issue](https://github.com/heykav/pe-financial-calculator/issues/new/choose) to report a bug, suggest an improvement, or start a discussion before writing code.
+If you can point out where a formula is wrong or a boundary case breaks,
+that's worth more to this repo than a feature PR. Bug reports, model-review
+notes, and focused pull requests are welcome — start with an
+[issue](https://github.com/heykav/pe-financial-calculator/issues/new/choose)
+if you want to talk it through first.
 
 Before opening a pull request:
 
@@ -260,14 +273,15 @@ reporting guidance, and ISO/IEC 27001-aligned controls.
 
 ## YC application brief
 
-[`YC.md`](YC.md) is the concise company narrative for this repository. It
-covers the problem, initial wedge, why Rivet can become a company, what is
-already live, what is deliberately not claimed, and the near-term roadmap.
-It should be updated whenever the product direction or target user changes.
+[`YC.md`](YC.md) is the honest version of the pitch: the problem, why a
+six-input browser calculator can be a wedge instead of a toy, and — just
+as importantly — what it deliberately doesn't claim yet.
 
 ## Independent project notice
 
-Rivet is an independent open-source-style project maintained by its contributors. References to investment banking, private equity, hedge funds, finance roles, interview preparation, or financial institutions are descriptive search and learning context only. Rivet is not affiliated with, endorsed by, sponsored by, or operated by Verity, Wells Fargo, Blackstone, Standard Chartered, or any other named organization.
+Rivet is independent, not affiliated with or endorsed by any bank, fund,
+or employer. Mentions of PE/IB/hedge-fund workflows are descriptive
+context for who finds this useful, not a claim of association.
 
 ## License
 
