@@ -18,6 +18,7 @@ let activeCase = 'base';
 const workspaces = ['Project Atlas'];
 let activeWorkspace = 'Project Atlas';
 let currentModel = null;
+let activeChart = 'total';
 const dcfState = { wacc: 9.5, terminalGrowth: 2.5 };
 const workspaceData = {
   lbo: {
@@ -96,6 +97,38 @@ function updateWorkspaceMetrics() {
   updateWorkspaceContextLabels();
   renderCockpitSensitivity();
   renderSurface();
+  renderValueChart();
+}
+
+function renderValueChart() {
+  if (!currentModel) return;
+  const { ev, entryDebt, ebitda, exitMultiple, exitEbitda, debtSchedule = [] } = currentModel;
+  const forecast = currentModel.forecastEbitda || [];
+  const series = {
+    total: [ev, ...forecast.map((value) => value * exitMultiple)],
+    debt: [entryDebt, ...debtSchedule.slice(0, forecast.length).map((row) => Math.max(row.closingDebt, 0))],
+    profit: [ebitda, ...forecast]
+  };
+  const values = series[activeChart] || series.total;
+  const max = Math.max(...values, 1);
+  const width = 800;
+  const height = 220;
+  const points = values.map((value, index) => {
+    const x = index * (width / Math.max(values.length - 1, 1));
+    const y = height - (Math.max(value, 0) / max) * height;
+    return [x, y];
+  });
+  const line = points.map(([x, y], index) => `${index ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+  const area = `${line} L${width},${height + 30} L0,${height + 30} Z`;
+  $('chartPath')?.setAttribute('d', line);
+  $('chartArea')?.setAttribute('d', area);
+  if ($('chartPoints')) $('chartPoints').innerHTML = points.map(([x, y], index) => `<circle cx="${x}" cy="${y}" r="${index === points.length - 1 ? 5 : 3}" />`).join('');
+  [['chartMax', max], ['chartMidHigh', max * .75], ['chartMid', max * .5], ['chartMidLow', max * .25]].forEach(([id, value]) => { if ($(id)) $(id).textContent = `$${Math.round(value)}`; });
+  if ($('debtPaydownMultiple')) {
+    const first = entryDebt / Math.max(ebitda, 1);
+    const last = (debtSchedule.at(-1)?.closingDebt || 0) / Math.max(forecast.at(-1) || ebitda, 1);
+    $('debtPaydownMultiple').textContent = `${first.toFixed(1)}x → ${last.toFixed(1)}x`;
+  }
 }
 
 function renderCockpitSensitivity() {
@@ -267,8 +300,11 @@ function wireUiActions() {
   }));
   document.querySelectorAll('.more-button').forEach((button) => button.addEventListener('click', () => showToast('No additional actions for this section yet')));
   document.querySelectorAll('.chart-filter').forEach((button) => button.addEventListener('click', () => {
+    activeChart = button.dataset.chart || 'total';
     document.querySelectorAll('.chart-filter').forEach((item) => item.classList.remove('active'));
+    document.querySelectorAll('.chart-filter').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
     button.classList.add('active');
+    renderValueChart();
     showToast(`${button.textContent} view selected`);
   }));
   document.querySelector('.segmented .add-case')?.addEventListener('click', () => showToast('Open Assumption sets to create a named case'));
@@ -469,6 +505,7 @@ function calculate() {
   currentModel = {
     ev, ebitda, entryDebt, entryEquity, debtPaydown, exitDebt, exitEbitda, exitEv, exitEquity,
     entryMultiple, exitMultiple, moic, irr, hold, interest, growthRate: growthInputs[0] || 0,
+    debtSchedule,
     forecastEbitda: Array.from({ length: hold }, (_, i) => ebitda * Math.pow(1 + (growthInputs[i] || growthInputs.at(-1) || 0) / 100, i + 1))
   };
   $('radial').style.background = `conic-gradient(var(--mint) 0 ${Math.min(irr * 3.2, 96)}%, #253541 ${Math.min(irr * 3.2, 96)}% 100%)`;
