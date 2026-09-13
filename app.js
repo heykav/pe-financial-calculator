@@ -225,6 +225,7 @@ document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.addEven
 
 function wireUiActions() {
   const utilityModal = $('utilityModal');
+  const appShell = document.querySelector('.app-shell');
   let utilityTrigger = null;
   const openUtility = (title, description, content, trigger = null) => {
     utilityTrigger = trigger || document.activeElement;
@@ -232,10 +233,12 @@ function wireUiActions() {
     $('utilityDescription').textContent = description;
     $('utilityContent').innerHTML = content;
     utilityModal.hidden = false;
+    appShell?.setAttribute('inert', '');
     $('utilityClose').focus();
   };
   const closeUtility = () => {
     utilityModal.hidden = true;
+    appShell?.removeAttribute('inert');
     utilityTrigger?.focus();
     utilityTrigger = null;
   };
