@@ -286,3 +286,7 @@ context for who finds this useful, not a claim of association.
 ## License
 
 See the repository for the applicable license and contribution terms.
+
+---
+
+Made with ❤️ in India by [Krishna Anubhav](https://github.com/heykav).
