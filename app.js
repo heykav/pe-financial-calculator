@@ -464,11 +464,11 @@ function calculate() {
   const exitEbitda = revenue * ((marginInputs[hold - 1] || marginInputs.at(-1) || 25) / 100);
   const exitMultiple = entryMultiple + 1.5;
   const exitEv = exitEbitda * exitMultiple;
-  const interestDrag = Math.max(0, interest - 8.25) * .02;
+  const interestDrag = Math.min(1, Math.max(0, interest - 8.25) * .12);
   const debtSchedule = [];
   let openingDebt = entryDebt;
   for (let year = 0; year < 5; year += 1) {
-    const sweep = Math.min(openingDebt, year < hold ? entryDebt * (0.12 + (year + 1) * 0.04) * (0.8 + (marginInputs[year] || 20) / 100) : 0);
+    const sweep = Math.min(openingDebt, year < hold ? entryDebt * (0.12 + (year + 1) * 0.04) * (0.8 + (marginInputs[year] || 20) / 100) * (1 - interestDrag) : 0);
     const closingDebt = Math.max(0, openingDebt - sweep);
     debtSchedule.push({ year: year + 1, openingDebt, sweep, closingDebt });
     $(`debtOpen${year}`).textContent = money(openingDebt);
