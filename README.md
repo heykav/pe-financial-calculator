@@ -1,5 +1,11 @@
 # Rivet — Underwriting Workspace
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/img/hero-light.svg">
+  <img src="docs/img/hero-dark.svg" alt="Rivet banner: Make the deal legible. Base-case app output of 4.0x gross MOIC, 32.2% gross IRR, and sponsor equity growing from $191.0mm to $772.4mm." width="100%">
+</picture>
+
 **A strictly browser-based underwriting web app that turns deal assumptions into an explainable investment view.**
 
 <p>
@@ -26,8 +32,39 @@ Every workspace opens with a plain-English "start here" line before the numbers,
 
 > Rivet is illustrative. It is not investment advice, a valuation opinion, or a stand-in for real diligence — treat every output as a first-pass conversation starter, not a number you'd underwrite on.
 
+## Screenshots
+
+Captured with headless Chromium from the running app at its default inputs, the documented base case: EV $425mm, EBITDA $52mm, 4.5x debt at 8.25%, 5-year hold, 8.2x exit, revenue growth 12/11/10/9/8% and EBITDA margin 21% rising to 25%. That set gives 4.04x gross MOIC and 32.2% gross IRR (model.js). Nothing below is mocked. Click an image for full size.
+
+| View | Desktop, 1440x900 | Mobile, 390x844 |
+| --- | --- | --- |
+| LBO returns (deal cockpit, base case) | <a href="docs/img/app-lbo-returns-desktop.png"><img src="docs/img/app-lbo-returns-desktop.png" alt="Desktop: Rivet deal cockpit at the base case showing 4.0x gross MOIC, 32.2% gross IRR, entry equity $191.0mm, exit equity $772.4mm and the equity bridge" width="100%"></a> | <a href="docs/img/app-lbo-returns-mobile.png"><img src="docs/img/app-lbo-returns-mobile.png" alt="Mobile: Rivet deal cockpit at the base case showing 4.0x gross MOIC, 32.2% gross IRR, entry equity $191.0mm, exit equity $772.4mm and the equity bridge" width="100%"></a> |
+| Sensitivity table (gross IRR by exit multiple and EBITDA growth) | <a href="docs/img/app-sensitivity-desktop.png"><img src="docs/img/app-sensitivity-desktop.png" alt="Desktop: Rivet sensitivity table of gross IRR for exit multiples of 7.0x to 11.0x against EBITDA growth of -5% to 25%" width="100%"></a> | <a href="docs/img/app-sensitivity-mobile.png"><img src="docs/img/app-sensitivity-mobile.png" alt="Mobile: Rivet sensitivity table of gross IRR for exit multiples of 7.0x to 11.0x against EBITDA growth of -5% to 25%" width="100%"></a> |
+| DCF view | <a href="docs/img/app-dcf-desktop.png"><img src="docs/img/app-dcf-desktop.png" alt="Desktop: Rivet DCF analysis view listing PV of forecast cash flows $191.0mm, PV of terminal value $602.5mm and enterprise value $793.6mm, with editable WACC and terminal growth" width="100%"></a> | <a href="docs/img/app-dcf-mobile.png"><img src="docs/img/app-dcf-mobile.png" alt="Mobile: Rivet DCF analysis view listing PV of forecast cash flows $191.0mm, PV of terminal value $602.5mm and enterprise value $793.6mm, with editable WACC and terminal growth" width="100%"></a> |
+| Validation error (borrowing level set to 9.0x) | <a href="docs/img/app-validation-error-desktop.png"><img src="docs/img/app-validation-error-desktop.png" alt="Desktop: Rivet showing the error "Borrowing is too high: debt should stay below 90% of the purchase price" with all outputs blanked" width="100%"></a> | <a href="docs/img/app-validation-error-mobile.png"><img src="docs/img/app-validation-error-mobile.png" alt="Mobile: Rivet showing the error "Borrowing is too high: debt should stay below 90% of the purchase price" with all outputs blanked" width="100%"></a> |
+
+Known rendering issues visible in these captures, unfixed here and tracked separately: on desktop the DCF view shows unstyled inputs and a white "Model status" button in the sidebar; the standalone Sensitivity lab view does not lay out its table (the cockpit table above is the working one). See the pull request for the cause.
+
+## How the numbers flow
+
+Values in both diagrams are output of `model.js` at the base case above (USD mm); the formulas are in [`docs/formulas.md`](docs/formulas.md).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/diagram-lbo-flow-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/img/diagram-lbo-flow-light.svg">
+  <img src="docs/img/diagram-lbo-flow-dark.svg" alt="Diagram: sources and uses (debt 234.0 plus sponsor equity 191.0 fund a 425.0 purchase) feed a five-year debt schedule with mandatory amortisation, cash sweep and average-balance interest, ending at 44.7 of debt; exit equity of 772.4 gives 4.0x MOIC and 32.2% IRR." width="100%">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/diagram-returns-attribution-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/img/diagram-returns-attribution-light.svg">
+  <img src="docs/img/diagram-returns-attribution-dark.svg" alt="Diagram: exit equity minus entry equity equals EBITDA growth at the entry multiple, plus multiple change on exit EBITDA, plus net-debt reduction, minus fees. At the base case: 389.5 plus 2.7 plus 189.3 equals 581.4, taking equity from 191.0 to 772.4." width="100%">
+</picture>
+
 ## Table of contents
 
+- [Screenshots](#screenshots)
+- [How the numbers flow](#how-the-numbers-flow)
 - [What the calculator does](#what-the-calculator-does)
 - [Why Rivet exists](#why-rivet-exists)
 - [Who it is for](#who-it-is-for)
@@ -237,6 +274,7 @@ The browser preview is the source of truth for interaction testing. Keep the con
 ├── app.js                    # UI state, routing, rendering, and interactions
 ├── test/model.test.js        # node --test suite vs hand-computed values
 ├── docs/formulas.md          # Every formula, assumption and simplification
+├── docs/img/                 # Hero banner, diagrams (SVG dark/light), screenshots, social preview
 ├── styles.css                # Rivet design system and responsive layout
 ├── DESIGN.md                 # Visual language and component grammar
 ├── PRIVACY.md                # GDPR/CCPA-oriented privacy notice

@@ -330,3 +330,6 @@ body{background:
   .top-actions{gap:8px;flex:1 0 100%;justify-content:flex-end}
   .button.ghost{padding:8px 10px;font-size:10px}
 }
+
+/* Phone width: stack the lower panels (they were squeezed side by side at 390px). */
+@media(max-width:720px){.bottom-grid{grid-template-columns:1fr}}
