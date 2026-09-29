@@ -1,4 +1,4 @@
-# Rivet — Underwriting Workspace
+# Rivet — LBO / DCF Returns Calculator
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-dark.svg">
@@ -6,14 +6,14 @@
   <img src="docs/img/hero-dark.svg" alt="Rivet banner: Make the deal legible. Base-case app output of 4.0x gross MOIC, 32.2% gross IRR, and sponsor equity growing from $191.0mm to $772.4mm." width="100%">
 </picture>
 
-**A strictly browser-based underwriting web app that turns deal assumptions into an explainable investment view.**
+**A browser-only, educational LBO / DCF / returns calculator that turns a handful of deal assumptions into an explainable first-pass returns view.**
 
 <p>
   <a href="https://heykav.github.io/pe-financial-calculator/"><img src="https://img.shields.io/badge/Open%20web%20app-Rivet%20Calculator-c9a24a?style=for-the-badge&labelColor=18181b" alt="Open the live Rivet web app"></a>
   &nbsp;&nbsp;
   <a href="#run-locally"><img src="https://img.shields.io/badge/Run%20locally-No%20build%20step-18181b?style=for-the-badge&labelColor=27272a" alt="Run Rivet locally with no build step"></a>
   &nbsp;&nbsp;
-  <a href="https://github.com/heykav/pe-financial-calculator"><img src="https://img.shields.io/badge/License-View%20repository-18181b?style=for-the-badge&labelColor=27272a" alt="View the repository license"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-18181b?style=for-the-badge&labelColor=27272a" alt="MIT license"></a>
   &nbsp;&nbsp;
   <a href="https://github.com/heykav/pe-financial-calculator/blob/main/.github/CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contribute-Join%20the%20build-18181b?style=for-the-badge&labelColor=27272a" alt="Read how to contribute to Rivet"></a>
 </p>
@@ -28,13 +28,13 @@ Every workspace opens with a plain-English "start here" line before the numbers,
 
 **What this is:** a transparent, browser-only first-pass LBO / DCF / returns calculator whose formulas are documented in [`docs/formulas.md`](docs/formulas.md) and covered by automated tests against hand-computed values.
 
-**What this is not:** a full three-statement model, a tax model, or a source of market data. Returns are gross and simplified (no taxes, fees, or carry).
+**What this is not:** a deal-grade underwriting model, a full three-statement model, a tax model, or a source of market data. Returns are gross and simplified: no taxes, no fund fees or carry, a single debt tranche, and cash flow approximated as a flat 65% of EBITDA. See [Model assumptions and limitations](#model-assumptions-and-limitations).
 
-> Rivet is illustrative. It is not investment advice, a valuation opinion, or a stand-in for real diligence — treat every output as a first-pass conversation starter, not a number you'd underwrite on.
+> Rivet is illustrative. It is not investment advice, a valuation opinion, or a stand-in for real diligence — treat every output as a first-pass conversation starter, not a number to base a decision on.
 
 ## Screenshots
 
-Captured with headless Chromium from the running app at its default inputs, the documented base case: EV $425mm, EBITDA $52mm, 4.5x debt at 8.25%, 5-year hold, 8.2x exit, revenue growth 12/11/10/9/8% and EBITDA margin 21% rising to 25%. That set gives 4.04x gross MOIC and 32.2% gross IRR (model.js). Nothing below is mocked. Click an image for full size.
+Captured with headless Chromium from the running app at its default inputs, the documented base case: EV $425mm, EBITDA $52mm, 4.5x debt at 8.25%, 5-year hold, 8.2x exit, revenue growth 12/11/10/9/8% and EBITDA margin 21% rising to 25%. That set gives 4.04x gross MOIC and 32.2% gross IRR (model.js). Nothing below is mocked. Click an image for full size. The screenshots predate a wording pass: the buttons now read "Recalculate" and "Export summary" where the images show "Run underwriting" and "Export memo".
 
 | View | Desktop, 1440x900 | Mobile, 390x844 |
 | --- | --- | --- |
@@ -90,7 +90,7 @@ Rivet is that first pass, pre-wired:
 
 It doesn't pretend to replace real diligence or an investment committee —
 see [`YC.md`](YC.md) for the fuller, more self-critical version of that
-argument. Its actual job is smaller and more honest: get you from "I have
+argument. Its actual job is smaller: get you from "I have
 six numbers" to "here's what those six numbers imply" in under a minute,
 so the fifteen-minute conversation about whether to keep going can happen
 on solid ground.
@@ -106,16 +106,16 @@ turn Rivet into a native application.
 
 ## What the calculator does
 
-Rivet is a practical **finance calculator** and underwriting workspace for:
+Rivet is an educational **finance calculator** for:
 
 - **Leveraged buyout (LBO) analysis:** sources and uses, debt sizing, sponsor equity, debt paydown, exit equity, MOIC, and IRR.
 - **Private equity returns analysis:** a clear separation between purchase price, operating performance, leverage, exit multiple, and value creation.
-- **Investment banking case work:** a compact deal cockpit for interview preparation, first-pass transaction analysis, and investment-committee discussion.
+- **Investment banking case work:** a compact deal cockpit for interview preparation, learning, and first-pass what-if analysis.
 - **DCF reference analysis:** an illustrative discounted cash flow bridge with present value of forecast cash flows, terminal value, WACC, and terminal growth.
 - **Deal comps:** a small illustrative comparable-company table for valuation sense-checking.
 - **Sensitivity analysis:** an IRR response surface across exit multiples and EBITDA growth assumptions.
-- **Scenario analysis:** a deterministic return envelope that communicates lower, expected, and higher outcomes.
-- **Diligence tracking:** an IC-prep checklist that distinguishes model outputs from facts that still need verification.
+- **Scenario analysis:** a lower / expected / higher IRR range set at fixed offsets from the point IRR (−6.6 and +9.3 percentage points). It is not a probability distribution.
+- **Diligence tracking:** a self-serve checklist that distinguishes model outputs from facts that still need verification. Ticking a box records nothing beyond the current tab.
 
 The app is intentionally browser-only. There is no login, backend, analytics pipeline, native wrapper, or database. Assumptions are held in the page and can be changed without sending deal information to a server.
 
@@ -143,7 +143,7 @@ The interface is also suitable for independent interview and case-study preparat
 4. Enter the five-year revenue-growth and EBITDA-margin forecast.
 5. Review the return output, equity bridge, debt schedule, and sensitivity grid.
 6. Mark diligence items as complete only when the underlying fact has actually been verified.
-7. Use **Run underwriting** for an explicit checkpoint, **Export memo** for a text summary, or **Download table** for the sensitivity CSV.
+7. Use **Recalculate** for an explicit checkpoint, **Export summary** for a text summary, or **Download table** for the sensitivity CSV.
 
 ### The screen, in plain English
 
@@ -183,7 +183,7 @@ This is a simple entry enterprise-value-to-EBITDA multiple. It is not a substitu
 
 `Entry debt = EBITDA × Debt / EBITDA`
 
-`Sponsor equity = Purchase price − Entry debt`
+`Sponsor equity = Purchase price − Entry debt` (the app sets transaction fees to zero; `model.js` supports an entry-fee input that would be added to the equity cheque)
 
 The calculator applies a sanity check that debt must remain below 90% of purchase price. This is a guardrail for the illustrative model, not a lending commitment or credit decision.
 
@@ -191,8 +191,8 @@ The calculator applies a sanity check that debt must remain below 90% of purchas
 
 The cockpit accepts five annual revenue-growth and EBITDA-margin inputs. Forecast EBITDA is derived from the starting EBITDA and the entered growth and margin assumptions. Inputs are bounded to keep the browser model finite and interpretable:
 
-- Revenue growth: `−100%` to `100%`.
-- EBITDA margin: `0%` to `100%`.
+- Revenue growth: above `−100%` up to `100%`.
+- EBITDA margin: above `0%` up to `100%`.
 - Hold period: one to five years.
 
 ### Exit value and returns
@@ -229,11 +229,14 @@ Rivet is deliberately transparent about what it does not do. It currently does *
 
 - A complete three-statement financial model.
 - A multi-tranche debt waterfall, covenants, or financing term sheet (a single-tranche schedule with 1% amortisation and a cash sweep is modelled).
-- A tax model, working-capital schedule, capex schedule, or purchase-accounting model.
+- A tax model, working-capital schedule, capex schedule, or purchase-accounting model. Cash available for debt service is a flat 65% of EBITDA, before interest.
+- Any bridge from enterprise value to equity price: the purchase price is treated as a cash-free, debt-free enterprise value.
+- Interest income on cash, a revolver, or a minimum cash balance. If cash flow does not cover interest and mandatory amortisation, the shortfall is added to the same debt balance and the app shows a warning.
 - A full three-statement DCF, market-data-backed comps database, or live market feed. The DCF is a simplified illustrative FCF proxy and comps are intentionally illustrative.
 - Real-time market data, lender quotes, public filings, or proprietary research.
 - Fund-level waterfall economics, management options, fees, carried interest, or preferred equity.
-- A statistically calibrated Monte Carlo simulation.
+- A statistically calibrated Monte Carlo simulation or any probability distribution of outcomes.
+- Automated tests of the browser interface: the 21 tests cover `model.js` only.
 
 Treat the outputs as a structured first-pass conversation starter. Replace illustrative data with diligence-backed forecasts before relying on any result.
 
@@ -245,7 +248,7 @@ Read [`PRIVACY.md`](PRIVACY.md) for the deployment data boundary and GDPR/CCPA-o
 
 ## Run locally
 
-The project has no package manager, framework, or build step:
+The app has no runtime dependencies, framework, or build step (`package.json` exists only to run the tests):
 
 ```sh
 git clone https://github.com/heykav/pe-financial-calculator.git
@@ -276,13 +279,16 @@ The browser preview is the source of truth for interaction testing. Keep the con
 ├── styles.css                # Rivet design system and responsive layout
 ├── DESIGN.md                 # Visual language and component grammar
 ├── PRIVACY.md                # GDPR/CCPA-oriented privacy notice
-├── SECURITY.md               # Privacy, OSINT boundaries, and security controls
+├── SECURITY.md               # Vulnerability reporting, privacy/OSINT boundaries, operating practices
+├── LICENSE                   # MIT
+├── package.json              # `npm test` only; no runtime dependencies
 ├── favicon.jpeg              # Rivet browser icon and KA mark
 ├── YC.md                     # Product brief and YC-style company narrative
 ├── robots.txt                # Crawler guidance
 ├── sitemap.xml               # GitHub Pages sitemap
 └── .github/
     ├── CONTRIBUTING.md       # Contribution workflow
+    ├── dependabot.yml        # Weekly updates for npm and GitHub Actions
     ├── ISSUE_TEMPLATE/       # Bug report template
     └── workflows/            # ci.yml (tests on push/PR), pages.yml (deployment)
 ```
@@ -322,7 +328,7 @@ context for who finds this useful, not a claim of association.
 
 ## License
 
-See the repository for the applicable license and contribution terms.
+Released under the [MIT License](LICENSE). Copyright (c) 2026 Krishna Anubhav.
 
 ---
 
