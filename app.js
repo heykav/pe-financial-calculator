@@ -2,7 +2,9 @@ const $ = (id) => document.getElementById(id);
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[character]));
-const inputs = ['ev','ebitda','debtMultiple','interest','hold'];
+const M = window.RivetModel;
+const FCF_CONVERSION = 0.65; // documented in docs/formulas.md
+const inputs = ['ev','ebitda','debtMultiple','interest','hold','exitIn'];
 const state = { defaultValues: Object.fromEntries(inputs.map((id) => [id, $(id).value])) };
 const caseLabels = {
   base: { name: 'Base case', description: 'Management plan · current underwriting view' },
@@ -10,9 +12,9 @@ const caseLabels = {
   upside: { name: 'Upside', description: 'Pricing expansion · accelerated growth and paydown' }
 };
 const caseState = {
-  base: { ev: '425', ebitda: '52', debtMultiple: '4.5', interest: '8.25', hold: '5', growth: ['12.0', '11.0', '10.0', '9.0', '8.0'], margin: ['21.0', '22.0', '23.0', '24.0', '25.0'] },
-  downside: { ev: '400', ebitda: '49', debtMultiple: '4.0', interest: '9.25', hold: '5', growth: ['7.0', '6.0', '5.0', '4.0', '3.0'], margin: ['19.0', '19.5', '20.0', '20.5', '21.0'] },
-  upside: { ev: '450', ebitda: '55', debtMultiple: '5.0', interest: '7.50', hold: '4', growth: ['16.0', '15.0', '14.0', '13.0', '12.0'], margin: ['22.0', '23.5', '25.0', '26.0', '27.0'] }
+  base: { ev: '425', ebitda: '52', debtMultiple: '4.5', interest: '8.25', hold: '5', exitIn: '8.2', growth: ['12.0', '11.0', '10.0', '9.0', '8.0'], margin: ['21.0', '22.0', '23.0', '24.0', '25.0'] },
+  downside: { ev: '400', ebitda: '49', debtMultiple: '4.0', interest: '9.25', hold: '5', exitIn: '8.2', growth: ['7.0', '6.0', '5.0', '4.0', '3.0'], margin: ['19.0', '19.5', '20.0', '20.5', '21.0'] },
+  upside: { ev: '450', ebitda: '55', debtMultiple: '5.0', interest: '7.50', hold: '4', exitIn: '8.2', growth: ['16.0', '15.0', '14.0', '13.0', '12.0'], margin: ['22.0', '23.5', '25.0', '26.0', '27.0'] }
 };
 let activeCase = 'base';
 const workspaces = ['Project Atlas'];
@@ -24,7 +26,7 @@ const workspaceData = {
   lbo: {
     title: 'LBO model',
     description: 'Follow the money: what you pay, how much you borrow, and what is left for the investor.',
-    html: `<div class="workspace-help"><strong>Start here</strong><span>This page answers one question: how is the purchase funded, and how quickly does the loan get smaller?</span></div><div class="workspace-actions"><button class="button mini" id="refreshLbo">↻ Update from current case</button><button class="button mini" id="exportLbo">Download LBO table ↧</button></div><div class="workspace-grid"><div><h3>Where the money goes</h3><p class="workspace-note">Uses = the cash needed to complete the purchase · USD mm · linked to <span id="lboCaseContext">${escapeHtml(caseLabels[activeCase].name)}</span></p><div class="model-table"><div><span>Purchase enterprise value</span><b id="wsEv">—</b></div><div><span>Refinance existing debt</span><b id="wsRefi">$0.0</b></div><div class="subtotal"><span>Total uses</span><b id="wsUses">—</b></div></div></div><div><h3>Capital structure</h3><p class="workspace-note">Debt sizing = EBITDA × debt / EBITDA</p><div class="model-table"><div><span>Senior secured debt</span><b id="wsDebt">—</b></div><div><span>Sponsor equity</span><b id="wsSponsor">—</b></div><div class="subtotal"><span>Total sources</span><b id="wsSources">—</b></div></div></div></div><div class="workspace-grid lower"><div><h3>Operating leverage</h3><div class="metric-row"><span>Entry debt / EBITDA</span><strong id="wsLev">—</strong></div><div class="metric-row"><span>Exit debt / EBITDA</span><strong id="wsExitLev">—</strong></div></div><div><h3>Debt paydown</h3><div class="metric-row"><span>Debt repaid</span><strong id="wsPaydown">—</strong></div><div class="metric-row"><span>Exit debt</span><strong id="wsExitDebt">—</strong></div></div></div>`
+    html: `<div class="workspace-help"><strong>Start here</strong><span>This page answers one question: how is the purchase funded, and how quickly does the loan get smaller?</span></div><div class="workspace-actions"><button class="button mini" id="refreshLbo">↻ Update from current case</button><button class="button mini" id="exportLbo">Download LBO table ↧</button></div><div class="workspace-grid"><div><h3>Where the money goes</h3><p class="workspace-note">Uses = the cash needed to complete the purchase · USD mm · linked to <span id="lboCaseContext">${escapeHtml(caseLabels[activeCase].name)}</span></p><div class="model-table"><div><span>Purchase enterprise value</span><b id="wsEv">—</b></div><div><span>Refinance existing debt</span><b id="wsRefi">$0.0</b></div><div class="subtotal"><span>Total uses</span><b id="wsUses">—</b></div></div></div><div><h3>Capital structure</h3><p class="workspace-note">Debt sizing = EBITDA × debt / EBITDA</p><div class="model-table"><div><span>Senior secured debt</span><b id="wsDebt">—</b></div><div><span>Sponsor equity</span><b id="wsSponsor">—</b></div><div class="subtotal"><span>Total sources</span><b id="wsSources">—</b></div></div></div></div><div class="workspace-grid lower"><div><h3>Operating leverage</h3><div class="metric-row"><span>Entry debt / EBITDA</span><strong id="wsLev">—</strong></div><div class="metric-row"><span>Exit net debt / EBITDA</span><strong id="wsExitLev">—</strong></div></div><div><h3>Debt paydown</h3><div class="metric-row"><span>Debt repaid</span><strong id="wsPaydown">—</strong></div><div class="metric-row"><span>Exit debt</span><strong id="wsExitDebt">—</strong></div></div></div>`
   },
   dcf: {
     title: 'DCF analysis',
@@ -55,44 +57,43 @@ const workspaceData = {
 
 function updateWorkspaceMetrics() {
   if (!currentModel) return;
-  const { ev, ebitda, entryDebt, entryEquity, debtPaydown, exitDebt, exitEbitda, exitEv, exitEquity, entryMultiple, exitMultiple, moic, irr } = currentModel;
-  [['wsEv', money(ev)], ['wsUses', money(ev)], ['wsDebt', money(entryDebt)], ['wsSponsor', money(entryEquity)], ['wsSources', money(ev)], ['wsLev', `${(entryDebt / ebitda).toFixed(1)}x`], ['wsExitLev', `${(exitDebt / Math.max(exitEbitda, 1)).toFixed(1)}x`], ['wsPaydown', money(debtPaydown)], ['wsExitDebt', money(exitDebt)], ['wsIrr', `${irr.toFixed(1)}%`], ['wsMoic', `${moic.toFixed(1)}x gross / ${irr.toFixed(1)}% IRR`]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
-  const dcfWacc = Number($('dcfWacc')?.value ?? dcfState.wacc);
-  const dcfGrowth = Number($('dcfGrowth')?.value ?? dcfState.terminalGrowth);
-  const dcfInvalid = !Number.isFinite(dcfWacc) || !Number.isFinite(dcfGrowth) || dcfWacc < 1 || dcfWacc > 30 || dcfGrowth < -2 || dcfGrowth > 8 || dcfGrowth >= dcfWacc;
+  const { ev, ebitda, entryDebt, entryEquity, debtPaydown, exitDebt, exitNetDebt, exitEbitda, exitEquity, entryMultiple, moic, irr } = currentModel;
+  [['wsEv', money(ev)], ['wsUses', money(ev)], ['wsDebt', money(entryDebt)], ['wsSponsor', money(entryEquity)], ['wsSources', money(ev)], ['wsLev', mult(entryDebt / ebitda)], ['wsExitLev', mult(exitNetDebt / exitEbitda)], ['wsPaydown', money(debtPaydown)], ['wsExitDebt', money(exitDebt)], ['wsIrr', pct(irr)], ['wsMoic', `${mult(moic)} gross / ${pct(irr)} IRR`]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
+  const dcfWaccRaw = $('dcfWacc')?.value ?? dcfState.wacc;
+  const dcfGrowthRaw = $('dcfGrowth')?.value ?? dcfState.terminalGrowth;
+  const dcfError = M.validateDcf({ wacc: dcfWaccRaw, terminalGrowth: dcfGrowthRaw });
   const dcfAlert = $('dcfAlert');
-  if (dcfInvalid) {
-    if (dcfAlert) { dcfAlert.hidden = false; dcfAlert.textContent = 'Check DCF inputs: WACC must be 1–30%, terminal growth −2–8%, and terminal growth must be below WACC. Previous valid valuation retained.'; }
+  if (dcfError) {
+    if (dcfAlert) { dcfAlert.hidden = false; dcfAlert.textContent = `${dcfError} Valuation not updated.`; }
+    ['dcfPv', 'dcfTerminal', 'dcfEv', 'dcfUpside'].forEach((id) => { if ($(id)) $(id).textContent = '—'; });
+    $('dcfWacc')?.setAttribute('aria-invalid', 'true'); $('dcfGrowth')?.setAttribute('aria-invalid', 'true');
   } else {
-    dcfState.wacc = dcfWacc; dcfState.terminalGrowth = dcfGrowth;
+    dcfState.wacc = Number(dcfWaccRaw); dcfState.terminalGrowth = Number(dcfGrowthRaw);
+    $('dcfWacc')?.removeAttribute('aria-invalid'); $('dcfGrowth')?.removeAttribute('aria-invalid');
     if (dcfAlert) { dcfAlert.hidden = true; dcfAlert.textContent = ''; }
     if ($('dcfEv')) {
-      const forecasts = currentModel.forecastEbitda;
-      const pv = forecasts.reduce((sum, flow, i) => sum + flow * 0.65 / Math.pow(1 + dcfState.wacc / 100, i + 1), 0);
-      const terminalFcf = forecasts.at(-1) * 0.65 * (1 + dcfState.terminalGrowth / 100);
-      const tv = terminalFcf / (dcfState.wacc / 100 - dcfState.terminalGrowth / 100);
-      const pvTerminal = tv / Math.pow(1 + dcfState.wacc / 100, forecasts.length);
-      const dcfEv = pv + pvTerminal;
-      [['dcfPv', money(pv)], ['dcfTerminal', money(pvTerminal)], ['dcfEv', money(dcfEv)], ['dcfUpside', `${((dcfEv / ev - 1) * 100).toFixed(1)}%`]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
+      // Full five-year horizon regardless of hold period, so the DCF does not change with hold length.
+      const fcfs = currentModel.forecastAll.map((row) => row.ebitda * FCF_CONVERSION);
+      const d = M.dcf({ fcfs, rate: dcfState.wacc / 100, terminal: { method: 'gordon', growth: dcfState.terminalGrowth / 100 } });
+      [['dcfPv', money(d.pvFcf)], ['dcfTerminal', money(d.pvTerminalValue)], ['dcfEv', money(d.enterpriseValue)], ['dcfUpside', signedPct((d.enterpriseValue / ev - 1) * 100)]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
     }
   }
   if ($('driverEbitda')) {
-    const total = Math.max(exitEquity - entryEquity, 1);
-    const drivers = { ebitda: Math.max(0, exitEbitda * entryMultiple - ev), debt: debtPaydown, multiple: Math.max(0, exitEv - exitEbitda * entryMultiple) };
-    const shares = { ebitda: drivers.ebitda / total * 100, debt: drivers.debt / total * 100, multiple: drivers.multiple / total * 100 };
-    [['driverEbitda', shares.ebitda], ['driverDebt', shares.debt], ['driverMultiple', shares.multiple]].forEach(([id, value]) => { if ($(id)) $(id).textContent = `${value.toFixed(0)}%`; });
-    [['driverEbitdaBar', shares.ebitda], ['driverDebtBar', shares.debt], ['driverMultipleBar', shares.multiple]].forEach(([id, value]) => { if ($(id)) $(id).style.width = `${Math.min(100, value)}%`; });
+    const a = currentModel.attribution;
+    const shares = { ebitda: a.shares.ebitdaGrowth, debt: a.shares.debtPaydown, multiple: a.shares.multiple };
+    [['driverEbitda', shares.ebitda], ['driverDebt', shares.debt], ['driverMultiple', shares.multiple]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value === null ? 'n/a' : `${(value * 100).toFixed(0)}%`; });
+    [['driverEbitdaBar', shares.ebitda], ['driverDebtBar', shares.debt], ['driverMultipleBar', shares.multiple]].forEach(([id, value]) => { if ($(id)) $(id).style.width = `${value === null ? 0 : Math.max(0, Math.min(100, value * 100))}%`; });
   }
   const selectedRow = document.querySelector('.selected-row');
   if (selectedRow) {
     selectedRow.querySelector('[data-comp-name]')?.replaceChildren(document.createTextNode(caseLabels[activeCase].name));
     selectedRow.querySelector('[data-comp-ev]')?.replaceChildren(document.createTextNode(money(ev)));
-    selectedRow.querySelector('[data-comp-multiple]')?.replaceChildren(document.createTextNode(`${entryMultiple.toFixed(1)}x`));
-    selectedRow.querySelector('[data-comp-growth]')?.replaceChildren(document.createTextNode(`${(currentModel.growthRate || 0).toFixed(1)}%`));
+    selectedRow.querySelector('[data-comp-multiple]')?.replaceChildren(document.createTextNode(mult(entryMultiple)));
+    selectedRow.querySelector('[data-comp-growth]')?.replaceChildren(document.createTextNode(pct(currentModel.growthRate || 0)));
   }
   if ($('compsSanity')) {
     const median = 11.8;
-    $('compsSanity').textContent = `Active entry ${entryMultiple.toFixed(1)}x vs illustrative median ${median.toFixed(1)}x · ${entryMultiple < median ? 'below' : 'above'} median by ${Math.abs(entryMultiple - median).toFixed(1)}x`;
+    $('compsSanity').textContent = `Active entry ${mult(entryMultiple)} vs illustrative median ${median.toFixed(1)}x · ${entryMultiple < median ? 'below' : 'above'} median by ${Math.abs(entryMultiple - median).toFixed(1)}x`;
   }
   updateWorkspaceContextLabels();
   renderCockpitSensitivity();
@@ -102,7 +103,7 @@ function updateWorkspaceMetrics() {
 
 function renderValueChart() {
   if (!currentModel) return;
-  const { ev, entryDebt, ebitda, exitMultiple, exitEbitda, debtSchedule = [] } = currentModel;
+  const { ev, entryDebt, ebitda, exitMultiple, debtSchedule = [] } = currentModel;
   const forecast = currentModel.forecastEbitda || [];
   const series = {
     total: [ev, ...forecast.map((value) => value * exitMultiple)],
@@ -125,9 +126,9 @@ function renderValueChart() {
   if ($('chartPoints')) $('chartPoints').innerHTML = points.map(([x, y], index) => `<circle cx="${x}" cy="${y}" r="${index === points.length - 1 ? 5 : 3}" />`).join('');
   [['chartMax', max], ['chartMidHigh', max * .75], ['chartMid', max * .5], ['chartMidLow', max * .25]].forEach(([id, value]) => { if ($(id)) $(id).textContent = `$${Math.round(value)}`; });
   if ($('debtPaydownMultiple')) {
-    const first = entryDebt / Math.max(ebitda, 1);
-    const last = (debtSchedule.at(-1)?.closingDebt || 0) / Math.max(forecast.at(-1) || ebitda, 1);
-    $('debtPaydownMultiple').textContent = `${first.toFixed(1)}x → ${last.toFixed(1)}x`;
+    const first = entryDebt / ebitda;
+    const last = (debtSchedule[forecast.length - 1]?.netDebt ?? entryDebt) / (forecast.at(-1) || ebitda);
+    $('debtPaydownMultiple').textContent = `${mult(first)} → ${mult(last)}`;
   }
 }
 
@@ -135,7 +136,7 @@ function renderCockpitSensitivity() {
   const surface = $('cockpitSensitivity');
   if (!surface || !currentModel) return;
   const { multiples, growths, values } = generateSensitivity();
-  surface.innerHTML = `<div class="heat-label">Exit multiple ↓</div>${growths.map((growth) => `<span>${growth}%</span>`).join('')}${multiples.map((multiple, row) => `<div class="row-label">${multiple.toFixed(1)}x</div>${values[row].map((irr) => `<b class="heat h${Math.max(1, Math.min(7, Math.round(irr / 5)))}">${irr.toFixed(1)}%</b>`).join('')}`).join('')}`;
+  surface.innerHTML = `<div class="heat-label">Exit multiple ↓</div>${growths.map((growth) => `<span>${growth}%</span>`).join('')}${multiples.map((multiple, row) => `<div class="row-label">${multiple.toFixed(1)}x</div>${values[row].map((irr) => `<b class="heat h${Math.max(1, Math.min(7, Math.round(irr / 5)))}">${pct(irr)}</b>`).join('')}`).join('')}`;
 }
 
 function updateWorkspaceContextLabels() {
@@ -179,19 +180,16 @@ function openWorkspace(view) {
     showToast(`${caseLabels[copyKey].name} created in this session`);
   });
   $('workspaceContent').querySelector('#refreshLbo')?.addEventListener('click', () => { calculate(); showToast('LBO refreshed from active case'); });
-  $('workspaceContent').querySelector('#exportLbo')?.addEventListener('click', () => exportText('lbo-sources-uses.csv', `Line,USD mm\nPurchase enterprise value,${currentModel.ev.toFixed(1)}\nDebt,${currentModel.entryDebt.toFixed(1)}\nSponsor equity,${currentModel.entryEquity.toFixed(1)}\nDebt paydown,${currentModel.debtPaydown.toFixed(1)}\nExit debt,${currentModel.exitDebt.toFixed(1)}`));
+  $('workspaceContent').querySelector('#exportLbo')?.addEventListener('click', () => currentModel ? exportText('lbo-sources-uses.csv', `Line,USD mm\nPurchase enterprise value,${currentModel.ev.toFixed(1)}\nDebt,${currentModel.entryDebt.toFixed(1)}\nSponsor equity,${currentModel.entryEquity.toFixed(1)}\nDebt paydown,${currentModel.debtPaydown.toFixed(1)}\nExit debt,${currentModel.exitDebt.toFixed(1)}`) : showToast('Fix the highlighted inputs before exporting'));
   $('workspaceContent').querySelector('#exportSensitivity')?.addEventListener('click', () => exportText('active-case-sensitivity.csv', surfaceCsv()));
   document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.classList.toggle('active', item.dataset.view === view));
 }
 
 function generateSensitivity(model = currentModel, multiples = [7, 8, 9, 10, 11], growths = [-5, 0, 5, 10, 15, 20, 25]) {
   if (!model) return { multiples, growths, values: [] };
-  const values = multiples.map((multiple) => growths.map((growth) => {
-    const ebitda = model.exitEbitda * Math.pow(1 + growth / 100, model.hold) / Math.pow(1 + (model.growthRate || 0) / 100, model.hold);
-    const equity = Math.max(0, ebitda * multiple - model.exitDebt);
-    return (Math.pow(equity / Math.max(model.entryEquity, 1), 1 / model.hold) - 1) * 100;
-  }));
-  return { multiples, growths, values };
+  // Each cell re-runs the debt schedule with constant EBITDA growth g and exit multiple m (see docs/formulas.md).
+  const grid = M.sensitivity(model.input, multiples, growths.map((g) => g / 100));
+  return { multiples, growths, values: grid.map((row) => row.map((v) => v * 100)) };
 }
 
 function renderSurface() {
@@ -199,8 +197,8 @@ function renderSurface() {
   const sensitivity = generateSensitivity();
   if (!surface || !currentModel) return;
   const { multiples, growths, values } = sensitivity;
-  surface.innerHTML = `<div class="surface-axis"><span>Exit EV / EBITDA ↓</span>${growths.map((g) => `<span>${g}% EBITDA growth →</span>`).join('')}</div>${multiples.map((multiple, row) => `<div class="surface-row"><span class="surface-axis-label">${multiple.toFixed(1)}x</span>${values[row].map((irr) => `<b class="surface-cell s${Math.max(1, Math.min(7, Math.round(irr / 5)))}">${irr.toFixed(1)}%</b>`).join('')}</div>`).join('')}`;
-  surface.dataset.csv = ['Exit multiple,' + growths.join(',')].concat(multiples.map((multiple, row) => `${multiple.toFixed(1)}x,${values[row].map((irr) => `${irr.toFixed(1)}%`).join(',')}`)).join('\n');
+  surface.innerHTML = `<div class="surface-axis"><span>Exit EV / EBITDA ↓</span>${growths.map((g) => `<span>${g}% EBITDA growth →</span>`).join('')}</div>${multiples.map((multiple, row) => `<div class="surface-row"><span class="surface-axis-label">${multiple.toFixed(1)}x</span>${values[row].map((irr) => `<b class="surface-cell s${Math.max(1, Math.min(7, Math.round(irr / 5)))}">${pct(irr)}</b>`).join('')}</div>`).join('')}`;
+  surface.dataset.csv = ['Exit multiple,' + growths.join(',')].concat(multiples.map((multiple, row) => `${multiple.toFixed(1)}x,${values[row].map((irr) => pct(irr)).join(',')}`)).join('\n');
   document.querySelectorAll('[data-sensitivity-csv]').forEach((hook) => { hook.textContent = surface.dataset.csv; });
   document.querySelectorAll('[data-sensitivity-surface]').forEach((hook) => {
     hook.innerHTML = surface.innerHTML;
@@ -409,110 +407,106 @@ document.addEventListener('keydown', (event) => {
   target?.click();
 });
 
-function money(value) {
-  return `$${value.toFixed(1)}`;
+const isNum = (v) => typeof v === 'number' && Number.isFinite(v);
+function money(value) { return isNum(value) ? `${value < 0 ? '-' : ''}$${Math.abs(value).toFixed(1)}` : '—'; }
+function mult(value) { return isNum(value) ? `${value.toFixed(1)}x` : '—'; }
+function pct(value) { return isNum(value) ? `${value.toFixed(1)}%` : '—'; }
+function signedPct(value) { return isNum(value) ? `${value > 0 ? '+' : ''}${value.toFixed(1)}%` : '—'; }
+
+// Illustrative envelope: fixed offsets around the point estimate. NOT a statistical distribution.
+function updateEnvelope(base) {
+  const ok = isNum(base);
+  $('p10').textContent = ok ? pct(Math.max(-100, base - 6.6)) : '—';
+  $('p50').textContent = ok ? pct(base) : '—';
+  $('p90').textContent = ok ? pct(base + 9.3) : '—';
+}
+const outputIds = ['entryMultiple', 'entryEquity', 'exitEquity', 'valueCreation', 'moic', 'irr', 'exitMultiple', 'tapeEntry', 'tapeLeverage', 'tapeIrr', 'tapeMoic', 'tapeExit', 'bridgeEntry', 'bridgeDebt', 'bridgeEbitda', 'bridgeMultiple', 'bridgeExit', 'debtPaydownMultiple'];
+function clearOutputs() {
+  outputIds.forEach((id) => { if ($(id)) $(id).textContent = '—'; });
+  for (let i = 0; i < 5; i += 1) ['debtOpen', 'debtSweep', 'debtClose', 'debtLev'].forEach((k) => { if ($(`${k}${i}`)) $(`${k}${i}`).textContent = '—'; });
+  ['wsEv', 'wsUses', 'wsDebt', 'wsSponsor', 'wsSources', 'wsLev', 'wsExitLev', 'wsPaydown', 'wsExitDebt', 'wsIrr', 'wsMoic', 'dcfPv', 'dcfTerminal', 'dcfEv', 'dcfUpside', 'driverEbitda', 'driverDebt', 'driverMultiple', 'compsSanity'].forEach((id) => { if ($(id)) $(id).textContent = '—'; });
+  ['chartPath', 'chartArea'].forEach((id) => $(id)?.setAttribute('d', ''));
+  if ($('chartPoints')) $('chartPoints').innerHTML = '';
+  ['workspaceSurface', 'cockpitSensitivity'].forEach((id) => { if ($(id)) { $(id).innerHTML = '<p class="workspace-note">Fix the highlighted input to see this table.</p>'; if ($(id).dataset) $(id).dataset.csv = ''; } });
 }
 
+const fieldIds = { ev: 'ev', ebitda: 'ebitda', debtMultiple: 'debtMultiple', interest: 'interest', hold: 'hold', exitMultiple: 'exitIn' };
+
 function calculate() {
-  const raw = Object.fromEntries(inputs.map((id) => [id, Number($(id).value)]));
-  const invalid = [
-    ['ev', 'Purchase price must be greater than zero.'],
-    ['ebitda', 'Current annual profit must be greater than zero.'],
-    ['debtMultiple', 'Borrowing level cannot be negative.'],
-    ['interest', 'Annual interest cannot be negative.'],
-    ['hold', 'Years held must be between 1 and 5 because the forecast currently models five operating years.']
-  ].find(([id]) => !Number.isFinite(raw[id]) || raw[id] < Number($(id).min || 0) || (id === 'hold' && raw[id] > 5));
-  const forecastInvalid = [...document.querySelectorAll('.mini-input')].some((input) => {
-    const value = Number(input.value);
-    const isMargin = input.dataset.key === 'margin';
-    return !Number.isFinite(value) || (isMargin ? value < 0 || value > 100 : value < -100 || value > 100);
-  });
-  const debtTooHigh = Number.isFinite(raw.ev) && Number.isFinite(raw.ebitda) && Number.isFinite(raw.debtMultiple)
-    && raw.ebitda * raw.debtMultiple > raw.ev * 0.9;
-  const validationError = invalid?.[1]
-    || (forecastInvalid ? 'Forecast inputs must stay within a sensible range.' : '')
-    || (debtTooHigh ? 'Borrowing is too high: debt should stay below 90% of the purchase price.' : '');
   const alert = $('modelAlert');
-  if (validationError) {
-    if (invalid) $(invalid[0]).setAttribute('aria-invalid', 'true');
-    if (alert) {
-      alert.hidden = false;
-      alert.textContent = validationError;
+  const raw = {
+    ev: $('ev').value, ebitda: $('ebitda').value, debtMultiple: $('debtMultiple').value, interest: $('interest').value,
+    hold: $('hold').value, exitMultiple: $('exitIn').value,
+    growth: [...document.querySelectorAll('[data-key="growth"]')].map((el) => el.value),
+    margin: [...document.querySelectorAll('[data-key="margin"]')].map((el) => el.value)
+  };
+  const { errors, input } = M.validateDeal(raw);
+  inputs.forEach((id) => $(id).removeAttribute('aria-invalid'));
+  document.querySelectorAll('.mini-input').forEach((el) => el.removeAttribute('aria-invalid'));
+  let result = null;
+  if (!errors.length) {
+    try { result = M.lbo(input); } catch (error) {
+      if (!(error instanceof M.ModelError)) throw error;
+      errors.push({ field: 'model', message: error.message });
     }
-    ['entryMultiple', 'entryEquity', 'exitEquity', 'valueCreation', 'moic', 'irr', 'exitMultiple'].forEach((id) => { if ($(id)) $(id).textContent = '—'; });
+  }
+  if (errors.length) {
+    errors.forEach((e) => {
+      if (fieldIds[e.field]) $(fieldIds[e.field]).setAttribute('aria-invalid', 'true');
+      if (e.index !== undefined) document.querySelectorAll(`[data-key="${e.field}"]`)[e.index]?.setAttribute('aria-invalid', 'true');
+    });
+    if (alert) { alert.hidden = false; alert.textContent = errors.map((e) => e.message).join(' '); }
+    clearOutputs();
+    updateEnvelope(NaN);
+    currentModel = null;
+    $('radial').style.background = 'conic-gradient(#253541 0 100%)';
     if ($('modelStatus')) $('modelStatus').textContent = 'NEEDS ATTENTION';
     return;
   }
-  inputs.forEach((id) => $(id).removeAttribute('aria-invalid'));
-  if (alert) {
-    alert.hidden = true;
-    alert.textContent = '';
-  }
-  if ($('modelStatus')) $('modelStatus').textContent = 'INPUT CHECKS PASS';
-  const ev = raw.ev;
-  const ebitda = raw.ebitda;
-  const debtMultiple = raw.debtMultiple;
-  const interest = raw.interest;
-  const hold = raw.hold;
-  const entryMultiple = ev / ebitda;
-  const entryDebt = ebitda * debtMultiple;
-  const entryEquity = ev - entryDebt;
-  const growthInputs = [...document.querySelectorAll('[data-key="growth"]')].map((el) => Number(el.value) || 0);
-  const marginInputs = [...document.querySelectorAll('[data-key="margin"]')].map((el) => Number(el.value) || 0);
-  let revenue = ebitda / (marginInputs[0] / 100 || 0.21);
-  for (let i = 0; i < hold; i += 1) revenue *= 1 + (growthInputs[i] || growthInputs.at(-1) || 0) / 100;
-  const exitEbitda = revenue * ((marginInputs[hold - 1] || marginInputs.at(-1) || 25) / 100);
-  const exitMultiple = entryMultiple + 1.5;
-  const exitEv = exitEbitda * exitMultiple;
-  const interestDrag = Math.min(1, Math.max(0, interest - 8.25) * .12);
-  const debtSchedule = [];
-  let openingDebt = entryDebt;
-  for (let year = 0; year < 5; year += 1) {
-    const sweep = Math.min(openingDebt, year < hold ? entryDebt * (0.12 + (year + 1) * 0.04) * (0.8 + (marginInputs[year] || 20) / 100) * (1 - interestDrag) : 0);
-    const closingDebt = Math.max(0, openingDebt - sweep);
-    debtSchedule.push({ year: year + 1, openingDebt, sweep, closingDebt });
-    $(`debtOpen${year}`).textContent = money(openingDebt);
-    $(`debtSweep${year}`).textContent = `(${money(sweep)})`;
-    $(`debtClose${year}`).textContent = money(closingDebt);
-    $(`debtLev${year}`).textContent = `${(closingDebt / Math.max(exitEbitda * ((year + 1) / 5), 1)).toFixed(1)}x`;
-    openingDebt = closingDebt;
-  }
-  const exitDebt = debtSchedule[hold - 1]?.closingDebt ?? openingDebt;
-  const debtPaydown = entryDebt - exitDebt;
-  const exitEquity = Math.max(0, exitEv - exitDebt);
-  const moic = exitEquity / Math.max(entryEquity, 1);
-  const irr = (Math.pow(moic, 1 / hold) - 1) * 100;
-  $('entryMultiple').innerHTML = `${entryMultiple.toFixed(1)}x <span>↗</span>`;
-  $('entryEquity').textContent = money(entryEquity);
-  $('exitEquity').textContent = money(exitEquity);
-  $('valueCreation').textContent = `+${money(exitEquity - entryEquity)}`;
-  $('moic').textContent = `${moic.toFixed(1)}x`;
-  $('irr').textContent = `${irr.toFixed(1)}%`;
-  $('exitMultiple').textContent = `${exitMultiple.toFixed(1)}x`;
-  [['tapeEntry', `${entryMultiple.toFixed(1)}x`], ['tapeLeverage', `${debtMultiple.toFixed(1)}x`], ['tapeIrr', `${irr.toFixed(1)}%`], ['tapeMoic', `${moic.toFixed(1)}x`], ['tapeExit', `${exitMultiple.toFixed(1)}x`]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
-  const bridge = {
-    entry: entryEquity,
-    debt: debtPaydown,
-    ebitda: Math.max(0, exitEbitda * entryMultiple - ev),
-    multiple: Math.max(0, exitEv - exitEbitda * entryMultiple),
-    exit: exitEquity
-  };
+  const notes = [];
+  if (result.wipedOut) notes.push('At this exit multiple the sale price does not cover net debt: equity is wiped out (0.0x, -100%).');
+  if (result.shortfall) notes.push('Cash flow does not cover interest and mandatory repayment in at least one year; the shortfall is assumed drawn on the debt facility.');
+  if (alert) { alert.hidden = !notes.length; alert.textContent = notes.join(' '); }
+  if ($('modelStatus')) $('modelStatus').textContent = notes.length ? 'CHECK WARNINGS' : 'INPUT CHECKS PASS';
+  const { ev, ebitda, hold } = input;
+  const irrPct = result.irr * 100;
+  result.schedule.forEach((row, year) => {
+    const repaid = row.openingDebt - row.closingDebt;
+    $(`debtOpen${year}`).textContent = money(row.openingDebt);
+    $(`debtSweep${year}`).textContent = repaid >= 0 ? `(${money(repaid)})` : `+${money(-repaid)}`;
+    $(`debtClose${year}`).textContent = money(row.closingDebt);
+    $(`debtLev${year}`).textContent = mult(row.netLeverage);
+  });
+  $('entryMultiple').innerHTML = `${mult(result.entryMultiple)} <span>↗</span>`;
+  $('entryEquity').textContent = money(result.entryEquity);
+  $('exitEquity').textContent = money(result.exitEquity);
+  $('valueCreation').textContent = `${result.valueCreation >= 0 ? '+' : ''}${money(result.valueCreation)}`;
+  $('moic').textContent = mult(result.moic);
+  $('irr').textContent = pct(irrPct);
+  $('exitMultiple').textContent = mult(result.exitMultiple);
+  const delta = result.exitMultiple - result.entryMultiple;
+  if ($('exitExpansion')) $('exitExpansion').textContent = Math.abs(delta) < 0.05 ? 'no multiple expansion' : `${delta > 0 ? '+' : ''}${delta.toFixed(1)}x vs entry`;
+  [['tapeEntry', mult(result.entryMultiple)], ['tapeLeverage', mult(input.debtMultiple)], ['tapeIrr', pct(irrPct)], ['tapeMoic', mult(result.moic)], ['tapeExit', mult(result.exitMultiple)]].forEach(([id, value]) => { if ($(id)) $(id).textContent = value; });
+  const a = result.attribution;
+  const bridge = { entry: result.entryEquity, debt: a.debtPaydown, ebitda: a.ebitdaGrowth, multiple: a.multiple, exit: result.exitEquity };
   const bridgeMax = Math.max(bridge.exit, bridge.entry, 1);
   [['Entry', bridge.entry], ['Debt', bridge.debt], ['Ebitda', bridge.ebitda], ['Multiple', bridge.multiple], ['Exit', bridge.exit]].forEach(([name, value]) => {
-    const key = String(name);
-    const bar = $(`bar${key}`);
-    const label = $(`bridge${key}`);
-    if (bar) bar.style.height = `${Math.max(8, (value / bridgeMax) * 100)}%`;
+    const bar = $(`bar${name}`);
+    const label = $(`bridge${name}`);
+    if (bar) bar.style.height = `${Math.max(8, (Math.max(value, 0) / bridgeMax) * 100)}%`;
     if (label) label.textContent = money(value);
   });
   currentModel = {
-    ev, ebitda, entryDebt, entryEquity, debtPaydown, exitDebt, exitEbitda, exitEv, exitEquity,
-    entryMultiple, exitMultiple, moic, irr, hold, interest, growthRate: growthInputs[0] || 0,
-    debtSchedule,
-    forecastEbitda: Array.from({ length: hold }, (_, i) => ebitda * Math.pow(1 + (growthInputs[i] || growthInputs.at(-1) || 0) / 100, i + 1))
+    input, ev, ebitda, entryDebt: result.entryDebt, entryEquity: result.entryEquity, debtPaydown: result.debtPaydown,
+    exitDebt: result.exitDebt, exitNetDebt: result.exitNetDebt, exitEbitda: result.exitEbitda, exitEv: result.exitEv, exitEquity: result.exitEquity,
+    entryMultiple: result.entryMultiple, exitMultiple: result.exitMultiple, moic: result.moic, irr: irrPct, hold, interest: input.interest * 100,
+    growthRate: input.growth[0] * 100, attribution: a, debtSchedule: result.schedule, forecastAll: result.forecast,
+    forecastEbitda: result.forecast.slice(0, hold).map((row) => row.ebitda)
   };
-  $('radial').style.background = `conic-gradient(var(--mint) 0 ${Math.min(irr * 3.2, 96)}%, #253541 ${Math.min(irr * 3.2, 96)}% 100%)`;
-  $('lastRun').textContent = `Today · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'})} ET`;
+  const fill = Math.max(0, Math.min(irrPct * 3.2, 96));
+  $('radial').style.background = `conic-gradient(var(--mint) 0 ${fill}%, #253541 ${fill}% 100%)`;
+  $('lastRun').textContent = `Today · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'})}`;
+  updateEnvelope(irrPct);
   updateWorkspaceMetrics();
 }
 
@@ -535,7 +529,8 @@ $('resetBtn').addEventListener('click', () => {
 });
 $('exportBtn').addEventListener('click', () => {
   const m = currentModel;
-  const memo = `RIVET / PROJECT ATLAS — INVESTMENT COMMITTEE MEMO\n\nCASE & HOLD\nCase: ${caseLabels[activeCase].name}\nHold: ${m.hold} years\n\nTRANSACTION\nEntry enterprise value: ${money(m.ev)} mm\nEntry EBITDA: ${money(m.ebitda)} mm\nEntry debt: ${money(m.entryDebt)} mm (${m.entryMultiple.toFixed(1)}x)\nEntry sponsor equity: ${money(m.entryEquity)} mm\n\nEXIT & RETURNS\nExit multiple: ${m.exitMultiple.toFixed(1)}x\nExit debt: ${money(m.exitDebt)} mm\nExit equity: ${money(m.exitEquity)} mm\nMOIC: ${m.moic.toFixed(2)}x\nGross IRR: ${m.irr.toFixed(1)}%\n\nASSUMPTIONS\nGrowth: ${m.growthRate.toFixed(1)}% first-year EBITDA growth\nInterest: ${m.interest.toFixed(2)}%\nDebt paydown: ${money(m.debtPaydown)} mm\n\nMETHODOLOGY & DISCLAIMER\nReturns use the deterministic operating forecast, canonical debt schedule, exit multiple and gross equity proceeds. DCF is illustrative and excludes fees, taxes, capex and working capital. This is a local underwriting model, not investment advice or live market data.`;
+  if (!m) { showToast('Fix the highlighted inputs before exporting'); return; }
+  const memo = `RIVET / PROJECT ATLAS — INVESTMENT COMMITTEE MEMO\n\nCASE & HOLD\nCase: ${caseLabels[activeCase].name}\nHold: ${m.hold} years\n\nTRANSACTION\nEntry enterprise value: ${money(m.ev)} mm\nEntry EBITDA: ${money(m.ebitda)} mm\nEntry debt: ${money(m.entryDebt)} mm (${(m.entryDebt / m.ebitda).toFixed(1)}x EBITDA)\nEntry sponsor equity: ${money(m.entryEquity)} mm\n\nEXIT & RETURNS\nExit multiple: ${m.exitMultiple.toFixed(1)}x (entry ${m.entryMultiple.toFixed(1)}x)\nExit debt: ${money(m.exitDebt)} mm\nExit equity: ${money(m.exitEquity)} mm\nMOIC: ${m.moic.toFixed(2)}x\nGross IRR: ${m.irr.toFixed(1)}%\n\nASSUMPTIONS\nGrowth: ${m.growthRate.toFixed(1)}% first-year EBITDA growth\nInterest: ${m.interest.toFixed(2)}%\nDebt paydown: ${money(m.debtPaydown)} mm\n\nMETHODOLOGY & DISCLAIMER\nReturns use the deterministic operating forecast, a cash-flow debt schedule (interest on average balance, 1% mandatory amortisation, 100% cash sweep, 65% EBITDA cash conversion), the exit multiple entered and gross equity proceeds. DCF is illustrative and excludes fees, taxes, capex and working capital. This is a local underwriting model, not investment advice or live market data.`;
   const blob = new Blob([memo], {type: 'text/plain'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
@@ -545,8 +540,9 @@ $('exportBtn').addEventListener('click', () => {
   showToast('IC memo exported');
 });
 $('downloadBtn').addEventListener('click', () => {
+  if (!currentModel) { showToast('Fix the highlighted inputs before exporting'); return; }
   const sensitivity = generateSensitivity();
-  const csv = ['Exit Multiple,' + sensitivity.growths.join(',')].concat(sensitivity.multiples.map((multiple, row) => `${multiple.toFixed(1)}x,${sensitivity.values[row].map((irr) => `${irr.toFixed(1)}%`).join(',')}`)).join('\n');
+  const csv = ['Exit Multiple,' + sensitivity.growths.join(',')].concat(sensitivity.multiples.map((multiple, row) => `${multiple.toFixed(1)}x,${sensitivity.values[row].map((irr) => pct(irr)).join(',')}`)).join('\n');
   const link = document.createElement('a');
   link.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   link.download = 'atlas-irr-sensitivity.csv';
@@ -559,10 +555,9 @@ $('scenarioBtn').addEventListener('click', () => {
   $('scenarioStatus').textContent = 'building deterministic illustrative return envelope…';
   $('scenarioBtn').disabled = true;
   window.setTimeout(() => {
-    const base = Number($('irr').textContent.replace('%', '')) || 22.4;
-    $('p10').textContent = `${Math.max(0, base - 6.6).toFixed(1)}%`;
-    $('p50').textContent = `${base.toFixed(1)}%`;
-    $('p90').textContent = `${(base + 9.3).toFixed(1)}%`;
+    const base = Number($('irr').textContent.replace('%', ''));
+    if (!Number.isFinite(base) || !currentModel) { $('scenarioStatus').textContent = 'fix the highlighted inputs first'; $('scenarioBtn').disabled = false; return; }
+    updateEnvelope(base);
     $('scenarioStatus').textContent = `complete · illustrative range · ${((performance.now() - start) / 1000).toFixed(2)}s`;
     $('scenarioBtn').disabled = false;
     showToast('Scenario envelope refreshed');

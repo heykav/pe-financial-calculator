@@ -1,0 +1,10 @@
+{
+  "name": "pe-financial-calculator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rivet: browser-based illustrative LBO / DCF calculator",
+  "scripts": {
+    "test": "node --test \"test/*.test.js\""
+  },
+  "license": "UNLICENSED"
+}

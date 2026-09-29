@@ -16,9 +16,13 @@ I got tired of rebuilding the same six-input LBO in a fresh spreadsheet every ti
 
 Every workspace opens with a plain-English "start here" line before the numbers, on the theory that the fastest way to lose someone in finance software is to show them a DCF before you've told them what a DCF is for.
 
-![KA mark used by Rivet](favicon.jpeg)
+![Rivet at a realistic input: $425mm EV, $52mm EBITDA, 4.5x leverage](docs/screenshot.png)
 
-*Rivet's KA mark and browser identity.*
+*The Base case: 4.0x gross MOIC / 32.2% gross IRR (headless-Chromium render of the real app).*
+
+**What this is:** a transparent, browser-only first-pass LBO / DCF / returns calculator whose formulas are documented in [`docs/formulas.md`](docs/formulas.md) and covered by automated tests against hand-computed values.
+
+**What this is not:** a full three-statement model, a tax model, or a source of market data. Returns are gross and simplified (no taxes, fees, or carry).
 
 > Rivet is illustrative. It is not investment advice, a valuation opinion, or a stand-in for real diligence — treat every output as a first-pass conversation starter, not a number you'd underwrite on.
 
@@ -166,13 +170,7 @@ The current illustrative model uses a simple exit-multiple convention and a simp
 - Annualized IRR derived from the modeled MOIC and hold period.
 - Value creation split into debt paydown, EBITDA growth, and multiple movement.
 
-IRR here is `MOIC^(1/hold) − 1`, not Newton's method on a cash-flow
-series. That's deliberate, not a shortcut: a single entry check and a
-single exit check has one lump-sum return, and a lump-sum return has a
-closed-form root — there's nothing to iterate toward. The moment Rivet
-grows interim dividends or a multi-tranche capital structure, this
-formula stops being correct and needs to become an actual IRR solver.
-Today it doesn't, so it isn't one.
+IRR is computed as the root of the NPV of `[-equity, 0, ..., 0, exit equity]` by a bracketing solver (`irr()` in `model.js`); with no interim dividends this equals `MOIC^(1/hold) - 1`. The debt schedule is cash-flow based: 65% of EBITDA less interest (average balance, circularity solved iteratively), 1% mandatory amortisation and a 100% cash sweep. Exit multiple is an explicit input. See [`docs/formulas.md`](docs/formulas.md) for every formula, assumption and simplification.
 
 ### Sensitivity and scenarios
 
@@ -195,7 +193,7 @@ The sensitivity grid shows how illustrative IRR changes across exit multiples an
 Rivet is deliberately transparent about what it does not do. It currently does **not** provide:
 
 - A complete three-statement financial model.
-- A live debt waterfall, mandatory amortization, cash sweep covenant, or financing term sheet.
+- A multi-tranche debt waterfall, covenants, or financing term sheet (a single-tranche schedule with 1% amortisation and a cash sweep is modelled).
 - A tax model, working-capital schedule, capex schedule, or purchase-accounting model.
 - A full three-statement DCF, market-data-backed comps database, or live market feed. The DCF is a simplified illustrative FCF proxy and comps are intentionally illustrative.
 - Real-time market data, lender quotes, public filings, or proprietary research.
@@ -222,10 +220,10 @@ python3 -m http.server 4173
 
 Open <http://localhost:4173>.
 
-For a quick static check:
+Run the calculation tests (Node 20+, no dependencies):
 
 ```sh
-git diff --check
+npm test
 ```
 
 The browser preview is the source of truth for interaction testing. Keep the console free of errors and verify wide, medium, and narrow browser viewport layouts when changing UI code.
@@ -235,7 +233,10 @@ The browser preview is the source of truth for interaction testing. Keep the con
 ```text
 .
 ├── index.html                 # Application shell, metadata, structured data, and UI
-├── app.js                    # Model calculations, state, routing, and interactions
+├── model.js                  # Pure calculation core (IRR, DCF, debt schedule, LBO)
+├── app.js                    # UI state, routing, rendering, and interactions
+├── test/model.test.js        # node --test suite vs hand-computed values
+├── docs/formulas.md          # Every formula, assumption and simplification
 ├── styles.css                # Rivet design system and responsive layout
 ├── DESIGN.md                 # Visual language and component grammar
 ├── PRIVACY.md                # GDPR/CCPA-oriented privacy notice
@@ -247,7 +248,7 @@ The browser preview is the source of truth for interaction testing. Keep the con
 └── .github/
     ├── CONTRIBUTING.md       # Contribution workflow
     ├── ISSUE_TEMPLATE/       # Bug report template
-    └── workflows/pages.yml   # GitHub Pages deployment
+    └── workflows/            # ci.yml (tests on push/PR), pages.yml (deployment)
 ```
 
 ## Contributing

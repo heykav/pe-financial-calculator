@@ -106,7 +106,7 @@
         <div class="ticker-spark"><span>BASE</span><svg viewBox="0 0 140 34" preserveAspectRatio="none"><path d="M0 26 L14 24 L28 27 L42 19 L56 21 L70 15 L84 16 L98 8 L112 12 L126 4 L140 6" /></svg></div>
       </section>
 
-      <div class="model-alert" id="modelAlert" role="status" hidden></div>
+      <div class="model-alert" id="modelAlert" role="alert" hidden></div>
       <div class="dashboard-grid">
         <section class="panel assumptions-panel">
           <div class="panel-heading"><div><span class="panel-index">01</span><h2>1. Frame the opportunity</h2><p>Set the entry price, earnings base, financing, and intended hold period.</p></div><button class="more-button" aria-label="More deal setup actions">•••</button></div>
@@ -119,6 +119,7 @@
             <label class="field"><span>Borrowing level <em>loan size ÷ annual profit</em></span><div class="input-wrap"><input id="debtMultiple" type="number" value="4.5" min="0" step="0.25" /><span>x</span></div></label>
             <label class="field"><span>Annual interest <em>yearly cost of the loan</em></span><div class="input-wrap"><input id="interest" type="number" value="8.25" min="0" step="0.25" /><span>%</span></div></label>
             <label class="field"><span>Years held <em>modeled ownership · 1–5 yrs</em></span><div class="input-wrap"><input id="hold" type="number" value="5" min="1" max="5" step="1" /><span>yrs</span></div></label>
+            <label class="field"><span>Exit multiple <em>EV ÷ EBITDA at sale</em></span><div class="input-wrap"><input id="exitIn" type="number" value="8.2" min="0.1" step="0.1" /><span>x</span></div></label>
           </div>
           <div class="divider"></div>
           <div class="section-subhead"><strong>How the business may grow</strong><span>Forecast · FY2026E to FY2030E</span></div>
@@ -138,7 +139,7 @@
 
       <section class="panel chart-panel">
         <div class="panel-heading chart-heading"><div><span class="panel-index">03</span><h2>3. Trace the value creation</h2><p>Separate operating growth, deleveraging, and multiple movement: the three levers behind the headline return.</p></div><div class="chart-controls" role="group" aria-label="Value chart series"><button class="chart-filter active" data-chart="total" aria-pressed="true">Total value</button><button class="chart-filter" data-chart="debt" aria-pressed="false">Debt paid down</button><button class="chart-filter" data-chart="profit" aria-pressed="false">Profit growth</button><button class="more-button" aria-label="More value chart actions">•••</button></div></div>
-        <div class="chart-layout"><div class="chart-y"><span id="chartMax">$600</span><span id="chartMidHigh">$450</span><span id="chartMid">$300</span><span id="chartMidLow">$150</span><span>$0</span></div><div class="line-chart"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 800 250" preserveAspectRatio="none" role="img" aria-label="Active case value creation chart"><defs><linearGradient id="area" x1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6a84b" stop-opacity=".28"/><stop offset="1" stop-color="#d6a84b" stop-opacity="0"/></linearGradient></defs><path class="area-fill" id="chartArea" d="M0,210 L800,250 L0,250 Z"/><path class="chart-line" id="chartPath" d="M0,210 L800,210"/><g id="chartPoints" aria-hidden="true"></g></svg><div class="chart-x"><span>Entry</span><span>FY26E</span><span>FY27E</span><span>FY28E</span><span>FY29E</span><span>FY30E</span><span>Exit</span></div></div><div class="chart-callout"><small>EXIT EV / EBITDA</small><strong id="exitMultiple">9.7x</strong><span class="positive">+1.5x expansion</span><hr/><small>DEBT PAYDOWN</small><strong id="debtPaydownMultiple">1.9x → 0.8x</strong><span>of EBITDA</span></div></div>
+        <div class="chart-layout"><div class="chart-y"><span id="chartMax">$600</span><span id="chartMidHigh">$450</span><span id="chartMid">$300</span><span id="chartMidLow">$150</span><span>$0</span></div><div class="line-chart"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 800 250" preserveAspectRatio="none" role="img" aria-label="Active case value creation chart"><defs><linearGradient id="area" x1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6a84b" stop-opacity=".28"/><stop offset="1" stop-color="#d6a84b" stop-opacity="0"/></linearGradient></defs><path class="area-fill" id="chartArea" d="M0,210 L800,250 L0,250 Z"/><path class="chart-line" id="chartPath" d="M0,210 L800,210"/><g id="chartPoints" aria-hidden="true"></g></svg><div class="chart-x"><span>Entry</span><span>FY26E</span><span>FY27E</span><span>FY28E</span><span>FY29E</span><span>FY30E</span><span>Exit</span></div></div><div class="chart-callout"><small>EXIT EV / EBITDA</small><strong id="exitMultiple">9.7x</strong><span class="positive" id="exitExpansion">no multiple expansion</span><hr/><small>DEBT PAYDOWN</small><strong id="debtPaydownMultiple">1.9x → 0.8x</strong><span>of EBITDA</span></div></div>
       </section>
 
       <div class="bottom-grid">
@@ -167,6 +168,7 @@
     </div>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite">Model recalculated <span>✓</span></div>
-  <script src="app.js?v=audit-20260912"></script>
+  <script src="model.js?v=core-1"></script>
+  <script src="app.js?v=core-1"></script>
 </body>
 </html>
