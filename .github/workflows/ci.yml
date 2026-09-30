@@ -22,5 +22,7 @@ jobs:
         run: |
           node --check model.js
           node --check app.js
-      - name: Unit tests (calculation layer)
+          node --check ui-helpers.js
+          node --check scripts/make_screenshots.mjs
+      - name: Unit tests (calculation layer and UI helpers)
         run: npm test

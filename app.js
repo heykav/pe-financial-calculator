@@ -3,6 +3,8 @@ const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => (
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[character]));
 const M = window.RivetModel;
+const UI = window.RivetUI;
+const { isNum, money, mult, pct, signedPct } = UI;
 const FCF_CONVERSION = 0.65; // documented in docs/formulas.md
 const inputs = ['ev','ebitda','debtMultiple','interest','hold','exitIn'];
 const state = { defaultValues: Object.fromEntries(inputs.map((id) => [id, $(id).value])) };
@@ -103,14 +105,10 @@ function updateWorkspaceMetrics() {
 
 function renderValueChart() {
   if (!currentModel) return;
-  const { ev, entryDebt, ebitda, exitMultiple, debtSchedule = [] } = currentModel;
+  const { entryDebt, ebitda, debtSchedule = [], hold } = currentModel;
   const forecast = currentModel.forecastEbitda || [];
-  const series = {
-    total: [ev, ...forecast.map((value) => value * exitMultiple)],
-    debt: [entryDebt, ...debtSchedule.slice(0, forecast.length).map((row) => Math.max(row.closingDebt, 0))],
-    profit: [ebitda, ...forecast]
-  };
-  const values = series[activeChart] || series.total;
+  const values = UI.chartSeries(currentModel, activeChart);
+  const labels = UI.chartXLabels(hold);
   const max = Math.max(...values, 1);
   const width = 800;
   const height = 220;
@@ -124,6 +122,10 @@ function renderValueChart() {
   $('chartPath')?.setAttribute('d', line);
   $('chartArea')?.setAttribute('d', area);
   if ($('chartPoints')) $('chartPoints').innerHTML = points.map(([x, y], index) => `<circle cx="${x}" cy="${y}" r="${index === points.length - 1 ? 5 : 3}" />`).join('');
+  // One x label per plotted point (entry + each held year), so labels line up with the points.
+  if ($('chartX')) $('chartX').innerHTML = labels.map((label) => `<span>${escapeHtml(label)}</span>`).join('');
+  $('chartSvg')?.setAttribute('aria-label', UI.chartDescription(activeChart, labels, values));
+  if ($('chartSeriesName')) $('chartSeriesName').textContent = `${UI.CHART_SERIES[activeChart] || UI.CHART_SERIES.total} · USD mm`;
   [['chartMax', max], ['chartMidHigh', max * .75], ['chartMid', max * .5], ['chartMidLow', max * .25]].forEach(([id, value]) => { if ($(id)) $(id).textContent = `$${Math.round(value)}`; });
   if ($('debtPaydownMultiple')) {
     const first = entryDebt / ebitda;
@@ -136,7 +138,7 @@ function renderCockpitSensitivity() {
   const surface = $('cockpitSensitivity');
   if (!surface || !currentModel) return;
   const { multiples, growths, values } = generateSensitivity();
-  surface.innerHTML = `<div class="heat-label">Exit multiple ↓</div>${growths.map((growth) => `<span>${growth}%</span>`).join('')}${multiples.map((multiple, row) => `<div class="row-label">${multiple.toFixed(1)}x</div>${values[row].map((irr) => `<b class="heat h${Math.max(1, Math.min(7, Math.round(irr / 5)))}">${pct(irr)}</b>`).join('')}`).join('')}`;
+  surface.innerHTML = `<div class="heat-row" role="row"><div class="heat-label" role="columnheader">Exit ↓ / g →</div>${growths.map((growth) => `<span role="columnheader">${growth}%</span>`).join('')}</div>${multiples.map((multiple, row) => `<div class="heat-row" role="row"><div class="row-label" role="rowheader">${mult(multiple)}</div>${values[row].map((irr) => `<b class="heat h${UI.heatBucket(irr)}" role="cell">${pct(irr)}</b>`).join('')}</div>`).join('')}`;
 }
 
 function updateWorkspaceContextLabels() {
@@ -180,7 +182,7 @@ function openWorkspace(view) {
     showToast(`${caseLabels[copyKey].name} created in this session`);
   });
   $('workspaceContent').querySelector('#refreshLbo')?.addEventListener('click', () => { calculate(); showToast('LBO refreshed from active case'); });
-  $('workspaceContent').querySelector('#exportLbo')?.addEventListener('click', () => currentModel ? exportText('lbo-sources-uses.csv', `Line,USD mm\nPurchase enterprise value,${currentModel.ev.toFixed(1)}\nDebt,${currentModel.entryDebt.toFixed(1)}\nSponsor equity,${currentModel.entryEquity.toFixed(1)}\nDebt paydown,${currentModel.debtPaydown.toFixed(1)}\nExit debt,${currentModel.exitDebt.toFixed(1)}`) : showToast('Fix the highlighted inputs before exporting'));
+  $('workspaceContent').querySelector('#exportLbo')?.addEventListener('click', () => currentModel ? exportText('lbo-sources-uses.csv', UI.lboCsv(currentModel)) : showToast('Fix the highlighted inputs before exporting'));
   $('workspaceContent').querySelector('#exportSensitivity')?.addEventListener('click', () => exportText('active-case-sensitivity.csv', surfaceCsv()));
   document.querySelectorAll('.nav-item[data-view]').forEach((item) => item.classList.toggle('active', item.dataset.view === view));
 }
@@ -197,8 +199,10 @@ function renderSurface() {
   const sensitivity = generateSensitivity();
   if (!surface || !currentModel) return;
   const { multiples, growths, values } = sensitivity;
-  surface.innerHTML = `<div class="surface-axis"><span>Exit EV / EBITDA ↓</span>${growths.map((g) => `<span>${g}% EBITDA growth →</span>`).join('')}</div>${multiples.map((multiple, row) => `<div class="surface-row"><span class="surface-axis-label">${multiple.toFixed(1)}x</span>${values[row].map((irr) => `<b class="surface-cell s${Math.max(1, Math.min(7, Math.round(irr / 5)))}">${pct(irr)}</b>`).join('')}</div>`).join('')}`;
-  surface.dataset.csv = ['Exit multiple,' + growths.join(',')].concat(multiples.map((multiple, row) => `${multiple.toFixed(1)}x,${values[row].map((irr) => pct(irr)).join(',')}`)).join('\n');
+  surface.innerHTML = `<div class="surface-axis" role="row"><span role="columnheader">Exit EV / EBITDA ↓</span>${growths.map((g) => `<span role="columnheader">${g}% EBITDA growth</span>`).join('')}</div>${multiples.map((multiple, row) => `<div class="surface-row" role="row"><span class="surface-axis-label" role="rowheader">${mult(multiple)}</span>${values[row].map((irr) => `<b class="surface-cell s${UI.heatBucket(irr)}" role="cell">${pct(irr)}</b>`).join('')}</div>`).join('')}`;
+  surface.setAttribute('role', 'table');
+  surface.setAttribute('aria-label', 'Gross IRR by exit EV / EBITDA (rows) and annual EBITDA growth (columns)');
+  surface.dataset.csv = UI.sensitivityCsv(sensitivity);
   document.querySelectorAll('[data-sensitivity-csv]').forEach((hook) => { hook.textContent = surface.dataset.csv; });
   document.querySelectorAll('[data-sensitivity-surface]').forEach((hook) => {
     hook.innerHTML = surface.innerHTML;
@@ -296,7 +300,7 @@ function wireUiActions() {
     selectCase(button.dataset.case);
     document.querySelectorAll('.segmented button').forEach((item) => item.classList.remove('selected'));
     button.classList.add('selected');
-    document.querySelectorAll('.segmented button[data-case]').forEach((item) => item.setAttribute('aria-selected', String(item === button)));
+    document.querySelectorAll('.segmented button[data-case]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
     showToast(`${button.textContent.trim()} loaded`);
   }));
   document.querySelectorAll('.more-button').forEach((button) => button.addEventListener('click', () => showToast('No additional actions for this section yet')));
@@ -320,7 +324,7 @@ function wireUiActions() {
 function updateReadiness() {
   const checks = [...document.querySelectorAll('.checklist input')];
   const complete = checks.filter((input) => input.checked).length;
-  $('readiness').textContent = `${Math.round((complete / Math.max(checks.length, 1)) * 100)}% complete`;
+  $('readiness').textContent = `${Math.round((complete / Math.max(checks.length, 1)) * 100)}% user verified`;
   document.querySelectorAll('.checklist label').forEach((label) => {
     const input = label.querySelector('input');
     const status = label.querySelector('em');
@@ -355,22 +359,6 @@ function selectCase(key) {
 }
 
 wireUiActions();
-document.addEventListener('click', (event) => {
-  const target = event.target.closest('button');
-  if (!target) return;
-  if (target.matches('.segmented button:not(.add-case)')) {
-    selectCase(target.dataset.case);
-    document.querySelectorAll('.segmented button').forEach((item) => item.classList.remove('selected'));
-    target.classList.add('selected');
-    showToast(`${target.textContent.trim()} loaded`);
-  } else if (target.matches('.segmented .add-case')) {
-    showToast('Use Assumption sets to create a named case');
-  } else if (target.matches('.more-button')) {
-    showToast('No additional actions for this section yet');
-  } else if (target.matches('.full-link')) {
-    showToast('IC prep is a checklist prompt — complete the open items above');
-  }
-});
 document.addEventListener('keydown', (event) => {
   const modal = $('utilityModal');
   if (!modal.hidden && event.key === 'Tab') {
@@ -407,18 +395,19 @@ document.addEventListener('keydown', (event) => {
   target?.click();
 });
 
-const isNum = (v) => typeof v === 'number' && Number.isFinite(v);
-function money(value) { return isNum(value) ? `${value < 0 ? '-' : ''}$${Math.abs(value).toFixed(1)}` : '—'; }
-function mult(value) { return isNum(value) ? `${value.toFixed(1)}x` : '—'; }
-function pct(value) { return isNum(value) ? `${value.toFixed(1)}%` : '—'; }
-function signedPct(value) { return isNum(value) ? `${value > 0 ? '+' : ''}${value.toFixed(1)}%` : '—'; }
-
-// Illustrative envelope: fixed offsets around the point estimate. NOT a statistical distribution.
+// Illustrative envelope: fixed offsets around the point estimate (ui-helpers.js). NOT a statistical distribution.
 function updateEnvelope(base) {
-  const ok = isNum(base);
-  $('p10').textContent = ok ? pct(Math.max(-100, base - 6.6)) : '—';
-  $('p50').textContent = ok ? pct(base) : '—';
-  $('p90').textContent = ok ? pct(base + 9.3) : '—';
+  const env = UI.envelope(base);
+  $('p10').textContent = pct(env.lower);
+  $('p50').textContent = pct(env.base);
+  $('p90').textContent = pct(env.higher);
+  const scale = UI.envelopeScale(env);
+  if ($('rangeStrip')) $('rangeStrip').classList.toggle('empty', !scale);
+  if (!scale) return;
+  [['rangeLower', scale.lower], ['rangeBase', scale.base], ['rangeHigher', scale.higher]].forEach(([id, left]) => { if ($(id)) $(id).style.left = `${left}%`; });
+  if ($('rangeSpan')) { $('rangeSpan').style.left = `${scale.lower}%`; $('rangeSpan').style.width = `${scale.higher - scale.lower}%`; }
+  if ($('rangeMin')) $('rangeMin').textContent = pct(scale.min);
+  if ($('rangeMax')) $('rangeMax').textContent = pct(scale.max);
 }
 const outputIds = ['entryMultiple', 'entryEquity', 'exitEquity', 'valueCreation', 'moic', 'irr', 'exitMultiple', 'tapeEntry', 'tapeLeverage', 'tapeIrr', 'tapeMoic', 'tapeExit', 'bridgeEntry', 'bridgeDebt', 'bridgeEbitda', 'bridgeMultiple', 'bridgeExit', 'debtPaydownMultiple'];
 function clearOutputs() {
@@ -428,6 +417,19 @@ function clearOutputs() {
   ['chartPath', 'chartArea'].forEach((id) => $(id)?.setAttribute('d', ''));
   if ($('chartPoints')) $('chartPoints').innerHTML = '';
   ['workspaceSurface', 'cockpitSensitivity'].forEach((id) => { if ($(id)) { $(id).innerHTML = '<p class="workspace-note">Fix the highlighted input to see this table.</p>'; if ($(id).dataset) $(id).dataset.csv = ''; } });
+}
+
+// Keeps the ticker and the sidebar status in step (the sidebar previously always read "Input checks pass").
+function setModelStatus(text, level) {
+  if ($('modelStatus')) $('modelStatus').textContent = text;
+  const sidebar = $('modelStatusButton');
+  const label = sidebar?.querySelector('strong');
+  if (label) label.textContent = text.charAt(0) + text.slice(1).toLowerCase();
+  [sidebar, $('modelStatus')?.closest('div')].forEach((el) => {
+    if (!el) return;
+    el.classList.toggle('status-warn', level === 'warn');
+    el.classList.toggle('status-error', level === 'error');
+  });
 }
 
 const fieldIds = { ev: 'ev', ebitda: 'ebitda', debtMultiple: 'debtMultiple', interest: 'interest', hold: 'hold', exitMultiple: 'exitIn' };
@@ -441,8 +443,10 @@ function calculate() {
     margin: [...document.querySelectorAll('[data-key="margin"]')].map((el) => el.value)
   };
   const { errors, input } = M.validateDeal(raw);
-  inputs.forEach((id) => $(id).removeAttribute('aria-invalid'));
-  document.querySelectorAll('.mini-input').forEach((el) => el.removeAttribute('aria-invalid'));
+  const markValid = (el) => { el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); };
+  const markInvalid = (el) => { if (!el) return; el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', 'modelAlert'); };
+  inputs.forEach((id) => markValid($(id)));
+  document.querySelectorAll('.mini-input').forEach(markValid);
   let result = null;
   if (!errors.length) {
     try { result = M.lbo(input); } catch (error) {
@@ -452,22 +456,22 @@ function calculate() {
   }
   if (errors.length) {
     errors.forEach((e) => {
-      if (fieldIds[e.field]) $(fieldIds[e.field]).setAttribute('aria-invalid', 'true');
-      if (e.index !== undefined) document.querySelectorAll(`[data-key="${e.field}"]`)[e.index]?.setAttribute('aria-invalid', 'true');
+      if (fieldIds[e.field]) markInvalid($(fieldIds[e.field]));
+      if (e.index !== undefined) markInvalid(document.querySelectorAll(`[data-key="${e.field}"]`)[e.index]);
     });
     if (alert) { alert.hidden = false; alert.textContent = errors.map((e) => e.message).join(' '); }
     clearOutputs();
     updateEnvelope(NaN);
     currentModel = null;
     $('radial').style.background = 'conic-gradient(#253541 0 100%)';
-    if ($('modelStatus')) $('modelStatus').textContent = 'NEEDS ATTENTION';
+    setModelStatus('NEEDS ATTENTION', 'error');
     return;
   }
   const notes = [];
   if (result.wipedOut) notes.push('At this exit multiple the sale price does not cover net debt: equity is wiped out (0.0x, -100%).');
   if (result.shortfall) notes.push('Cash flow does not cover interest and mandatory repayment in at least one year; the shortfall is assumed drawn on the debt facility.');
   if (alert) { alert.hidden = !notes.length; alert.textContent = notes.join(' '); }
-  if ($('modelStatus')) $('modelStatus').textContent = notes.length ? 'CHECK WARNINGS' : 'INPUT CHECKS PASS';
+  setModelStatus(notes.length ? 'CHECK WARNINGS' : 'INPUT CHECKS PASS', notes.length ? 'warn' : 'ok');
   const { ev, ebitda, hold } = input;
   const irrPct = result.irr * 100;
   result.schedule.forEach((row, year) => {
@@ -476,6 +480,12 @@ function calculate() {
     $(`debtSweep${year}`).textContent = repaid >= 0 ? `(${money(repaid)})` : `+${money(-repaid)}`;
     $(`debtClose${year}`).textContent = money(row.closingDebt);
     $(`debtLev${year}`).textContent = mult(row.netLeverage);
+    const tableRow = $(`debtOpen${year}`).closest('.debt-row');
+    if (tableRow) {
+      const afterExit = year >= hold;
+      tableRow.classList.toggle('post-exit', afterExit);
+      if (afterExit) tableRow.title = 'After the exit year: shown for reference, does not affect returns'; else tableRow.removeAttribute('title');
+    }
   });
   $('entryMultiple').innerHTML = `${mult(result.entryMultiple)} <span>↗</span>`;
   $('entryEquity').textContent = money(result.entryEquity);
@@ -501,7 +511,7 @@ function calculate() {
     exitDebt: result.exitDebt, exitNetDebt: result.exitNetDebt, exitEbitda: result.exitEbitda, exitEv: result.exitEv, exitEquity: result.exitEquity,
     entryMultiple: result.entryMultiple, exitMultiple: result.exitMultiple, moic: result.moic, irr: irrPct, hold, interest: input.interest * 100,
     growthRate: input.growth[0] * 100, attribution: a, debtSchedule: result.schedule, forecastAll: result.forecast,
-    forecastEbitda: result.forecast.slice(0, hold).map((row) => row.ebitda)
+    forecastEbitda: result.forecast.slice(0, hold).map((row) => row.ebitda), notes
   };
   const fill = Math.max(0, Math.min(irrPct * 3.2, 96));
   $('radial').style.background = `conic-gradient(var(--mint) 0 ${fill}%, #253541 ${fill}% 100%)`;
@@ -523,14 +533,14 @@ $('runBtn').addEventListener('click', () => { calculate(); showToast('Model reca
 $('resetBtn').addEventListener('click', () => {
   selectCase('base');
   document.querySelectorAll('.segmented button').forEach((item) => item.classList.toggle('selected', item.dataset.case === 'base'));
-  document.querySelectorAll('.segmented button[data-case]').forEach((item) => item.setAttribute('aria-selected', String(item.dataset.case === 'base')));
+  document.querySelectorAll('.segmented button[data-case]').forEach((item) => item.setAttribute('aria-pressed', String(item.dataset.case === 'base')));
   updateReadiness();
   showToast('Base case restored — model recalculated');
 });
 $('exportBtn').addEventListener('click', () => {
   const m = currentModel;
   if (!m) { showToast('Fix the highlighted inputs before exporting'); return; }
-  const memo = `RIVET / PROJECT ATLAS — ILLUSTRATIVE DEAL SUMMARY\n\nCASE & HOLD\nCase: ${caseLabels[activeCase].name}\nHold: ${m.hold} years\n\nTRANSACTION\nEntry enterprise value: ${money(m.ev)} mm\nEntry EBITDA: ${money(m.ebitda)} mm\nEntry debt: ${money(m.entryDebt)} mm (${(m.entryDebt / m.ebitda).toFixed(1)}x EBITDA)\nEntry sponsor equity: ${money(m.entryEquity)} mm\n\nEXIT & RETURNS\nExit multiple: ${m.exitMultiple.toFixed(1)}x (entry ${m.entryMultiple.toFixed(1)}x)\nExit debt: ${money(m.exitDebt)} mm\nExit equity: ${money(m.exitEquity)} mm\nMOIC: ${m.moic.toFixed(2)}x\nGross IRR: ${m.irr.toFixed(1)}%\n\nASSUMPTIONS\nGrowth: ${m.growthRate.toFixed(1)}% first-year EBITDA growth\nInterest: ${m.interest.toFixed(2)}%\nDebt paydown: ${money(m.debtPaydown)} mm\n\nMETHODOLOGY & DISCLAIMER\nReturns use the deterministic operating forecast, a cash-flow debt schedule (interest on average balance, 1% mandatory amortisation, 100% cash sweep, 65% EBITDA cash conversion), the exit multiple entered and gross equity proceeds. DCF is illustrative and excludes fees, taxes, capex and working capital. This is an educational calculator with simplified mechanics (single debt tranche, no taxes, fees, capex or working capital). It is not a deal-grade model, investment advice or live market data.`;
+  const memo = UI.summaryText(m, caseLabels[activeCase].name, m.notes);
   const blob = new Blob([memo], {type: 'text/plain'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
@@ -541,8 +551,7 @@ $('exportBtn').addEventListener('click', () => {
 });
 $('downloadBtn').addEventListener('click', () => {
   if (!currentModel) { showToast('Fix the highlighted inputs before exporting'); return; }
-  const sensitivity = generateSensitivity();
-  const csv = ['Exit Multiple,' + sensitivity.growths.join(',')].concat(sensitivity.multiples.map((multiple, row) => `${multiple.toFixed(1)}x,${sensitivity.values[row].map((irr) => pct(irr)).join(',')}`)).join('\n');
+  const csv = UI.sensitivityCsv(generateSensitivity());
   const link = document.createElement('a');
   link.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   link.download = 'atlas-irr-sensitivity.csv';
@@ -555,8 +564,8 @@ $('scenarioBtn').addEventListener('click', () => {
   $('scenarioStatus').textContent = 'building deterministic illustrative return envelope…';
   $('scenarioBtn').disabled = true;
   window.setTimeout(() => {
-    const base = Number($('irr').textContent.replace('%', ''));
-    if (!Number.isFinite(base) || !currentModel) { $('scenarioStatus').textContent = 'fix the highlighted inputs first'; $('scenarioBtn').disabled = false; return; }
+    const base = currentModel ? currentModel.irr : NaN;
+    if (!isNum(base)) { $('scenarioStatus').textContent = 'fix the highlighted inputs first'; $('scenarioBtn').disabled = false; return; }
     updateEnvelope(base);
     $('scenarioStatus').textContent = `complete · illustrative range · ${((performance.now() - start) / 1000).toFixed(2)}s`;
     $('scenarioBtn').disabled = false;
