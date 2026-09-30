@@ -64,7 +64,7 @@
       }
       lo = hi; flo = fhi;
     }
-    throw new ModelError('IRR did not converge within -99.9% to +99,900%.', 'no_convergence');
+    throw new ModelError('No IRR found between -99.9% and +99,900% (NPV does not change sign in that range).', 'no_convergence');
   }
 
   /** Multiple on invested capital = total proceeds / total invested. */
@@ -175,7 +175,9 @@
    *   closing_t    = opening - (cashAvail >= mandatory ? mandatory + sweep : cashAvail)
    *   surplus cash after debt is fully repaid (or sweepPct<100%) accumulates in cash.
    * Average-balance interest is circular (closing depends on interest). It is solved
-   * by fixed-point iteration to 1e-12; contraction factor is rate*sweepPct/2 < 1, so it converges.
+   * by fixed-point iteration to 1e-12. The map closing -> closing is continuous and piecewise linear
+   * with slope rate*sweepPct/2 (sweep regime) or rate/2 (shortfall regime), so with rate <= 100% it is
+   * a contraction (factor <= 0.5) and converges.
    */
   function debtSchedule({ openingDebt, rate, preInterestCash, amortPct = 0, sweepPct = 1, interestBasis = 'average', openingCash = 0 }) {
     need(openingDebt, 'Opening debt'); need(rate, 'Interest rate'); need(amortPct, 'Amortisation'); need(sweepPct, 'Cash sweep'); need(openingCash, 'Opening cash');
@@ -252,9 +254,10 @@
     const rawExitEquity = exitEv - exitNetDebt;            // repays debt at par at exit, so exit before maturity is handled
     const exitEquity = Math.max(0, rawExitEquity);         // limited liability
     const moicValue = exitEquity / entryEquity;
-    let irrValue;
-    if (exitEquity === 0) irrValue = -1;                   // total loss
-    else irrValue = irr([-entryEquity, ...Array(hold - 1).fill(0), exitEquity]);
+    // Lump-sum flows [-E, 0, ..., 0, X]: NPV(r) = 0 has the unique root r = (X/E)^(1/h) - 1, so it is
+    // computed in closed form. (A root search would fail when the IRR is below the -99.9% scan floor,
+    // e.g. a 1-year hold that recovers under 0.1% of the equity.) Total loss (X = 0) gives exactly -100%.
+    const irrValue = Math.pow(moicValue, 1 / hold) - 1;
     const attribution = returnsAttribution({ ebitdaEntry: ebitda, ebitdaExit: exitEbitda, entryMultiple, exitMultiple, netDebtEntry: entryDebt, netDebtExit: exitNetDebt, fees });
     return {
       entryMultiple, entryDebt, entryEquity, sourcesAndUses: su, forecast, schedule: rows, hold,
@@ -318,7 +321,7 @@
     if (finite(v.exitMultiple) && v.exitMultiple <= 0) bad('exitMultiple', 'Exit multiple must be greater than zero.');
     const growth = (raw.growth || []).map(num), margin = (raw.margin || []).map(num);
     if (growth.length !== 5 || margin.length !== 5) bad('forecast', 'The forecast needs five years of growth and margin.');
-    growth.forEach((g, i) => { if (!finite(g) || g < -100 || g > 100) bad('growth', `Revenue growth for year ${i + 1} must be a number from -100% to 100% (and above -100%).`, i); else if (g === -100) bad('growth', `Revenue growth for year ${i + 1} cannot be exactly -100%.`, i); });
+    growth.forEach((g, i) => { if (!finite(g) || g <= -100 || g > 100) bad('growth', `Revenue growth for year ${i + 1} must be a number above -100% and at most 100%.`, i); });
     margin.forEach((m, i) => { if (!finite(m) || m <= 0 || m > 100) bad('margin', `EBITDA margin for year ${i + 1} must be above 0% and at most 100%.`, i); });
     if (finite(v.ev) && finite(v.ebitda) && finite(v.debtMultiple) && v.ev > 0 && v.ebitda > 0 && v.debtMultiple >= 0 && v.ebitda * v.debtMultiple > 0.9 * v.ev) bad('debtMultiple', 'Borrowing is too high: debt should stay below 90% of the purchase price.');
     const input = { ev: v.ev, ebitda: v.ebitda, debtMultiple: v.debtMultiple, interest: v.interest / 100, hold: v.hold, exitMultiple: v.exitMultiple, growth: growth.map((g) => g / 100), margin: margin.map((m) => m / 100) };

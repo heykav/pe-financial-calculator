@@ -201,3 +201,55 @@ test('Fuzz: any input either throws ModelError or yields only finite numbers', (
   }
   assert.ok(ok > 500);
 });
+
+test('Regression: near-total-loss 1-year hold gives an IRR instead of a root-search error', () => {
+  // Before the fix lbo() called irr(), whose scan starts at -99.9%, and threw 'no_convergence' here.
+  // Hand: hold 1, Y1 interest 4.0 (10% x 40), avail 5 - 4 = 1, closing debt 39.
+  // Exit EV = 10 x 3.903 = 39.03, exit equity = 0.03, MOIC = 0.03/60 = 0.0005, IRR = 0.0005 - 1 = -99.95%.
+  const r = M.lbo({ ...base, hold: 1, exitMultiple: 3.903 });
+  close(r.exitEquity, 0.03, 1e-9);
+  close(r.moic, 0.0005, 1e-12);
+  close(r.irr, -0.9995, 1e-12);
+  assert.equal(r.wipedOut, false);
+  // The generic root finder still refuses to invent a number below its documented floor.
+  assert.throws(() => M.irr([-60, 0.03]), (e) => e instanceof M.ModelError && e.code === 'no_convergence');
+});
+
+test('Headline IRR (closed form) equals the NPV root of the same lump-sum flows', () => {
+  // Hand (see base comment): flows [-60, 0, 0, 63.31]; root = (63.31/60)^(1/3) - 1 = 1.8061%.
+  const r = M.lbo(base);
+  close(r.irr, M.irr([-60, 0, 0, 63.31]), 1e-10);
+  const five = M.lbo({ ...base, hold: 5, exitMultiple: 12, growth: [0.1, 0.1, 0.1, 0.1, 0.1] });
+  close(five.irr, M.irr([-five.entryEquity, 0, 0, 0, 0, five.exitEquity]), 1e-10);
+});
+
+test('Sensitivity grid orientation: rows are exit multiples, columns are EBITDA growth (hand-checked cell)', () => {
+  // Cell [row 0 = 8.0x][col 2 = +10% growth], base deal, hold 3, beginning-basis interest, 50% conversion:
+  // EBITDA 11 / 12.1 / 13.31 ; pre-interest cash 5.5 / 6.05 / 6.655
+  // Y1 int 4.00 avail 1.500 -> 38.500 ; Y2 int 3.850 avail 2.200 -> 36.300 ; Y3 int 3.630 avail 3.025 -> 33.275
+  // Exit EV = 13.31 x 8 = 106.48, equity 73.205, MOIC 1.220083, IRR = 1.220083^(1/3) - 1 = 6.8554%
+  const grid = M.sensitivity(base, [8, 10, 12], [-0.05, 0, 0.1]);
+  assert.equal(grid.length, 3); grid.forEach((row) => assert.equal(row.length, 3));
+  close(grid[0][2], Math.pow(73.205 / 60, 1 / 3) - 1, 1e-9);
+  close(grid[0][2], 0.068554, 1e-6);
+  // The transposed cell (12x, -5%) is a different deal and must differ.
+  assert.notEqual(grid[2][0], grid[0][2]);
+  // Monotone: higher exit multiple (down a column) and higher growth (along a row) both raise IRR.
+  for (let i = 0; i < 3; i += 1) for (let j = 1; j < 3; j += 1) assert.ok(grid[i][j] > grid[i][j - 1]);
+  for (let j = 0; j < 3; j += 1) for (let i = 1; i < 3; i += 1) assert.ok(grid[i][j] > grid[i - 1][j]);
+});
+
+test('Debt schedule: shortfall year with positive but insufficient cash (0 < avail < mandatory)', () => {
+  // open 100, rate 0, amort 5% => mandatory 5; pre-interest cash 3 => avail 3 < 5.
+  // Mandatory treated as paid with the gap (2) drawn: closing = 100 - 3 = 97, draw = 2, no sweep, no cash build.
+  const [y] = M.debtSchedule({ openingDebt: 100, rate: 0, preInterestCash: [3], amortPct: 0.05 });
+  close(y.mandatory, 5); close(y.sweep, 0); close(y.revolverDraw, 2); close(y.closingDebt, 97); close(y.cash, 0);
+});
+
+test('Debt schedule: average-basis circularity in a shortfall year has closed form', () => {
+  // open 100, rate 10%, pre-interest cash 2, no amort, average basis:
+  // C = 100 - (2 - 0.1*(100+C)/2) => C = 98 + 5 + 0.05C => 0.95C = 103 => C = 108.421053
+  const [y] = M.debtSchedule({ openingDebt: 100, rate: 0.1, preInterestCash: [2] });
+  close(y.closingDebt, 103 / 0.95, 1e-9);
+  close(y.revolverDraw, 103 / 0.95 - 100, 1e-9);
+});
