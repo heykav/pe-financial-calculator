@@ -22,7 +22,7 @@ I got tired of rebuilding the same six-input LBO in a fresh spreadsheet every ti
 
 Every workspace opens with a plain-English "start here" line before the numbers, on the theory that the fastest way to lose someone in finance software is to show them a DCF before you've told them what a DCF is for.
 
-![Rivet at a realistic input: $425mm EV, $52mm EBITDA, 4.5x leverage](docs/screenshot.png)
+![Rivet deal cockpit at the base case: $425mm EV, $52mm EBITDA, 4.5x leverage, showing 4.0x gross MOIC and 32.2% gross IRR](docs/screenshot.png)
 
 *The Base case: 4.0x gross MOIC / 32.2% gross IRR (headless-Chromium render of the real app).*
 
@@ -34,7 +34,7 @@ Every workspace opens with a plain-English "start here" line before the numbers,
 
 ## Screenshots
 
-Captured with headless Chromium from the running app at its default inputs, the documented base case: EV $425mm, EBITDA $52mm, 4.5x debt at 8.25%, 5-year hold, 8.2x exit, revenue growth 12/11/10/9/8% and EBITDA margin 21% rising to 25%. That set gives 4.04x gross MOIC and 32.2% gross IRR (model.js). Nothing below is mocked. Click an image for full size. The screenshots predate a wording pass: the buttons now read "Recalculate" and "Export summary" where the images show "Run underwriting" and "Export memo".
+Captured with headless Chromium from the running app at its default inputs, the documented base case: EV $425mm, EBITDA $52mm, 4.5x debt at 8.25%, 5-year hold, 8.2x exit, revenue growth 12/11/10/9/8% and EBITDA margin 21% rising to 25%. That set gives 4.04x gross MOIC and 32.2% gross IRR (model.js). Nothing below is mocked. Click an image for full size. Regenerate them with `node scripts/make_screenshots.mjs` (serves the static files locally and drives headless Chromium through a locally installed Playwright; not a repo dependency), then `python3 scripts/optimise_png.py docs/screenshot.png docs/img/app-*.png` (Pillow, 256-colour palette). Mobile captures are at 2x device pixel ratio.
 
 | View | Desktop, 1440x900 | Mobile, 390x844 |
 | --- | --- | --- |
@@ -236,7 +236,7 @@ Rivet is deliberately transparent about what it does not do. It currently does *
 - Real-time market data, lender quotes, public filings, or proprietary research.
 - Fund-level waterfall economics, management options, fees, carried interest, or preferred equity.
 - A statistically calibrated Monte Carlo simulation or any probability distribution of outcomes.
-- Automated tests of the browser interface: the 21 tests cover `model.js` only.
+- Automated tests of the browser interface: `npm test` covers `model.js` and the pure display helpers in `ui-helpers.js`, not the DOM wiring in `app.js`.
 
 Treat the outputs as a structured first-pass conversation starter. Replace illustrative data with diligence-backed forecasts before relying on any result.
 
@@ -272,8 +272,11 @@ The browser preview is the source of truth for interaction testing. Keep the con
 .
 ├── index.html                 # Application shell, metadata, structured data, and UI
 ├── model.js                  # Pure calculation core (IRR, DCF, debt schedule, LBO)
+├── ui-helpers.js             # Pure formatting, CSV, chart-series and export-summary helpers
 ├── app.js                    # UI state, routing, rendering, and interactions
 ├── test/model.test.js        # node --test suite vs hand-computed values
+├── test/ui-helpers.test.js   # node --test suite for ui-helpers.js
+├── scripts/                  # make_screenshots.mjs (README screenshots), optimise_png.py
 ├── docs/formulas.md          # Every formula, assumption and simplification
 ├── docs/img/                 # Hero banner, diagrams (SVG dark/light), screenshots, social preview
 ├── styles.css                # Rivet design system and responsive layout
