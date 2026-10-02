@@ -322,7 +322,9 @@ context for who finds this useful, not a claim of association.
 
 ## License
 
-See the repository for the applicable license and contribution terms.
+All rights reserved — see [`LICENSE`](LICENSE). Published for viewing and
+portfolio evaluation; see [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md)
+for contribution terms.
 
 ---
 
