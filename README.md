@@ -13,7 +13,7 @@
   &nbsp;&nbsp;
   <a href="#run-locally"><img src="https://img.shields.io/badge/Run%20locally-No%20build%20step-18181b?style=for-the-badge&labelColor=27272a" alt="Run Rivet locally with no build step"></a>
   &nbsp;&nbsp;
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-18181b?style=for-the-badge&labelColor=27272a" alt="MIT license"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-All%20rights%20reserved-18181b?style=for-the-badge&labelColor=27272a" alt="All rights reserved"></a>
   &nbsp;&nbsp;
   <a href="https://github.com/heykav/pe-financial-calculator/blob/main/.github/CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contribute-Join%20the%20build-18181b?style=for-the-badge&labelColor=27272a" alt="Read how to contribute to Rivet"></a>
 </p>
@@ -280,7 +280,7 @@ The browser preview is the source of truth for interaction testing. Keep the con
 ├── DESIGN.md                 # Visual language and component grammar
 ├── PRIVACY.md                # GDPR/CCPA-oriented privacy notice
 ├── SECURITY.md               # Vulnerability reporting, privacy/OSINT boundaries, operating practices
-├── LICENSE                   # MIT
+├── LICENSE                   # All rights reserved
 ├── package.json              # `npm test` only; no runtime dependencies
 ├── favicon.jpeg              # Rivet browser icon and KA mark
 ├── YC.md                     # Product brief and YC-style company narrative
@@ -328,7 +328,9 @@ context for who finds this useful, not a claim of association.
 
 ## License
 
-Released under the [MIT License](LICENSE). Copyright (c) 2026 Krishna Anubhav.
+All rights reserved — see [`LICENSE`](LICENSE). Published for viewing and
+portfolio evaluation; see [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md)
+for contribution terms.
 
 ---
 
