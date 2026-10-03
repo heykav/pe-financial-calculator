@@ -7,7 +7,7 @@ const FCF_CONVERSION = 0.65; // documented in docs/formulas.md
 const inputs = ['ev','ebitda','debtMultiple','interest','hold','exitIn'];
 const state = { defaultValues: Object.fromEntries(inputs.map((id) => [id, $(id).value])) };
 const caseLabels = {
-  base: { name: 'Base case', description: 'Management plan · current underwriting view' },
+  base: { name: 'Base case', description: 'Management plan · current case view' },
   downside: { name: 'Downside', description: 'Revenue haircut · margin compression · conservative deleveraging' },
   upside: { name: 'Upside', description: 'Pricing expansion · accelerated growth and paydown' }
 };
@@ -519,7 +519,7 @@ function showToast(message) {
 
 inputs.forEach((id) => $(id).addEventListener('input', calculate));
 document.querySelectorAll('.mini-input').forEach((input) => input.addEventListener('input', calculate));
-$('runBtn').addEventListener('click', () => { calculate(); showToast('Underwriting run complete'); });
+$('runBtn').addEventListener('click', () => { calculate(); showToast('Model recalculated'); });
 $('resetBtn').addEventListener('click', () => {
   selectCase('base');
   document.querySelectorAll('.segmented button').forEach((item) => item.classList.toggle('selected', item.dataset.case === 'base'));
@@ -530,14 +530,14 @@ $('resetBtn').addEventListener('click', () => {
 $('exportBtn').addEventListener('click', () => {
   const m = currentModel;
   if (!m) { showToast('Fix the highlighted inputs before exporting'); return; }
-  const memo = `RIVET / PROJECT ATLAS — INVESTMENT COMMITTEE MEMO\n\nCASE & HOLD\nCase: ${caseLabels[activeCase].name}\nHold: ${m.hold} years\n\nTRANSACTION\nEntry enterprise value: ${money(m.ev)} mm\nEntry EBITDA: ${money(m.ebitda)} mm\nEntry debt: ${money(m.entryDebt)} mm (${(m.entryDebt / m.ebitda).toFixed(1)}x EBITDA)\nEntry sponsor equity: ${money(m.entryEquity)} mm\n\nEXIT & RETURNS\nExit multiple: ${m.exitMultiple.toFixed(1)}x (entry ${m.entryMultiple.toFixed(1)}x)\nExit debt: ${money(m.exitDebt)} mm\nExit equity: ${money(m.exitEquity)} mm\nMOIC: ${m.moic.toFixed(2)}x\nGross IRR: ${m.irr.toFixed(1)}%\n\nASSUMPTIONS\nGrowth: ${m.growthRate.toFixed(1)}% first-year EBITDA growth\nInterest: ${m.interest.toFixed(2)}%\nDebt paydown: ${money(m.debtPaydown)} mm\n\nMETHODOLOGY & DISCLAIMER\nReturns use the deterministic operating forecast, a cash-flow debt schedule (interest on average balance, 1% mandatory amortisation, 100% cash sweep, 65% EBITDA cash conversion), the exit multiple entered and gross equity proceeds. DCF is illustrative and excludes fees, taxes, capex and working capital. This is a local underwriting model, not investment advice or live market data.`;
+  const memo = `RIVET / PROJECT ATLAS — ILLUSTRATIVE DEAL SUMMARY\n\nCASE & HOLD\nCase: ${caseLabels[activeCase].name}\nHold: ${m.hold} years\n\nTRANSACTION\nEntry enterprise value: ${money(m.ev)} mm\nEntry EBITDA: ${money(m.ebitda)} mm\nEntry debt: ${money(m.entryDebt)} mm (${(m.entryDebt / m.ebitda).toFixed(1)}x EBITDA)\nEntry sponsor equity: ${money(m.entryEquity)} mm\n\nEXIT & RETURNS\nExit multiple: ${m.exitMultiple.toFixed(1)}x (entry ${m.entryMultiple.toFixed(1)}x)\nExit debt: ${money(m.exitDebt)} mm\nExit equity: ${money(m.exitEquity)} mm\nMOIC: ${m.moic.toFixed(2)}x\nGross IRR: ${m.irr.toFixed(1)}%\n\nASSUMPTIONS\nGrowth: ${m.growthRate.toFixed(1)}% first-year EBITDA growth\nInterest: ${m.interest.toFixed(2)}%\nDebt paydown: ${money(m.debtPaydown)} mm\n\nMETHODOLOGY & DISCLAIMER\nReturns use the deterministic operating forecast, a cash-flow debt schedule (interest on average balance, 1% mandatory amortisation, 100% cash sweep, 65% EBITDA cash conversion), the exit multiple entered and gross equity proceeds. DCF is illustrative and excludes fees, taxes, capex and working capital. This is an educational calculator with simplified mechanics (single debt tranche, no taxes, fees, capex or working capital). It is not a deal-grade model, investment advice or live market data.`;
   const blob = new Blob([memo], {type: 'text/plain'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = 'project-atlas-investment-committee-memo.txt';
+  link.download = 'project-atlas-deal-summary.txt';
   link.click();
   URL.revokeObjectURL(link.href);
-  showToast('IC memo exported');
+  showToast('Deal summary exported');
 });
 $('downloadBtn').addEventListener('click', () => {
   if (!currentModel) { showToast('Fix the highlighted inputs before exporting'); return; }

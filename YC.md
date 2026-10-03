@@ -8,12 +8,12 @@ production system of record for investment committees.
 ## One-liner
 
 **Rivet is the fastest way for a founder, finance team, or investor to turn
-deal assumptions into an explainable underwriting decision.**
+deal assumptions into an explainable first-pass returns view.**
 
 ## The problem
 
-Underwriting is still split between intimidating spreadsheets, expensive
-institutional platforms, and ad-hoc memo work. A first-pass deal review often
+First-pass deal analysis is still split between intimidating spreadsheets,
+expensive commercial platforms, and ad-hoc memo work. A first-pass deal review often
 requires:
 
 - Rebuilding the same LBO, DCF, returns, and sensitivity logic repeatedly.
@@ -26,7 +26,7 @@ headline returns.
 
 ## The product
 
-Rivet is a strictly web-based underwriting workspace. A user opens the app in
+Rivet is a strictly web-based LBO / DCF calculator. A user opens the app in
 an ordinary browser and enters a small set of
 deal facts and receives:
 
@@ -58,7 +58,7 @@ collaboration, source-linked diligence, and production-grade modeling later.
 
 - **High-frequency workflow:** Deal screening, scenario review, and IC
   preparation repeat across every transaction.
-- **Clear expansion path:** Start with underwriting; add shared workspaces,
+- **Clear expansion path:** Start with first-pass returns analysis; add shared workspaces,
   audit trails, source citations, model templates, and team permissions.
 - **Trust as a product advantage:** Explainability and local-first behavior are
   more useful than another black-box score.
@@ -101,8 +101,8 @@ Those limits are part of the product’s trust contract, not footnotes to hide.
 
 ### 6–12 months: expand the system of record
 
-- Collaborative underwriting rooms with permissions.
-- Reusable vertical templates and lender/IC-ready memo outputs.
+- Collaborative deal rooms with permissions.
+- Reusable vertical templates and memo outputs suitable for a lender or investment committee.
 - Optional connectors for authorized source data with clear provenance.
 - Production-grade model review, approvals, and change history.
 
@@ -120,5 +120,5 @@ The repository is prepared for feedback on three questions:
 
 1. Which user returns to this workflow often enough to pay first?
 2. Which missing trust feature blocks a real deal team from using Rivet?
-3. Should the wedge remain broad first-pass underwriting, or focus on one
+3. Should the wedge remain broad first-pass analysis, or focus on one
    segment such as founder-led acquisitions or independent sponsors?

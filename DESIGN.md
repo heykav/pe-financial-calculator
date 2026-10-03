@@ -1,6 +1,6 @@
 # Rivet interface direction
 
-Rivet is a browser-only operate-mode underwriting web app. The interface should make the model legible at a glance, keep every assumption close to its output, and let an analyst move between specialist workspaces without losing context. Do not introduce native-shell, mobile-app, or install-first framing.
+Rivet is a browser-only operate-mode LBO / DCF calculator web app. The interface should make the model legible at a glance, keep every assumption close to its output, and let an analyst move between specialist workspaces without losing context. Do not introduce native-shell, mobile-app, or install-first framing.
 
 ## Visual language
 

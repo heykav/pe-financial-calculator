@@ -39,32 +39,35 @@ If a user adds public information to a local model, they remain responsible for:
 - **Deterministic exports:** memo and CSV downloads are generated locally from
   current model state.
 
-## ISO/IEC 27001-aligned operating controls
+## Operating practices
 
-These are lightweight controls inspired by ISO/IEC 27001 information-security
-practices; they are not a certification or conformity claim.
+This is a small static site maintained by one person. The list below describes
+what is actually done; it is not a certification or a conformity claim against
+any standard.
 
 GDPR/CCPA-oriented privacy details are documented in [`PRIVACY.md`](PRIVACY.md).
 
-| Control area | Rivet practice |
-| --- | --- |
-| Asset and scope management | Static files, calculation logic, deployment workflow, and public demo are treated as the system boundary. |
-| Data classification | The README and UI warn users not to enter confidential, personal, or material non-public information. |
-| Access control | GitHub repository permissions and protected deployment settings should be limited to maintainers. |
-| Change management | Focused pull requests, deterministic formulas, reviewable diffs, and deployment from `main`. |
-| Secure development | Input bounds, output finiteness, escaping of user-controlled labels, browser console checks, and `git diff --check`. |
-| Supplier and dependency risk | No runtime package dependencies or third-party runtime presentation dependencies. |
-| Incident response | Report suspected vulnerabilities privately to the repository maintainer rather than publishing exploit details in an issue. |
-| Continuity and recovery | The project is versioned in Git and can be served as static files from a clean checkout. |
-| Evidence and review | Model assumptions, limitations, UI checks, and meaningful changes are documented in the repository. |
+- **Scope:** static files, the calculation code, the CI and deployment workflows, and the public demo.
+- **Data:** the README and UI tell users not to enter confidential, personal, or material non-public information.
+- **Changes:** pull requests against `main`; CI runs a syntax check and the unit tests in `test/`; the site is deployed from `main` by GitHub Pages.
+- **Workflow permissions:** workflows default to read-only `contents`; only the deploy job has `pages` and `id-token` write access. Checkouts do not persist credentials.
+- **Dependencies:** no runtime package dependencies. Dependabot proposes weekly updates for GitHub Actions and npm.
+- **Recovery:** the project is versioned in Git and can be served as static files from a clean checkout.
 
 ## Reporting a vulnerability
 
 Do not include credentials, private deal data, personal information, or a
-working exploit in a public issue. Open a private GitHub security advisory if
-available for the repository, or contact the maintainer through the repository
-owner’s verified GitHub profile. Include the affected file, reproducible
-steps, impact, and a minimal safe proof.
+working exploit in a public issue.
+
+Report privately using either:
+
+1. GitHub private vulnerability reporting: the "Report a vulnerability" button
+   on the repository's Security tab (where it is enabled), or
+2. Email: heykavofficial@gmail.com.
+
+Include the affected file, reproducible steps, impact, and a minimal safe
+proof. This is a personal project: reports are handled on a best-effort basis,
+with no guaranteed response time or fix schedule.
 
 Security reports are triaged separately from model-quality suggestions. A
 financial formula that is simplified or illustrative is not automatically a

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!--
-  THESIS: A calm underwriting workspace where the model, not decoration, owns the hierarchy.
+  THESIS: A calm deal-analysis workspace where the model, not decoration, owns the hierarchy.
   OWN-WORLD: Shadcn-inspired zinc surfaces, hairline borders, compact controls, and Rivet gold as a single semantic accent.
   STORY: Start with the deal, adjust assumptions, read returns, then move through specialist workspaces without losing context.
   FIRST VIEWPORT: Persistent navigation at left; a compact header and action row; the assumptions and sponsor returns panels lead the first read.
@@ -16,7 +16,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; upgrade-insecure-requests" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
-  <meta name="description" content="Rivet is a free browser-based private equity and investment banking finance calculator for LBO underwriting, sponsor returns, DCF valuation, deal comps, MOIC, IRR, and sensitivity analysis." />
+  <meta name="description" content="Rivet is a free browser-based private equity and investment banking finance calculator for illustrative LBO returns, DCF, deal comps, MOIC, IRR, and sensitivity analysis. Educational; not a deal-grade underwriting model." />
   <meta name="keywords" content="private equity calculator, LBO calculator, leveraged buyout model, investment banking finance calculator, sponsor returns, MOIC calculator, IRR calculator, DCF valuation, deal comps, hedge fund analysis" />
   <meta name="author" content="Rivet contributors" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -24,18 +24,18 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://heykav.github.io/pe-financial-calculator/" />
   <meta property="og:title" content="Rivet | Private Equity & Investment Banking Calculator" />
-  <meta property="og:description" content="A browser-based finance calculator for LBO underwriting, sponsor returns, DCF valuation, deal comps, MOIC, IRR, and sensitivity analysis." />
+  <meta property="og:description" content="A browser-based educational calculator for illustrative LBO returns, DCF, deal comps, MOIC, IRR, and sensitivity analysis." />
   <meta property="og:site_name" content="Rivet Private Markets OS" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Rivet | Private Equity & Investment Banking Calculator" />
-  <meta name="twitter:description" content="Underwrite hypothetical deals with a clear browser-based LBO, returns, DCF, and sensitivity calculator." />
+  <meta name="twitter:description" content="Explore hypothetical deals with a browser-based LBO, returns, DCF, and sensitivity calculator. Educational, not investment advice." />
   <title>Rivet | Private Equity &amp; Investment Banking Calculator</title>
   <link rel="icon" href="favicon.jpeg" type="image/jpeg" />
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Rivet Private Markets Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Web","url":"https://heykav.github.io/pe-financial-calculator/","description":"A free private equity and investment banking calculator for LBO underwriting, sponsor returns, DCF analysis, and IRR sensitivity.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["LBO underwriting","IRR and MOIC calculation","DCF analysis","Deal sensitivity matrix","Sponsor returns bridge"]}
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Rivet Private Markets Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Web","url":"https://heykav.github.io/pe-financial-calculator/","description":"A free educational calculator for illustrative LBO returns, DCF analysis, and IRR sensitivity.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["LBO returns","IRR and MOIC calculation","DCF analysis","Deal sensitivity matrix","Sponsor returns bridge"]}
   </script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Rivet?","acceptedAnswer":{"@type":"Answer","text":"Rivet is a free browser-based finance calculator for illustrative private equity underwriting, LBO returns, DCF reference analysis, deal comps, and IRR sensitivity."}},{"@type":"Question","name":"Is Rivet investment advice?","acceptedAnswer":{"@type":"Answer","text":"No. Rivet is an educational and illustrative analysis tool and does not replace financial, legal, tax, accounting, lender, or investment committee diligence."}},{"@type":"Question","name":"Does Rivet send deal data to a server?","acceptedAnswer":{"@type":"Answer","text":"Rivet is a static browser application. It does not require an account or transmit entered assumptions to an application server."}}]}
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Rivet?","acceptedAnswer":{"@type":"Answer","text":"Rivet is a free browser-based finance calculator for illustrative private equity LBO returns, DCF reference analysis, deal comps, and IRR sensitivity."}},{"@type":"Question","name":"Is Rivet investment advice?","acceptedAnswer":{"@type":"Answer","text":"No. Rivet is an educational and illustrative analysis tool and does not replace financial, legal, tax, accounting, lender, or investment committee diligence."}},{"@type":"Question","name":"Does Rivet send deal data to a server?","acceptedAnswer":{"@type":"Answer","text":"Rivet is a static browser application. It does not require an account or transmit entered assumptions to an application server."}}]}
   </script>
   <link rel="stylesheet" href="styles.css?v=persuasive-20260912" />
 </head>
@@ -44,7 +44,7 @@
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-mark"><img src="favicon.jpeg" alt="KA" /></div>
-        <div><strong>Rivet</strong><span>WEB UNDERWRITING STUDIO</span></div>
+        <div><strong>Rivet</strong><span>WEB LBO / DCF STUDIO</span></div>
       </div>
       <button class="workspace-switcher" id="workspaceSwitcher" aria-expanded="false" aria-controls="workspaceMenu">
         <span class="status-dot"></span>
@@ -57,7 +57,7 @@
         <label class="workspace-create" id="workspaceCreate" hidden><span>Name</span><input id="workspaceName" type="text" placeholder="e.g. Project Atlas" maxlength="32" /><button id="createWorkspaceBtn" type="button">Create workspace</button></label>
       </div>
       <nav aria-label="Primary">
-        <p class="nav-label">UNDERWRITE</p>
+        <p class="nav-label">ANALYSE</p>
         <button class="nav-item active" data-view="cockpit"><span>◫</span> Deal cockpit <kbd>⌘1</kbd></button>
         <button class="nav-item" data-view="lbo"><span>⌁</span> LBO model <kbd>⌘2</kbd></button>
         <button class="nav-item" data-view="dcf"><span>◒</span> DCF analysis <kbd>⌘3</kbd></button>
@@ -87,15 +87,15 @@
       <div id="cockpitWorkspace">
       <header class="topbar">
         <div class="breadcrumb"><span class="terminal-prefix">Rivet://</span><span>DEAL ROOM</span><b>/</b><strong>PROJECT ATLAS</strong><span class="live-chip">● LIVE MODEL</span></div>
-        <div class="top-actions"><span class="save-state"><i class="save-light"></i> Saved just now</span><button class="command-trigger" aria-label="Show keyboard shortcuts">⌘ K <span>Shortcuts</span></button><button class="icon-button" aria-label="Notifications">♧<i></i></button><button class="icon-button" aria-label="Search">⌕</button><button class="button ghost" id="exportBtn">Export memo <span>↗</span></button></div>
+        <div class="top-actions"><span class="save-state"><i class="save-light"></i> Not saved · in this tab only</span><button class="command-trigger" aria-label="Show keyboard shortcuts">⌘ K <span>Shortcuts</span></button><button class="icon-button" aria-label="Notifications">♧<i></i></button><button class="icon-button" aria-label="Search">⌕</button><button class="button ghost" id="exportBtn">Export summary <span>↗</span></button></div>
       </header>
 
       <section class="page-head">
-        <div><div class="eyebrow">START HERE · PROJECT ATLAS</div><h1>Make the deal legible.</h1><p>Move from scattered assumptions to a clear, explainable underwriting view in minutes.</p><div class="proof-line"><span><i></i> Local by design</span><span><i></i> Transparent mechanics</span><span><i></i> Built for first-pass decisions</span></div></div>
-        <div class="head-actions"><button class="button ghost" id="resetBtn">Restore base case</button><button class="button primary" id="runBtn"><span class="run-icon">↻</span> Run underwriting</button></div>
+        <div><div class="eyebrow">START HERE · PROJECT ATLAS</div><h1>Make the deal legible.</h1><p>Move from scattered assumptions to a clear, explainable first-pass returns view in minutes.</p><div class="proof-line"><span><i></i> Local by design</span><span><i></i> Transparent mechanics</span><span><i></i> Built for first-pass decisions</span></div></div>
+        <div class="head-actions"><button class="button ghost" id="resetBtn">Restore base case</button><button class="button primary" id="runBtn"><span class="run-icon">↻</span> Recalculate</button></div>
       </section>
 
-      <section class="orientation-note"><strong>New to private equity?</strong><span>Start with the six deal facts. Results update as you type; use Run underwriting when you want a clean checkpoint.</span></section>
+      <section class="orientation-note"><strong>New to private equity?</strong><span>Start with the six deal facts. Results update as you type; use Recalculate when you want a clean checkpoint.</span></section>
       <div class="market-tape"><span class="tape-label">MODEL TAPE</span><span>ENTRY <b id="tapeEntry">—</b></span><span>LEVERAGE <b id="tapeLeverage">—</b></span><span>IRR <b class="gold" id="tapeIrr">—</b></span><span>MOIC <b class="gold" id="tapeMoic">—</b></span><span>EXIT <b id="tapeExit">—</b></span><span class="tape-clock">LIVE MODEL</span></div>
 
       <section class="ticker-strip">
@@ -110,8 +110,8 @@
       <div class="dashboard-grid">
         <section class="panel assumptions-panel">
           <div class="panel-heading"><div><span class="panel-index">01</span><h2>1. Frame the opportunity</h2><p>Set the entry price, earnings base, financing, and intended hold period.</p></div><button class="more-button" aria-label="More deal setup actions">•••</button></div>
-          <div class="segmented" role="tablist" aria-label="Underwriting cases"><button class="selected" data-case="base" role="tab" aria-selected="true">Base case</button><button data-case="downside" role="tab" aria-selected="false">Downside</button><button data-case="upside" role="tab" aria-selected="false">Upside</button><button class="add-case" type="button" aria-label="Create case">＋</button></div>
-          <div class="case-context" id="caseContext"><strong>Base case</strong><span>Management plan · current underwriting view</span></div>
+          <div class="segmented" role="tablist" aria-label="Cases"><button class="selected" data-case="base" role="tab" aria-selected="true">Base case</button><button data-case="downside" role="tab" aria-selected="false">Downside</button><button data-case="upside" role="tab" aria-selected="false">Upside</button><button class="add-case" type="button" aria-label="Create case">＋</button></div>
+          <div class="case-context" id="caseContext"><strong>Base case</strong><span>Management plan · current case view</span></div>
           <div class="form-grid">
             <label class="field"><span>Purchase price <em>enterprise value · USD mm</em></span><div class="input-wrap"><span>$</span><input id="ev" type="number" value="425" min="1" step="5" /></div></label>
             <label class="field"><span>Current annual profit <em>EBITDA · USD mm</em></span><div class="input-wrap"><span>$</span><input id="ebitda" type="number" value="52" min="1" step="1" /></div></label>
@@ -150,7 +150,7 @@
         <div class="panel-heading"><div><span class="panel-index">06</span><h2>6. Map the outcome range</h2><p>Follow the debt path and compare a deterministic illustrative range around the active return case.</p></div><div class="console-actions"><span class="compute-state"><i></i> model estimate</span><button class="button mini" id="scenarioBtn">Refresh return envelope</button></div></div>
         <div class="console-grid">
           <div class="debt-schedule"><div class="console-title"><strong>How the loan gets paid down</strong><span>USD mm · annual</span></div><div class="debt-table"><div class="debt-row head"><span>Period</span><span>Opening</span><span>Cash sweep</span><span>Closing</span><span>Net leverage</span></div><div class="debt-row"><span>FY26E</span><b id="debtOpen0">$234.0</b><b class="positive" id="debtSweep0">($31.4)</b><b id="debtClose0">$202.6</b><b id="debtLev0">3.3x</b></div><div class="debt-row"><span>FY27E</span><b id="debtOpen1">$202.6</b><b class="positive" id="debtSweep1">($35.8)</b><b id="debtClose1">$166.8</b><b id="debtLev1">2.5x</b></div><div class="debt-row"><span>FY28E</span><b id="debtOpen2">$166.8</b><b class="positive" id="debtSweep2">($41.2)</b><b id="debtClose2">$125.6</b><b id="debtLev2">1.8x</b></div><div class="debt-row"><span>FY29E</span><b id="debtOpen3">$125.6</b><b class="positive" id="debtSweep3">($48.7)</b><b id="debtClose3">$76.9</b><b id="debtLev3">1.0x</b></div><div class="debt-row"><span>FY30E</span><b id="debtOpen4">$76.9</b><b class="positive" id="debtSweep4">($56.9)</b><b id="debtClose4">$20.0</b><b id="debtLev4">0.2x</b></div></div></div>
-          <div class="scenario-output"><div class="console-title"><strong>Possible return range</strong><span>lower / expected / higher</span></div><div class="distribution"><div class="dist-axis"><span>10%</span><span>20%</span><span>30%</span><span>40%</span></div><div class="dist-bars"><i style="height:12%"></i><i style="height:18%"></i><i style="height:28%"></i><i style="height:40%"></i><i style="height:63%"></i><i class="peak" style="height:88%"></i><i style="height:72%"></i><i style="height:56%"></i><i style="height:35%"></i><i style="height:20%"></i><i style="height:10%"></i></div></div><div class="percentile-row"><span>P10 <b id="p10">15.8%</b></span><span>BASE <b id="p50">22.4%</b></span><span>P90 <b id="p90">31.7%</b></span></div></div>
+          <div class="scenario-output"><div class="console-title"><strong>Possible return range</strong><span>lower / expected / higher · fixed offsets, not a probability distribution</span></div><div class="distribution" aria-hidden="true" title="Decorative shape only; not a modelled distribution"><div class="dist-axis"><span>10%</span><span>20%</span><span>30%</span><span>40%</span></div><div class="dist-bars"><i style="height:12%"></i><i style="height:18%"></i><i style="height:28%"></i><i style="height:40%"></i><i style="height:63%"></i><i class="peak" style="height:88%"></i><i style="height:72%"></i><i style="height:56%"></i><i style="height:35%"></i><i style="height:20%"></i><i style="height:10%"></i></div></div><div class="percentile-row"><span>LOWER <b id="p10">15.8%</b></span><span>BASE <b id="p50">22.4%</b></span><span>HIGHER <b id="p90">31.7%</b></span></div></div>
         </div>
         <div class="console-log"><span>› rivet.envelope --method=deterministic --case=active</span><span id="scenarioStatus">ready · illustrative range</span></div>
       </section>
