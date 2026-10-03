@@ -338,3 +338,31 @@ body{background:
 
 /* Phone width: stack the lower panels (they were squeezed side by side at 390px). */
 @media(max-width:720px){.bottom-grid{grid-template-columns:1fr}}
+
+/* Sensitivity table semantics: row wrappers carry role="row" but must not break the CSS grid. */
+.heat-row{display:contents}
+/* Debt schedule years after the exit are reference only. */
+.debt-row.post-exit span,.debt-row.post-exit b{color:var(--faint)!important;font-style:italic}
+/* Value chart: series name under the x axis. */
+.chart-series-name{color:var(--muted);font:9px var(--mono);letter-spacing:.06em;margin-top:8px}
+
+/* WCAG AA contrast pass (measured with headless Chromium against the rendered background).
+   Heat-map cells: light text on the dark buckets, dark text on the light ones, >= 4.5:1 each. */
+.heat.h1,.heat.h2,.heat.h3,.heat.h4,.surface-cell.s1,.surface-cell.s2,.surface-cell.s3{color:#f5f3ee}
+.heat.h5,.heat.h6,.heat.h7,.surface-cell.s4,.surface-cell.s5,.surface-cell.s6,.surface-cell.s7{color:#18120a}
+/* Small secondary labels that measured below 4.5:1 on their backgrounds. */
+.breadcrumb b,.command-trigger span,.market-tape,.tape-clock,.field em,.input-wrap span,.debt-row span,.debt-row.head,.percentile-row,.console-log{color:#8d969c!important}
+.console-log span:first-child{color:var(--kavy-gold)!important}
+.toast span{color:var(--positive)}
+/* Model status reflects the last calculation: amber for warnings, red for input errors. */
+.status-warn .status-dot,.status-warn .pulse{background:var(--kavy-warning);box-shadow:0 0 0 3px #3a2c12}
+.status-error .status-dot,.status-error .pulse{background:var(--kavy-negative);box-shadow:0 0 0 3px #3a1614}
+/* Return envelope: three points on a line (replaces a decorative bell shape that looked like a distribution). */
+.range-strip{padding:26px 4px 6px}
+.range-track{position:relative;height:28px;border-bottom:1px solid var(--line-strong)}
+.range-span{position:absolute;bottom:-1px;height:3px;background:#477b79}
+.range-mark{position:absolute;bottom:-7px;width:2px;height:22px;margin-left:-1px;background:var(--muted)}
+.range-mark.base{width:3px;margin-left:-1.5px;height:30px;background:var(--kavy-gold)}
+.range-strip.empty .range-track *{display:none}
+.range-axis{display:flex;justify-content:space-between;gap:8px;margin-top:12px;color:var(--muted);font:9px var(--mono)}
+.range-axis span:nth-child(2){text-align:center}
