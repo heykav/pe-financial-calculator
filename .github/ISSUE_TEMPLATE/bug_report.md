@@ -1,16 +1,13 @@
 ---
 name: Bug report
-about: Report a calculation, interaction, or responsive layout issue
-title: "[Bug] "
+about: Something does not work as the README says
 labels: bug
 ---
 
-**What happened?**
+**What happened**
 
-**Expected result**
+**What you expected**
 
-**Steps to reproduce**
+**How to reproduce** (smallest steps or snippet that shows it)
 
-**Browser / viewport**
-
-**Model inputs (if relevant)**
+**Environment** (OS, language and tool versions)
