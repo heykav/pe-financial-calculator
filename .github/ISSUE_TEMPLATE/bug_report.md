@@ -1,6 +1,7 @@
 ---
 name: Bug report
-about: Something does not work as the README says
+about: Report a calculation, interaction, or responsive-layout problem
+title: "[Bug] "
 labels: bug
 ---
 
@@ -8,6 +9,10 @@ labels: bug
 
 **What you expected**
 
-**How to reproduce** (smallest steps or snippet that shows it)
+**Steps to reproduce**
 
-**Environment** (OS, language and tool versions)
+**Browser and viewport size**
+
+**Model inputs** (if the result or calculation is affected)
+
+**Evidence** (error text, screenshot, or smallest reproducible example)
