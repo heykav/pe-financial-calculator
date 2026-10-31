@@ -1,0 +1,529 @@
+{
+  "label": "Real SEC filings, snapshot dated 2026-10-29. Not live data.",
+  "source": "SEC EDGAR XBRL company facts (data.sec.gov/api/xbrl/companyfacts), annual 10-K figures",
+  "retrievedOn": "2026-10-29",
+  "units": "USD millions unless a field says usd (whole dollars) or count",
+  "notes": [
+    "Revenue, operating income and D&A are for the fiscal year of the 10-K named. EBITDA is operating income plus D&A as reported, with no adjustments.",
+    "Debt is balance-sheet debt at fiscal year end (noncurrent plus current portion, commercial paper, short-term borrowings). Lease liabilities are excluded. Cash includes current marketable securities or short-term investments only.",
+    "No market data: share price and enterprise value are not in filings and are not included."
+  ],
+  "companies": [
+    {
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "cik": 320193,
+      "filing": {
+        "form": "10-K",
+        "accession": "0000320193-25-000079",
+        "filed": "2025-10-31",
+        "fiscalYearEnd": "2025-09-27"
+      },
+      "retrievedOn": "2026-10-29",
+      "revenue": {
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "usd": 416161000000,
+        "period": "2024-09-29..2025-09-27",
+        "usdMm": 416161
+      },
+      "priorRevenue": {
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "usd": 391035000000,
+        "period": "2023-10-01..2024-09-28",
+        "usdMm": 391035
+      },
+      "operatingIncome": {
+        "tag": "OperatingIncomeLoss",
+        "usd": 133050000000,
+        "period": "2024-09-29..2025-09-27",
+        "usdMm": 133050
+      },
+      "depreciationAmortization": {
+        "tag": "DepreciationDepletionAndAmortization",
+        "usd": 11698000000,
+        "period": "2024-09-29..2025-09-27",
+        "usdMm": 11698
+      },
+      "ebitda": {
+        "usd": 144748000000,
+        "usdMm": 144748,
+        "definition": "operating income + depreciation and amortization, both as reported, no adjustments"
+      },
+      "debt": {
+        "items": [
+          {
+            "tag": "LongTermDebtNoncurrent",
+            "usd": 78328000000,
+            "period": "2025-09-27",
+            "usdMm": 78328
+          },
+          {
+            "tag": "LongTermDebtCurrent",
+            "usd": 12350000000,
+            "period": "2025-09-27",
+            "usdMm": 12350
+          },
+          {
+            "tag": "CommercialPaper",
+            "usd": 7979000000,
+            "period": "2025-09-27",
+            "usdMm": 7979
+          }
+        ],
+        "totalUsdMm": 98657
+      },
+      "cash": {
+        "items": [
+          {
+            "tag": "CashAndCashEquivalentsAtCarryingValue",
+            "usd": 35934000000,
+            "period": "2025-09-27",
+            "usdMm": 35934
+          },
+          {
+            "tag": "MarketableSecuritiesCurrent",
+            "usd": 18763000000,
+            "period": "2025-09-27",
+            "usdMm": 18763
+          }
+        ],
+        "totalUsdMm": 54697
+      },
+      "netDebtUsdMm": 43960,
+      "shares": {
+        "count": 14776353000,
+        "asOf": "2025-10-17",
+        "tag": "dei:EntityCommonStockSharesOutstanding"
+      },
+      "verification": {
+        "method": "every figure re-found in the 10-K document text",
+        "documentUrl": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+        "figuresChecked": 10
+      }
+    },
+    {
+      "ticker": "COST",
+      "name": "Costco Wholesale Corporation",
+      "cik": 909832,
+      "filing": {
+        "form": "10-K",
+        "accession": "0000909832-26-000093",
+        "filed": "2026-10-07",
+        "fiscalYearEnd": "2026-08-30"
+      },
+      "retrievedOn": "2026-10-29",
+      "revenue": {
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "usd": 303154000000,
+        "period": "2025-09-01..2026-08-30",
+        "usdMm": 303154
+      },
+      "priorRevenue": {
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "usd": 275235000000,
+        "period": "2024-09-02..2025-08-31",
+        "usdMm": 275235
+      },
+      "operatingIncome": {
+        "tag": "OperatingIncomeLoss",
+        "usd": 11685000000,
+        "period": "2025-09-01..2026-08-30",
+        "usdMm": 11685
+      },
+      "depreciationAmortization": {
+        "tag": "DepreciationDepletionAndAmortization",
+        "usd": 2674000000,
+        "period": "2025-09-01..2026-08-30",
+        "usdMm": 2674
+      },
+      "ebitda": {
+        "usd": 14359000000,
+        "usdMm": 14359,
+        "definition": "operating income + depreciation and amortization, both as reported, no adjustments"
+      },
+      "debt": {
+        "items": [
+          {
+            "tag": "LongTermDebtNoncurrent",
+            "usd": 3914000000,
+            "period": "2026-08-30",
+            "usdMm": 3914
+          },
+          {
+            "tag": "LongTermDebtCurrent",
+            "usd": 2248000000,
+            "period": "2026-08-30",
+            "usdMm": 2248
+          }
+        ],
+        "totalUsdMm": 6162
+      },
+      "cash": {
+        "items": [
+          {
+            "tag": "CashAndCashEquivalentsAtCarryingValue",
+            "usd": 20207000000,
+            "period": "2026-08-30",
+            "usdMm": 20207
+          },
+          {
+            "tag": "ShortTermInvestments",
+            "usd": 1094000000,
+            "period": "2026-08-30",
+            "usdMm": 1094
+          }
+        ],
+        "totalUsdMm": 21301
+      },
+      "netDebtUsdMm": -15139,
+      "shares": {
+        "count": 443129349,
+        "asOf": "2026-09-29",
+        "tag": "dei:EntityCommonStockSharesOutstanding"
+      },
+      "verification": {
+        "method": "every figure re-found in the 10-K document text",
+        "documentUrl": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000093/cost-20260830.htm",
+        "figuresChecked": 9
+      }
+    },
+    {
+      "ticker": "DIS",
+      "name": "The Walt Disney Company",
+      "cik": 1744489,
+      "filing": {
+        "form": "10-K",
+        "accession": "0001744489-25-000155",
+        "filed": "2025-11-13",
+        "fiscalYearEnd": "2025-09-27"
+      },
+      "retrievedOn": "2026-10-29",
+      "revenue": {
+        "tag": "Revenues",
+        "usd": 94425000000,
+        "period": "2024-09-29..2025-09-27",
+        "usdMm": 94425
+      },
+      "priorRevenue": {
+        "tag": "Revenues",
+        "usd": 91361000000,
+        "period": "2023-10-01..2024-09-28",
+        "usdMm": 91361
+      },
+      "operatingIncome": {
+        "tag": "OperatingIncomeLoss",
+        "usd": 17551000000,
+        "period": "2024-09-29..2025-09-27",
+        "usdMm": 17551
+      },
+      "depreciationAmortization": {
+        "tag": "DepreciationDepletionAndAmortization",
+        "usd": 5326000000,
+        "period": "2024-09-29..2025-09-27",
+        "usdMm": 5326
+      },
+      "ebitda": {
+        "usd": 22877000000,
+        "usdMm": 22877,
+        "definition": "operating income + depreciation and amortization, both as reported, no adjustments"
+      },
+      "debt": {
+        "items": [
+          {
+            "tag": "LongTermDebtNoncurrent",
+            "usd": 35315000000,
+            "period": "2025-09-27",
+            "usdMm": 35315
+          },
+          {
+            "tag": "LongTermDebtCurrent",
+            "usd": 6711000000,
+            "period": "2025-09-27",
+            "usdMm": 6711
+          }
+        ],
+        "totalUsdMm": 42026
+      },
+      "cash": {
+        "items": [
+          {
+            "tag": "CashAndCashEquivalentsAtCarryingValue",
+            "usd": 5695000000,
+            "period": "2025-09-27",
+            "usdMm": 5695
+          }
+        ],
+        "totalUsdMm": 5695
+      },
+      "netDebtUsdMm": 36331,
+      "shares": {
+        "count": 1785288846,
+        "asOf": "2025-11-05",
+        "tag": "dei:EntityCommonStockSharesOutstanding"
+      },
+      "verification": {
+        "method": "every figure re-found in the 10-K document text",
+        "documentUrl": "https://www.sec.gov/Archives/edgar/data/1744489/000174448925000155/dis-20250927.htm",
+        "figuresChecked": 8
+      }
+    },
+    {
+      "ticker": "GIS",
+      "name": "General Mills, Inc.",
+      "cik": 40704,
+      "filing": {
+        "form": "10-K",
+        "accession": "0001628280-26-046466",
+        "filed": "2026-07-01",
+        "fiscalYearEnd": "2026-05-31"
+      },
+      "retrievedOn": "2026-10-29",
+      "revenue": {
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "usd": 18424600000,
+        "period": "2025-05-26..2026-05-31",
+        "usdMm": 18424.6
+      },
+      "priorRevenue": {
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "usd": 19486600000,
+        "period": "2024-05-27..2025-05-25",
+        "usdMm": 19486.6
+      },
+      "operatingIncome": {
+        "tag": "OperatingIncomeLoss",
+        "usd": 885800000,
+        "period": "2025-05-26..2026-05-31",
+        "usdMm": 885.8
+      },
+      "depreciationAmortization": {
+        "tag": "DepreciationDepletionAndAmortization",
+        "usd": 555200000,
+        "period": "2025-05-26..2026-05-31",
+        "usdMm": 555.2
+      },
+      "ebitda": {
+        "usd": 1441000000,
+        "usdMm": 1441,
+        "definition": "operating income + depreciation and amortization, both as reported, no adjustments"
+      },
+      "debt": {
+        "items": [
+          {
+            "tag": "LongTermDebtNoncurrent",
+            "usd": 12416000000,
+            "period": "2026-05-31",
+            "usdMm": 12416
+          },
+          {
+            "tag": "LongTermDebtCurrent",
+            "usd": 1053600000,
+            "period": "2026-05-31",
+            "usdMm": 1053.6
+          },
+          {
+            "tag": "ShortTermBorrowings",
+            "usd": 68400000,
+            "period": "2026-05-31",
+            "usdMm": 68.4
+          }
+        ],
+        "totalUsdMm": 13538
+      },
+      "cash": {
+        "items": [
+          {
+            "tag": "CashAndCashEquivalentsAtCarryingValue",
+            "usd": 453800000,
+            "period": "2026-05-31",
+            "usdMm": 453.8
+          }
+        ],
+        "totalUsdMm": 453.8
+      },
+      "netDebtUsdMm": 13084.2,
+      "shares": {
+        "count": 533708396,
+        "asOf": "2026-06-15",
+        "tag": "dei:EntityCommonStockSharesOutstanding"
+      },
+      "verification": {
+        "method": "every figure re-found in the 10-K document text",
+        "documentUrl": "https://www.sec.gov/Archives/edgar/data/40704/000162828026046466/gis-20260531.htm",
+        "figuresChecked": 9
+      }
+    },
+    {
+      "ticker": "KR",
+      "name": "The Kroger Co.",
+      "cik": 56873,
+      "filing": {
+        "form": "10-K",
+        "accession": "0001104659-26-037723",
+        "filed": "2026-03-31",
+        "fiscalYearEnd": "2026-01-31"
+      },
+      "retrievedOn": "2026-10-29",
+      "revenue": {
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "usd": 147642000000,
+        "period": "2025-02-02..2026-01-31",
+        "usdMm": 147642
+      },
+      "priorRevenue": {
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "usd": 147123000000,
+        "period": "2024-02-04..2025-02-01",
+        "usdMm": 147123
+      },
+      "operatingIncome": {
+        "tag": "OperatingIncomeLoss",
+        "usd": 1890000000,
+        "period": "2025-02-02..2026-01-31",
+        "usdMm": 1890
+      },
+      "depreciationAmortization": {
+        "tag": "DepreciationDepletionAndAmortization",
+        "usd": 3332000000,
+        "period": "2025-02-02..2026-01-31",
+        "usdMm": 3332
+      },
+      "ebitda": {
+        "usd": 5222000000,
+        "usdMm": 5222,
+        "definition": "operating income + depreciation and amortization, both as reported, no adjustments"
+      },
+      "debt": {
+        "items": [
+          {
+            "tag": "LongTermDebtNoncurrent",
+            "usd": 14509000000,
+            "period": "2026-01-31",
+            "usdMm": 14509
+          },
+          {
+            "tag": "LongTermDebtCurrent",
+            "usd": 1366000000,
+            "period": "2026-01-31",
+            "usdMm": 1366
+          }
+        ],
+        "totalUsdMm": 15875
+      },
+      "cash": {
+        "items": [
+          {
+            "tag": "CashAndCashEquivalentsAtCarryingValue",
+            "usd": 3334000000,
+            "period": "2026-01-31",
+            "usdMm": 3334
+          }
+        ],
+        "totalUsdMm": 3334
+      },
+      "netDebtUsdMm": 12541,
+      "shares": {
+        "count": 612575611,
+        "asOf": "2026-03-25",
+        "tag": "dei:EntityCommonStockSharesOutstanding"
+      },
+      "verification": {
+        "method": "every figure re-found in the 10-K document text",
+        "documentUrl": "https://www.sec.gov/Archives/edgar/data/56873/000110465926037723/kr-20260131x10k.htm",
+        "figuresChecked": 8
+      }
+    },
+    {
+      "ticker": "LMT",
+      "name": "Lockheed Martin Corporation",
+      "cik": 936468,
+      "filing": {
+        "form": "10-K",
+        "accession": "0001628280-26-004195",
+        "filed": "2026-01-29",
+        "fiscalYearEnd": "2025-12-31"
+      },
+      "retrievedOn": "2026-10-29",
+      "revenue": {
+        "tag": "Revenues",
+        "usd": 75048000000,
+        "period": "2025-01-01..2025-12-31",
+        "usdMm": 75048
+      },
+      "priorRevenue": {
+        "tag": "Revenues",
+        "usd": 71043000000,
+        "period": "2024-01-01..2024-12-31",
+        "usdMm": 71043
+      },
+      "operatingIncome": {
+        "tag": "OperatingIncomeLoss",
+        "usd": 7731000000,
+        "period": "2025-01-01..2025-12-31",
+        "usdMm": 7731
+      },
+      "depreciationAmortization": {
+        "tag": "DepreciationAndAmortization",
+        "usd": 1687000000,
+        "period": "2025-01-01..2025-12-31",
+        "usdMm": 1687
+      },
+      "ebitda": {
+        "usd": 9418000000,
+        "usdMm": 9418,
+        "definition": "operating income + depreciation and amortization, both as reported, no adjustments"
+      },
+      "debt": {
+        "items": [
+          {
+            "tag": "LongTermDebtNoncurrent",
+            "usd": 20532000000,
+            "period": "2025-12-31",
+            "usdMm": 20532
+          },
+          {
+            "tag": "LongTermDebtCurrent",
+            "usd": 1168000000,
+            "period": "2025-12-31",
+            "usdMm": 1168
+          }
+        ],
+        "totalUsdMm": 21700
+      },
+      "cash": {
+        "items": [
+          {
+            "tag": "CashAndCashEquivalentsAtCarryingValue",
+            "usd": 4121000000,
+            "period": "2025-12-31",
+            "usdMm": 4121
+          }
+        ],
+        "totalUsdMm": 4121
+      },
+      "netDebtUsdMm": 17579,
+      "shares": {
+        "count": 230080240,
+        "asOf": "2026-01-26",
+        "tag": "dei:EntityCommonStockSharesOutstanding"
+      },
+      "verification": {
+        "method": "every figure re-found in the 10-K document text",
+        "documentUrl": "https://www.sec.gov/Archives/edgar/data/936468/000162828026004195/lmt-20251231.htm",
+        "figuresChecked": 8
+      }
+    }
+  ],
+  "excluded": [
+    {
+      "ticker": "CSCO",
+      "name": "Cisco Systems, Inc.",
+      "reason": "not found in the filing text: D&A"
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "reason": "not found in the filing text: shares on cover"
+    }
+  ]
+}

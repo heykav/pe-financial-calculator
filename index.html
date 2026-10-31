@@ -97,7 +97,14 @@
 
       <section class="page-head">
         <div><div class="eyebrow">START HERE · PROJECT ATLAS</div><h1>Make the deal legible.</h1><p>Move from scattered assumptions to a clear, explainable underwriting view in minutes.</p><div class="proof-line"><span><i></i> Local by design</span><span><i></i> Transparent mechanics</span><span><i></i> Built for first-pass decisions</span></div></div>
-        <div class="head-actions"><button class="button ghost" id="resetBtn">Restore base case</button><button class="button primary" id="runBtn"><span class="run-icon">↻</span> Run underwriting</button></div>
+        <div class="head-actions"><button class="button ghost" id="loadCompanyBtn" type="button" aria-expanded="false" aria-controls="realCompany">Load a real company</button><button class="button ghost" id="resetBtn">Restore base case</button><button class="button primary" id="runBtn"><span class="run-icon">↻</span> Run underwriting</button></div>
+      </section>
+
+      <section class="panel real-company" id="realCompany" hidden aria-labelledby="realCompanyTitle">
+        <div class="panel-heading"><div><h2 id="realCompanyTitle">Load a real company</h2><p id="realCompanyLabel"></p></div><button class="button mini" id="closeCompanyBtn" type="button">Close</button></div>
+        <div class="company-picker"><label class="field"><span>Company <em>from SEC 10-K filings</em></span><div class="input-wrap"><select id="companySelect" aria-label="Company"></select></div></label><button class="button primary" id="applyCompanyBtn" type="button">Fill the calculator</button></div>
+        <div id="companyDetail"></div>
+        <div class="company-caveat" id="companyCaveat"></div>
       </section>
 
       <section class="orientation-note"><strong>New to private equity?</strong><span>Start with the six deal facts. Results update as you type; use Run underwriting when you want a clean checkpoint.</span></section>
@@ -116,6 +123,7 @@
         <section class="panel assumptions-panel">
           <div class="panel-heading"><div><span class="panel-index">01</span><h2>1. Frame the opportunity</h2><p>Set the entry price, earnings base, financing, and intended hold period.</p></div><button class="more-button" aria-label="More deal setup actions">•••</button></div>
           <div class="segmented" role="tablist" aria-label="Underwriting cases"><button class="selected" data-case="base" role="tab" aria-selected="true">Base case</button><button data-case="downside" role="tab" aria-selected="false">Downside</button><button data-case="upside" role="tab" aria-selected="false">Upside</button><button class="add-case" type="button" aria-label="Create case">＋</button></div>
+          <div class="company-note" id="companyNote" hidden></div>
           <div class="case-context" id="caseContext"><strong>Base case</strong><span>Management plan · current underwriting view</span></div>
           <div class="form-grid">
             <label class="field"><span>Purchase price <em>enterprise value · USD mm</em></span><div class="input-wrap"><span>$</span><input id="ev" type="number" value="425" min="1" step="5" /></div></label>
@@ -174,6 +182,7 @@
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite">Model recalculated <span>✓</span></div>
   <script src="model.js?v=core-1"></script>
+  <script src="data/companies.js?v=snap-1"></script>
   <script src="app.js?v=core-1"></script>
 </body>
 </html>

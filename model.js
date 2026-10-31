@@ -334,5 +334,42 @@
     return '';
   }
 
-  return { validateDeal, validateDcf, ModelError, npv, irr, moic, capm, wacc, gordonTerminalValue, exitMultipleTerminalValue, dcf, sourcesAndUses, operatingForecast, debtSchedule, lbo, returnsAttribution, sensitivity };
+  // ---------- Real-company snapshot -> calculator inputs ----------
+
+  const round1 = (x) => Math.round(x * 10) / 10;
+
+  /**
+   * Turn one committed SEC snapshot entry (data/companies.js) into calculator inputs.
+   * Only EBITDA, last reported growth and last reported margin come from the filing.
+   * The purchase price is a PLACEHOLDER (placeholderMultiple x EBITDA) because filings
+   * contain no market price; the forecast rows are flat copies of the last reported
+   * growth and margin, not forecasts.
+   */
+  function companyInputs(company, placeholderMultiple = 8.2) {
+    need(placeholderMultiple, 'Placeholder multiple');
+    const rev = company.revenue.usdMm, ebitda = company.ebitda.usdMm;
+    need(rev, 'Revenue'); need(ebitda, 'EBITDA');
+    if (rev <= 0) throw new ModelError('Revenue must be greater than zero.', 'bad_revenue');
+    if (ebitda <= 0) throw new ModelError('EBITDA must be greater than zero to underwrite an LBO.', 'bad_ebitda');
+    const prior = company.priorRevenue && company.priorRevenue.usdMm;
+    const growthPct = prior > 0 ? round1((rev / prior - 1) * 100) : null;
+    return {
+      ebitda,
+      ev: round1(ebitda * placeholderMultiple),
+      marginPct: round1(ebitda / rev * 100),
+      growthPct,
+      placeholderMultiple
+    };
+  }
+
+  /** Market cap = price x shares; EV = market cap + net debt. All USD millions except price (USD per share). */
+  function impliedEv({ price, shares, netDebtMm }) {
+    need(price, 'Share price'); need(shares, 'Shares'); need(netDebtMm, 'Net debt');
+    if (price <= 0) throw new ModelError('Share price must be greater than zero.', 'bad_price');
+    if (shares <= 0) throw new ModelError('Shares must be greater than zero.', 'bad_shares');
+    const marketCap = price * shares / 1e6;
+    return { marketCap, ev: marketCap + netDebtMm };
+  }
+
+  return { companyInputs, impliedEv, validateDeal, validateDcf, ModelError, npv, irr, moic, capm, wacc, gordonTerminalValue, exitMultipleTerminalValue, dcf, sourcesAndUses, operatingForecast, debtSchedule, lbo, returnsAttribution, sensitivity };
 });

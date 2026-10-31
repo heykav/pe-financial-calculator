@@ -20,5 +20,7 @@ jobs:
         run: |
           node --check model.js
           node --check app.js
+          node --check scripts/build-company-snapshot.js
+          node --check scripts/lib/map-company.js
       - name: Unit tests (calculation layer)
         run: npm test
