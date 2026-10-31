@@ -530,7 +530,7 @@ $('resetBtn').addEventListener('click', () => {
 $('exportBtn').addEventListener('click', () => {
   const m = currentModel;
   if (!m) { showToast('Fix the highlighted inputs before exporting'); return; }
-  const memo = `RIVET / PROJECT ATLAS — INVESTMENT COMMITTEE MEMO\n\nCASE & HOLD\nCase: ${caseLabels[activeCase].name}\nHold: ${m.hold} years\n\nTRANSACTION\nEntry enterprise value: ${money(m.ev)} mm\nEntry EBITDA: ${money(m.ebitda)} mm\nEntry debt: ${money(m.entryDebt)} mm (${(m.entryDebt / m.ebitda).toFixed(1)}x EBITDA)\nEntry sponsor equity: ${money(m.entryEquity)} mm\n\nEXIT & RETURNS\nExit multiple: ${m.exitMultiple.toFixed(1)}x (entry ${m.entryMultiple.toFixed(1)}x)\nExit debt: ${money(m.exitDebt)} mm\nExit equity: ${money(m.exitEquity)} mm\nMOIC: ${m.moic.toFixed(2)}x\nGross IRR: ${m.irr.toFixed(1)}%\n\nASSUMPTIONS\nGrowth: ${m.growthRate.toFixed(1)}% first-year EBITDA growth\nInterest: ${m.interest.toFixed(2)}%\nDebt paydown: ${money(m.debtPaydown)} mm\n\nMETHODOLOGY & DISCLAIMER\nReturns use the deterministic operating forecast, a cash-flow debt schedule (interest on average balance, 1% mandatory amortisation, 100% cash sweep, 65% EBITDA cash conversion), the exit multiple entered and gross equity proceeds. DCF is illustrative and excludes fees, taxes, capex and working capital. This is a local underwriting model, not investment advice or live market data.`;
+  const memo = `RIVET / PROJECT ATLAS — INVESTMENT COMMITTEE MEMO\n\nCASE & HOLD\nCase: ${caseLabels[activeCase].name}\nHold: ${m.hold} years\n\nTRANSACTION\nEntry enterprise value: ${money(m.ev)} mm\nEntry EBITDA: ${money(m.ebitda)} mm\nEntry debt: ${money(m.entryDebt)} mm (${(m.entryDebt / m.ebitda).toFixed(1)}x EBITDA)\nEntry sponsor equity: ${money(m.entryEquity)} mm\n\nEXIT & RETURNS\nExit multiple: ${m.exitMultiple.toFixed(1)}x (entry ${m.entryMultiple.toFixed(1)}x)\nExit debt: ${money(m.exitDebt)} mm\nExit equity: ${money(m.exitEquity)} mm\nMOIC: ${m.moic.toFixed(2)}x\nGross IRR: ${m.irr.toFixed(1)}%\n\nASSUMPTIONS\nGrowth: ${m.growthRate.toFixed(1)}% first-year EBITDA growth\nInterest: ${m.interest.toFixed(2)}%\nDebt paydown: ${money(m.debtPaydown)} mm\n\n${loadedCompany ? `DATA SOURCE\nReal SEC filing: ${loadedCompany.name}, Form 10-K ${loadedCompany.filing.accession}, fiscal year ended ${loadedCompany.filing.fiscalYearEnd}. Snapshot dated ${loadedCompany.retrievedOn}, not live. Purchase price is a placeholder unless set from a user-entered share price.\n\n` : ''}METHODOLOGY & DISCLAIMER\nReturns use the deterministic operating forecast, a cash-flow debt schedule (interest on average balance, 1% mandatory amortisation, 100% cash sweep, 65% EBITDA cash conversion), the exit multiple entered and gross equity proceeds. DCF is illustrative and excludes fees, taxes, capex and working capital. This is a local underwriting model, not investment advice or live market data.`;
   const blob = new Blob([memo], {type: 'text/plain'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
@@ -563,4 +563,107 @@ $('scenarioBtn').addEventListener('click', () => {
     showToast('Scenario envelope refreshed');
   }, 650);
 });
+// ---------- Load a real company (committed SEC snapshot, not live) ----------
+const factoryCases = JSON.parse(JSON.stringify(caseState));
+const snapshot = window.RivetCompanies;
+const fmtMm = (v) => `$${Number(v).toLocaleString('en-US', { maximumFractionDigits: 1 })}`;
+let loadedCompany = null;
+
+function selectedCompany() { return snapshot?.companies.find((c) => c.ticker === $('companySelect').value); }
+
+function renderCompanyDetail() {
+  const c = selectedCompany();
+  const box = $('companyDetail');
+  if (!c) { box.innerHTML = ''; return; }
+  const rows = [
+    ['Revenue', c.revenue.usdMm, c.revenue.tag, c.revenue.period],
+    ['Operating income', c.operatingIncome.usdMm, c.operatingIncome.tag, c.operatingIncome.period],
+    ['Depreciation and amortization', c.depreciationAmortization.usdMm, c.depreciationAmortization.tag, c.depreciationAmortization.period],
+    ['EBITDA (operating income + D&A)', c.ebitda.usdMm, 'derived', c.revenue.period],
+    ...c.debt.items.map((i) => [`Debt: ${i.tag}`, i.usdMm, i.tag, i.period]),
+    ...c.cash.items.map((i) => [`Cash: ${i.tag}`, -i.usdMm, i.tag, i.period]),
+    ['Net debt (debt minus cash)', c.netDebtUsdMm, 'derived', c.filing.fiscalYearEnd]
+  ];
+  box.innerHTML = `<div class="company-meta"><b>${escapeHtml(c.name)}</b> · Form ${escapeHtml(c.filing.form)} accession ${escapeHtml(c.filing.accession)} · filed ${escapeHtml(c.filing.filed)} · fiscal year ended ${escapeHtml(c.filing.fiscalYearEnd)} · retrieved ${escapeHtml(c.retrievedOn)} · <a href="${escapeHtml(c.verification.documentUrl)}" target="_blank" rel="noreferrer">filing on sec.gov ↗</a></div>
+    <div class="company-table"><div class="company-row head"><span>Item (USD mm)</span><span>Value</span><span>XBRL tag</span><span>Period</span></div>${rows.map((r) => `<div class="company-row"><span>${escapeHtml(r[0])}</span><b>${r[1] < 0 ? '(' + fmtMm(-r[1]) + ')' : fmtMm(r[1])}</b><span>${escapeHtml(r[2])}</span><span>${escapeHtml(r[3])}</span></div>`).join('')}
+    <div class="company-row"><span>Shares outstanding (10-K cover)</span><b>${c.shares.count.toLocaleString('en-US')}</b><span>${escapeHtml(c.shares.tag)}</span><span>as of ${escapeHtml(c.shares.asOf)}</span></div></div>
+    <div class="company-price"><label class="field"><span>Share price you enter <em>USD · not from filings</em></span><div class="input-wrap"><span>$</span><input id="companyPrice" type="number" min="0" step="0.01" placeholder="price" /></div></label><div class="company-ev" id="companyEv">Enter a price to see market cap and enterprise value. Until then the purchase price is a placeholder.</div><button class="button mini" id="useEvBtn" type="button" disabled>Use as purchase price</button></div>`;
+}
+
+function updateImpliedEv() {
+  const c = selectedCompany();
+  const out = $('companyEv'), btn = $('useEvBtn');
+  if (!c || !out) return;
+  const raw = $('companyPrice').value;
+  btn.disabled = true;
+  if (raw === '') { out.textContent = 'Enter a price to see market cap and enterprise value. Until then the purchase price is a placeholder.'; return; }
+  try {
+    const { marketCap, ev } = M.impliedEv({ price: Number(raw), shares: c.shares.count, netDebtMm: c.netDebtUsdMm });
+    out.textContent = `Market cap ${fmtMm(marketCap)} mm + net debt ${fmtMm(c.netDebtUsdMm)} mm = EV ${fmtMm(ev)} mm. Price is yours; shares and net debt are from the filing dates shown, so this mixes dates.`;
+    btn.dataset.ev = String(Math.round(ev * 10) / 10);
+    btn.disabled = false;
+  } catch (error) {
+    if (!(error instanceof M.ModelError)) throw error;
+    out.textContent = error.message;
+  }
+}
+
+function applyCompany() {
+  const c = selectedCompany();
+  if (!c) return;
+  let f;
+  try { f = M.companyInputs(c); } catch (error) {
+    if (!(error instanceof M.ModelError)) throw error;
+    showToast(error.message);
+    return;
+  }
+  $('ebitda').value = String(f.ebitda);
+  $('ev').value = String(f.ev);
+  document.querySelectorAll('[data-key="margin"]').forEach((el) => { el.value = f.marginPct.toFixed(1); });
+  if (f.growthPct !== null) document.querySelectorAll('[data-key="growth"]').forEach((el) => { el.value = f.growthPct.toFixed(1); });
+  loadedCompany = c;
+  const note = $('companyNote');
+  note.hidden = false;
+  note.innerHTML = `<strong>Real filings: ${escapeHtml(c.ticker)}</strong><span>FY ended ${escapeHtml(c.filing.fiscalYearEnd)} · snapshot dated ${escapeHtml(c.retrievedOn)} · not live. EBITDA, growth and margin are reported figures; the purchase price is a placeholder (${f.placeholderMultiple}x EBITDA) and the forecast rows repeat the last reported growth and margin. Returns stay illustrative.</span>`;
+  saveCase();
+  calculate();
+  showToast(`${c.ticker} filings loaded`);
+}
+
+function clearLoadedCompany() {
+  loadedCompany = null;
+  const note = $('companyNote');
+  if (note) { note.hidden = true; note.textContent = ''; }
+}
+
+if (snapshot && snapshot.companies?.length) {
+  $('companySelect').innerHTML = snapshot.companies.map((c) => `<option value="${escapeHtml(c.ticker)}">${escapeHtml(c.name)} (${escapeHtml(c.ticker)})</option>`).join('');
+  $('realCompanyLabel').textContent = snapshot.label;
+  $('companyCaveat').innerHTML = `<p>${snapshot.notes.map(escapeHtml).join(' ')}</p><p>Left out because their filings could not be mapped cleanly or checked: ${snapshot.excluded.length ? snapshot.excluded.map((e) => `${escapeHtml(e.ticker)} (${escapeHtml(e.reason)})`).join('; ') : 'none'}.</p><p>Rivet's returns remain illustrative. A real company loaded here is a starting point, not a deal view or advice.</p>`;
+  renderCompanyDetail();
+  $('companySelect').addEventListener('change', renderCompanyDetail);
+  $('applyCompanyBtn').addEventListener('click', applyCompany);
+  $('companyDetail').addEventListener('input', (event) => { if (event.target.id === 'companyPrice') updateImpliedEv(); });
+  $('companyDetail').addEventListener('click', (event) => {
+    if (event.target.id !== 'useEvBtn' || event.target.disabled) return;
+    $('ev').value = event.target.dataset.ev;
+    saveCase();
+    calculate();
+    showToast('Purchase price set from your share price');
+  });
+  const panel = $('realCompany');
+  const setOpen = (open) => { panel.hidden = !open; $('loadCompanyBtn').setAttribute('aria-expanded', String(open)); };
+  $('loadCompanyBtn').addEventListener('click', () => setOpen(panel.hidden));
+  $('closeCompanyBtn').addEventListener('click', () => setOpen(false));
+  if (location.hash === '#real-company') setOpen(true);
+} else {
+  $('loadCompanyBtn').hidden = true;
+}
+$('resetBtn').addEventListener('click', () => {
+  if (!loadedCompany) return;
+  Object.keys(caseState).forEach((key) => { caseState[key] = JSON.parse(JSON.stringify(factoryCases[key])); });
+  clearLoadedCompany();
+  selectCase('base');
+});
+
 calculate();

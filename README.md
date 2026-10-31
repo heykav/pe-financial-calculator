@@ -32,6 +32,18 @@ Every workspace opens with a plain-English "start here" line before the numbers,
 
 > Rivet is illustrative. It is not investment advice, a valuation opinion, or a stand-in for real diligence — treat every output as a first-pass conversation starter, not a number you'd underwrite on.
 
+## Load a real company
+
+The **Load a real company** button fills the calculator from real 10-K filings. It is a snapshot, not a live feed: `data/companies.json` is dated (see its `retrievedOn`) and the app says so wherever it uses it.
+
+![Load a real company panel showing Apple's FY2025 10-K figures with accession number, XBRL tags and periods](docs/img/real-company-desktop.png)
+
+- **Source:** SEC EDGAR XBRL company facts, annual 10-K figures. Every number carries its accession number, XBRL tag and period; the panel links to the filing on sec.gov.
+- **Why a script:** `data.sec.gov` sends no CORS headers and requires a descriptive User-Agent, so the browser cannot call it. `node scripts/build-company-snapshot.js --contact "Your Name you@example.com"` builds the snapshot on a developer machine. The page's CSP stays `connect-src 'none'`; the app loads `data/companies.js`, generated from the JSON.
+- **Checks:** the mapper only uses named tags from one filing, reconciles total long-term debt to noncurrent plus current portion, and refuses ambiguous D&A. The script then re-reads each 10-K document and requires every figure to appear in its text. A company that fails is left out and listed in the panel (this run: CSCO and NVDA).
+- **What fills in:** EBITDA (operating income plus D&A, unadjusted), last reported revenue growth and EBITDA margin. **What does not come from filings:** the purchase price. It is a placeholder of 8.2x EBITDA until you type a share price you looked up, which gives market cap plus filing net debt. Forecast rows repeat the last reported growth and margin; they are not forecasts.
+- Debt excludes lease liabilities; cash includes only current marketable securities or short-term investments. Returns stay illustrative and gross.
+
 ## Screenshots
 
 Captured with headless Chromium from the running app at its default inputs, the documented base case: EV $425mm, EBITDA $52mm, 4.5x debt at 8.25%, 5-year hold, 8.2x exit, revenue growth 12/11/10/9/8% and EBITDA margin 21% rising to 25%. That set gives 4.04x gross MOIC and 32.2% gross IRR (model.js). Nothing below is mocked. Click an image for full size.
